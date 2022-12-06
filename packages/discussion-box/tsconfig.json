@@ -4,7 +4,11 @@
     "jsx": "react",
     "allowJs": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationDir": "dist/dts",
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "files": [],
   "include": [],

@@ -21,7 +21,7 @@ import { ReactQuill } from "src/ReactQuill";
 import { EmojiClickData } from "emoji-picker-react";
 import { EmojiPicker } from "src/EmojiPicker";
 
-import type { IPost, EmojiPopoverState, SnackbarState } from "./utils/types";
+import { IPost, EmojiPopoverState, SnackbarState } from "./utils/types";
 
 import { useGraphQLForDiscussion } from "./utils/useGraphQLForDiscussion";
 import { Post } from "./Post";
