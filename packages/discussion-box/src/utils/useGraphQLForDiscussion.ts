@@ -1,8 +1,7 @@
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
-import { useParams } from "react-router";
 import { useSubscription, useMutation, useLazyQuery } from "@apollo/client";
 
-import { client } from "src/common/discussionGraphql";
+import { client } from "src/graphql/discussionGraphql";
 import {
   POST_CREATED_SUBSCRIPTION,
   POST_DELETED_SUBSCRIPTION,
@@ -15,10 +14,9 @@ import {
   CREATE_REACTION,
   DELETE_REACTION,
   GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW,
-} from "src/common/discussionQuery";
+} from "src/graphql/discussionQuery";
 
 import type {
-  DiscussionRouteQuizParams,
   IDiscussion,
   DiscussionCreatedData,
   PostCreatedData,
@@ -53,9 +51,16 @@ interface UseGraphQLForDiscussion {
   };
 }
 
-export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
+type UseGraphQLForDiscussionProps = {
+  table_name: string;
+  row: number;
+};
+
+export function useGraphQLForDiscussion({
+  table_name,
+  row,
+}: UseGraphQLForDiscussionProps): UseGraphQLForDiscussion {
   const [error, setError] = useState<boolean>(false);
-  const { table_name, row } = useParams<DiscussionRouteQuizParams>();
 
   const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
   const [quillText, setQuillText] = useState<string>("");
@@ -69,7 +74,7 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
   const { data: postCreatedData, error: postCreatedError } =
     useSubscription<PostCreatedData>(POST_CREATED_SUBSCRIPTION, {
       variables: {
-        discussionId: (discussion) ? discussion.id : -1
+        discussionId: discussion ? discussion.id : -1,
       },
       client,
     });
@@ -85,10 +90,10 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     useSubscription<ReactionDeletedData>(REACTION_DELETED_SUBSCRIPTION, {
       client,
     });
-  const [createDiscussion, { error: createDiscussionError, data: newDiscusionData }] = useMutation(
-    CREATE_DISCUSSION,
-    { client }
-  );
+  const [
+    createDiscussion,
+    { error: createDiscussionError, data: newDiscusionData },
+  ] = useMutation(CREATE_DISCUSSION, { client });
   const [createPost, { error: createPostError, loading: createPostLoading }] =
     useMutation(CREATE_POST, {
       client,
@@ -119,17 +124,13 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
 
   // Query for fetching Discussion data from server
   useEffect(() => {
-    if (table_name === undefined || row === undefined) {
-      setError(true);
-    } else {
-      setDiscussion(null);
-      getDiscussionsByTableNameAndRow({
-        variables: {
-          table_name,
-          row: +row,
-        },
-      });
-    }
+    setDiscussion(null);
+    getDiscussionsByTableNameAndRow({
+      variables: {
+        table_name,
+        row: +row,
+      },
+    });
   }, [table_name, row, getDiscussionsByTableNameAndRow]);
 
   // Substitute 'discussionData' came from server to 'discussion'
@@ -172,10 +173,6 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
 
   // Sync 'discussion' with 'createdDiscussion' subscription
   useEffect(() => {
-    if (table_name === undefined || row === undefined) {
-      return;
-    }
-
     if (discussionCreatedData === undefined || discussionCreatedError) {
       return;
     }

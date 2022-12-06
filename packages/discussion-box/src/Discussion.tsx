@@ -1,11 +1,13 @@
-import { useState, KeyboardEvent, useEffect, useRef, useCallback } from "react";
-import { useHistory } from "react-router";
-
-import { IonContent } from "@ionic/react";
+import React, {
+  useState,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 
 import {
   Stack,
-  Button,
   Snackbar,
   Alert,
   Popover,
@@ -13,30 +15,28 @@ import {
   Backdrop,
 } from "@mui/material";
 
-import {
-  QuillContainer,
-  DiscussionHeader,
-  DiscussionContainer,
-} from "./styled";
+import { QuillContainer, DiscussionContainer } from "./styled";
 
-import { ReactQuill } from "src/common/ReactQuill";
+import { ReactQuill } from "src/ReactQuill";
 import { EmojiClickData } from "emoji-picker-react";
-import { EmojiPicker } from "src/common/EmojiPicker";
+import { EmojiPicker } from "src/EmojiPicker";
 
 import type { IPost, EmojiPopoverState, SnackbarState } from "./utils/types";
 
 import { useGraphQLForDiscussion } from "./utils/useGraphQLForDiscussion";
 import { Post } from "./Post";
-import { MockLoginForm } from "./MockLoginForm";
 
-import { Notification } from "src/components/notification";
+type DiscussionProps = {
+  userId: number;
+  tableName: string;
+  rowId: number;
+};
 
 /**
  * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
  * The responsibility is to control Discussion Page and interact with server such as fetching, saving, deleting discussion data.
  */
-export function Discussion() {
-  const history = useHistory();
+export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
   const {
     error,
     loading,
@@ -49,7 +49,7 @@ export function Discussion() {
       setPrevQuillText,
     },
     graphQLAPIs: { createPost, deletePost, createReaction, deleteReaction },
-  } = useGraphQLForDiscussion();
+  } = useGraphQLForDiscussion({ table_name: tableName, row: rowId });
   const [popoverState, setPopoverState] = useState<EmojiPopoverState>({
     anchorEl: null,
     postId: 0,
@@ -59,7 +59,6 @@ export function Discussion() {
     message: "This is a success message!",
     severity: "success",
   });
-  const [mockUserId, setMockUserId] = useState<number | null>(null);
   const discussionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -78,7 +77,7 @@ export function Discussion() {
   };
 
   const handleKeyEvent = async (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" && !event.shiftKey && mockUserId) {
+    if (event.key === "Enter" && !event.shiftKey) {
       createPost({
         variables: {
           post: {
@@ -86,7 +85,7 @@ export function Discussion() {
             plain_text: quillPlain,
             postgres_language: "simple",
             quill_text: quillText,
-            user_id: mockUserId,
+            user_id: userId,
           },
         },
       });
@@ -95,25 +94,17 @@ export function Discussion() {
     }
   };
 
-  const handleDeletePost = async (post_id: number): Promise<void> => {
-    if (!mockUserId) {
-      return;
-    }
-
+  const handleDeletePost = (post_id: number) => {
     deletePost({
       variables: {
         id: post_id,
-        userId: mockUserId
+        userId: userId,
       },
     });
   };
 
   const handleAddReaction = useCallback(
-    async (
-      post_id: number,
-      user_id: number,
-      content: string
-    ): Promise<void> => {
+    (post_id: number, user_id: number, content: string) => {
       createReaction({
         variables: {
           reaction: {
@@ -127,15 +118,11 @@ export function Discussion() {
     [createReaction]
   );
 
-  const handleDeleteReaction = async (reaction_id: number): Promise<void> => {
-    if (!mockUserId) {
-      return;
-    }
-    
+  const handleDeleteReaction = (reaction_id: number) => {
     deleteReaction({
       variables: {
         id: reaction_id,
-        userId: mockUserId,
+        userId,
       },
     });
   };
@@ -163,47 +150,22 @@ export function Discussion() {
 
   const handleEmojiClick = useCallback(
     (emojiData: EmojiClickData) => {
-      if (popoverState && mockUserId) {
+      if (popoverState) {
         handleCloseEmojiPicker();
-        handleAddReaction(popoverState.postId, mockUserId, emojiData.unified);
+        handleAddReaction(popoverState.postId, userId, emojiData.unified);
       }
     },
-    [popoverState, handleCloseEmojiPicker, handleAddReaction, mockUserId]
+    [popoverState, handleCloseEmojiPicker, handleAddReaction, userId]
   );
 
   const openEmojiPicker = Boolean(popoverState?.anchorEl);
 
   return (
-    <IonContent>
+    <>
       <Stack
         justifyContent="space-between"
         sx={{ height: "calc(100vh - 75px)", padding: "0px 20px" }}
       >
-        <DiscussionHeader>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <span>Discussion</span>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              {mockUserId && <Notification userId={mockUserId} />}
-              <Button
-                onClick={() => {
-                  history.goBack();
-                }}
-              >
-                Go Back
-              </Button>
-            </Stack>
-          </Stack>
-        </DiscussionHeader>
-
-        <MockLoginForm
-          mockUserId={mockUserId}
-          setMockUserId={(userId: number) => setMockUserId(userId)}
-        />
-
         <DiscussionContainer ref={discussionRef}>
           {discussion?.posts?.map((post: IPost) => (
             <Post
@@ -271,6 +233,6 @@ export function Discussion() {
           <div>LOADING</div>
         </Stack>
       </Backdrop>
-    </IonContent>
+    </>
   );
 }

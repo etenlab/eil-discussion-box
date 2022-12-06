@@ -4,7 +4,7 @@ export function recalcDiscusionWithNewPost(
   discussion: IDiscussion,
   newPost: IPost
 ): IDiscussion {
-  if (discussion.posts.find((post) => post.id === newPost.id)) {
+  if (discussion.posts.find((post: IPost) => post.id === newPost.id)) {
     return discussion;
   } else {
     return {
@@ -20,7 +20,7 @@ export function recalcDiscussionWithDeletedPostId(
 ): IDiscussion {
   return {
     ...discussion,
-    posts: discussion.posts.filter((post) => post.id !== postId),
+    posts: discussion.posts.filter((post: IPost) => post.id !== postId),
   };
 }
 

@@ -13,16 +13,12 @@ import { createClient } from "graphql-ws";
 import { typeDefs } from "./discussionQuery";
 
 const httpLink = new HttpLink({
-  uri:
-    process.env.REACT_APP_DISCUSSION_API_SERVER_URL ||
-    "http://localhost:3001/graphql",
+  uri: "http://10.1.2.2:8202/graphql",
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url:
-      process.env.REACT_APP_DISCUSSION_API_SUBSCRIPTION_SERVER_URL ||
-      "ws://localhost:3001/graphql",
+    url: "ws://10.1.2.2:8202/graphql",
   })
 );
 

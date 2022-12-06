@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
+    "graphql": "^16.6.0",
+    "graphql-ws": "^5.11.2",
     "react-quill": "^2.0.0",
     "@mui/material": "^5.10.5",
     "@mui/icons-material": "^5.10.3",
