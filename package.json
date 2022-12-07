@@ -1,5 +1,6 @@
 {
-  "name": "eil-discussion-box",
+  "name": "@eten-lab/eil-discussion-box",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -10,7 +11,8 @@
     "dev": "lerna run start --stream --parallel",
     "test": "lerna run test --",
     "build": "lerna run build",
-    "prepublish": "lerna run prepublish"
+    "prepublish": "lerna run prepublish",
+    "publish": "lerna publish"
   },
   "devDependencies": {
     "lerna": "^6.0.1"

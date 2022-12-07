@@ -1,7 +1,11 @@
 {
-  "name": "discussion-box",
-  "version": "0.0.0",
+  "name": "@eten-lab/discussion-box",
+  "version": "1.0.0",
+  "private": true,
   "main": "dist/index.js",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build": "rimraf dist && tsc --build && rollup --config",
     "test": "jest"
