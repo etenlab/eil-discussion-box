@@ -1,6 +1,6 @@
 {
   "name": "@eten-lab/discussion-box",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "private": true,
   "main": "dist/index.js",
   "files": [
@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc --build && rollup --config",
+    "prepublish": "npm run build",
     "test": "jest"
   },
   "dependencies": {
