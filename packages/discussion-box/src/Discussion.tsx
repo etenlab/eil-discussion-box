@@ -76,7 +76,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     setQuillPlain(plain);
   };
 
-  const handleKeyEvent = async (event: KeyboardEvent<HTMLElement>) => {
+  const handleKeyEvent = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       createPost({
         variables: {
