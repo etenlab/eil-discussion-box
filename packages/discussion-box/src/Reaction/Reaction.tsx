@@ -1,4 +1,5 @@
-import React, { Emoji, EmojiStyle } from "emoji-picker-react";
+import React from 'react';
+import { Emoji, EmojiStyle } from "emoji-picker-react";
 
 import { Tooltip } from "@mui/material";
 
