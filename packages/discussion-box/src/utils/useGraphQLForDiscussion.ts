@@ -18,6 +18,7 @@ import {
 
 import type {
   IDiscussion,
+  IFileDB,
   DiscussionCreatedData,
   PostCreatedData,
   PostDeletedData,
@@ -39,6 +40,8 @@ interface UseGraphQLForDiscussion {
   reactQuill: {
     quillText: string;
     setQuillText: Dispatch<SetStateAction<string>>;
+    quillAttachment: IFileDB[];
+    setQuillAttachment: Dispatch<SetStateAction<IFileDB[]>>;
     quillPlain: string;
     setQuillPlain: Dispatch<SetStateAction<string>>;
     setPrevQuillText: Dispatch<SetStateAction<string | null>>;
@@ -65,6 +68,7 @@ export function useGraphQLForDiscussion({
   const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
   const [quillText, setQuillText] = useState<string>("");
   const [quillPlain, setQuillPlain] = useState<string>("");
+  const [quillAttachment, setQuillAttachment] = useState<IFileDB[]>([]);
   const [prevQuillText, setPrevQuillText] = useState<string | null>(null);
 
   const { data: discussionCreatedData, error: discussionCreatedError } =
@@ -298,6 +302,8 @@ export function useGraphQLForDiscussion({
       setQuillText,
       quillPlain,
       setQuillPlain,
+      quillAttachment,
+      setQuillAttachment,
       setPrevQuillText,
     },
     graphQLAPIs: {

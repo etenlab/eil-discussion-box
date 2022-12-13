@@ -15,6 +15,7 @@ export interface IDiscussionDB {
 export interface IPostDB {
   id: number;
   discussion: IDiscussionDB;
+  attachments: string[];
   user_id: number;
   quill_text: string;
   plain_text: string;
@@ -27,6 +28,17 @@ export interface IReactionDB {
   post: IPostDB;
   user_id: number;
   content: string;
+}
+
+export interface IFileDB {
+  id: number;
+  filename: string;
+  url: string;
+}
+
+export interface IRelationshipPostFile {
+  id: number;
+  file: IFileDB[];
 }
 
 export interface IReaction extends IReactionDB {}
@@ -73,4 +85,8 @@ export interface ReactionCreatedData {
 
 export interface ReactionDeletedData {
   reactionDeleted: number;
+}
+
+export interface UploadedFile {
+  uploadFile: IFileDB;
 }

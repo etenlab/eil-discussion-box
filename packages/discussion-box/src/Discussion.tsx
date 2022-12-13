@@ -44,6 +44,8 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     reactQuill: {
       quillText,
       setQuillText,
+      quillAttachment,
+      setQuillAttachment,
       quillPlain,
       setQuillPlain,
       setPrevQuillText,
@@ -76,22 +78,20 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     setQuillPlain(plain);
   };
 
-  const handleKeyEvent = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      createPost({
-        variables: {
-          post: {
-            discussion_id: discussion!.id,
-            plain_text: quillPlain,
-            postgres_language: "simple",
-            quill_text: quillText,
-            user_id: userId,
-          },
+  const sendToServer = () => {
+    createPost({
+      variables: {
+        post: {
+          discussion_id: discussion!.id,
+          plain_text: quillPlain,
+          postgres_language: "simple",
+          quill_text: quillText,
+          user_id: userId,
         },
-      });
-      setPrevQuillText(quillText);
-      setQuillText("");
-    }
+      },
+    });
+    setPrevQuillText(quillText);
+    setQuillText("");
   };
 
   const handleDeletePost = (post_id: number) => {
@@ -181,7 +181,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         <QuillContainer>
           <ReactQuill
             value={quillText}
-            onKeyUp={handleKeyEvent}
+            sendToServer={sendToServer}
             onChange={handleQuillChange}
           />
         </QuillContainer>
