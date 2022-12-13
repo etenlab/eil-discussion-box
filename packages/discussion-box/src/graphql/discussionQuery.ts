@@ -43,6 +43,14 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
           user_id
           content
         }
+        files {
+          id
+          file {
+            id
+            filename
+            url
+          }
+        }
       }
     }
   }
@@ -68,6 +76,14 @@ export const CREATE_DISCUSSION = gql`
           user_id
           content
         }
+        files {
+          id
+          file {
+            id
+            filename
+            url
+          }
+        }
       }
     }
   }
@@ -92,6 +108,14 @@ export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
           id
           user_id
           content
+        }
+        files {
+          id
+          file {
+            id
+            filename
+            url
+          }
         }
       }
     }
@@ -144,6 +168,14 @@ export const CREATE_POST = gql`
         user_id
         content
       }
+      files {
+        id
+        file {
+          id
+          filename
+          url
+        }
+      }
       created_at
     }
   }
@@ -164,6 +196,14 @@ export const POST_CREATED_SUBSCRIPTION = gql`
         id
         user_id
         content
+      }
+      files {
+        id
+        file {
+          id
+          filename
+          url
+        }
       }
       created_at
     }
