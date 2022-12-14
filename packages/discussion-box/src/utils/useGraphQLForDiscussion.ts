@@ -42,6 +42,7 @@ interface UseGraphQLForDiscussion {
     setQuillText: Dispatch<SetStateAction<string>>;
     quillAttachments: IFileDB[];
     setQuillAttachments: Dispatch<SetStateAction<IFileDB[]>>;
+    setPrevAttachments: Dispatch<SetStateAction<IFileDB[]>>;
     quillPlain: string;
     setQuillPlain: Dispatch<SetStateAction<string>>;
     setPrevQuillText: Dispatch<SetStateAction<string | null>>;
@@ -70,6 +71,7 @@ export function useGraphQLForDiscussion({
   const [quillPlain, setQuillPlain] = useState<string>("");
   const [quillAttachments, setQuillAttachments] = useState<IFileDB[]>([]);
   const [prevQuillText, setPrevQuillText] = useState<string | null>(null);
+  const [prevAttachments, setPrevAttachments] = useState<IFileDB[]>([]);
 
   const { data: discussionCreatedData, error: discussionCreatedError } =
     useSubscription<DiscussionCreatedData>(DISCUSSION_CREAETD_SUBSCRIPTION, {
@@ -253,7 +255,9 @@ export function useGraphQLForDiscussion({
   useEffect(() => {
     if (!!createPostError && createPostLoading === false && !!prevQuillText) {
       setQuillText(prevQuillText);
+      setQuillAttachments(prevAttachments);
       setPrevQuillText(null);
+      setPrevAttachments([]);
     }
   }, [createPostError, createPostLoading, prevQuillText]);
 
@@ -305,6 +309,7 @@ export function useGraphQLForDiscussion({
       quillAttachments,
       setQuillAttachments,
       setPrevQuillText,
+      setPrevAttachments,
     },
     graphQLAPIs: {
       createPost,

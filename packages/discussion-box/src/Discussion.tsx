@@ -45,6 +45,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
       setQuillText,
       quillAttachments,
       setQuillAttachments,
+      setPrevAttachments,
       quillPlain,
       setQuillPlain,
       setPrevQuillText,
@@ -89,8 +90,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
 
   const sendToServer = () => {
     if (
-      quillPlain.length === 0 &&
-      quillPlain.length === 0 &&
+      (quillText.length === 0 || quillText === "<p><br></p>") &&
       quillAttachments.length === 0
     ) {
       return;
@@ -108,9 +108,11 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         files: quillAttachments.map((file) => file.id),
       },
     });
-    
+
     setPrevQuillText(quillText);
+    setPrevAttachments(quillAttachments);
     setQuillText("");
+    setQuillAttachments([]);
   };
 
   const handleDeletePost = (post_id: number) => {
@@ -183,7 +185,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     <>
       <Stack
         justifyContent="space-between"
-        sx={{ height: "calc(100vh - 75px)", padding: "0px 20px" }}
+        sx={{ height: "calc(100vh - 170px)", padding: "0px 20px" }}
       >
         {discussion ? (
           <DiscussionContainer ref={discussionRef}>

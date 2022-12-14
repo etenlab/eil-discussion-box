@@ -38,7 +38,7 @@ export function DiscussionPage() {
     <>
       <Stack
         justifyContent="space-between"
-        sx={{ height: "calc(100vh - 75px)", padding: "0px 20px" }}
+        sx={{ height: "100vh", padding: "0px 20px" }}
       >
         <DiscussionHeader>
           <Stack

@@ -35,7 +35,6 @@ export function BottomToolbar({ onSend, onAddAttachment }: BottomToolbarType) {
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const files = event.target.files;
 
-    console.log("files ==> ", files);
     if (files && files.length > 0) {
       uploadFile({ variables: { file: files[0] } });
     }

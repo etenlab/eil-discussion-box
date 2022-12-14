@@ -53,7 +53,6 @@ export function Post({
   const created_at_date =
     typeof created_at === "string" ? new Date(created_at) : created_at;
 
-  console.log("attachment file ===> ", files);
   const attachementListFiles = files.map(file => file.file);
 
   return (
