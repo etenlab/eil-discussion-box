@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
-import { IFileDB } from "src/utils/types";
+import { IFileDB } from "../utils/types";
 
 type AttachmentProps = {
   file: IFileDB;

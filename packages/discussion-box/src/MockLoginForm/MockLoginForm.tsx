@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEventHandler } from "react";
 import { useMutation } from "@apollo/client";
-import { client } from "src/graphql/discussionGraphql";
-import { CREATE_USER } from "src/graphql/discussionQuery";
+import { client } from "../graphql/discussionGraphql";
+import { CREATE_USER } from "../graphql/discussionQuery";
 
 type MockLoginFormProps = {
   mockUserId: number | null;

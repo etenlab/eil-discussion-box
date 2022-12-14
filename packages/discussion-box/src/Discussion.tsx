@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  KeyboardEvent,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import {
   Stack,
@@ -17,11 +11,16 @@ import {
 
 import { QuillContainer, DiscussionContainer } from "./styled";
 
-import { ReactQuill } from "src/ReactQuill";
+import { ReactQuill } from "./ReactQuill";
+import { EmojiPicker } from "./EmojiPicker";
 import { EmojiClickData } from "emoji-picker-react";
-import { EmojiPicker } from "src/EmojiPicker";
 
-import { IPost, EmojiPopoverState, SnackbarState } from "./utils/types";
+import {
+  IPost,
+  IFileDB,
+  EmojiPopoverState,
+  SnackbarState,
+} from "./utils/types";
 
 import { useGraphQLForDiscussion } from "./utils/useGraphQLForDiscussion";
 import { Post } from "./Post";
@@ -44,8 +43,8 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     reactQuill: {
       quillText,
       setQuillText,
-      quillAttachment,
-      setQuillAttachment,
+      quillAttachments,
+      setQuillAttachments,
       quillPlain,
       setQuillPlain,
       setPrevQuillText,
@@ -78,7 +77,25 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     setQuillPlain(plain);
   };
 
+  const handleAddAttachment = (file: IFileDB) => {
+    setQuillAttachments((attachments) => [...attachments, file]);
+  };
+
+  const handleCancelAttachment = (file: IFileDB) => {
+    setQuillAttachments((attachments) =>
+      attachments.filter((attachment) => attachment.id !== file.id)
+    );
+  };
+
   const sendToServer = () => {
+    if (
+      quillPlain.length === 0 &&
+      quillPlain.length === 0 &&
+      quillAttachments.length === 0
+    ) {
+      return;
+    }
+
     createPost({
       variables: {
         post: {
@@ -88,8 +105,10 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
           quill_text: quillText,
           user_id: userId,
         },
+        files: quillAttachments.map((file) => file.id),
       },
     });
+    
     setPrevQuillText(quillText);
     setQuillText("");
   };
@@ -166,20 +185,25 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         justifyContent="space-between"
         sx={{ height: "calc(100vh - 75px)", padding: "0px 20px" }}
       >
-        <DiscussionContainer ref={discussionRef}>
-          {discussion?.posts?.map((post: IPost) => (
-            <Post
-              key={post.id}
-              {...post}
-              deleteReaction={handleDeleteReaction}
-              deletePost={handleDeletePost}
-              openEmojiPicker={handleOpenEmojiPicker}
-            />
-          ))}
-        </DiscussionContainer>
+        {discussion ? (
+          <DiscussionContainer ref={discussionRef}>
+            {discussion!.posts!.map((post: IPost) => (
+              <Post
+                key={post.id}
+                {...post}
+                deleteReaction={handleDeleteReaction}
+                deletePost={handleDeletePost}
+                openEmojiPicker={handleOpenEmojiPicker}
+              />
+            ))}
+          </DiscussionContainer>
+        ) : null}
 
         <QuillContainer>
           <ReactQuill
+            attachments={quillAttachments}
+            onAddAttachment={handleAddAttachment}
+            onCancelAttachment={handleCancelAttachment}
             value={quillText}
             sendToServer={sendToServer}
             onChange={handleQuillChange}

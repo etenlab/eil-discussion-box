@@ -1,10 +1,8 @@
 {
   "name": "@eten-lab/eil-discussion-box",
-  "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "examples/*"
+    "packages/*"
   ],
   "scripts": {
     "lerna": "lerna",
@@ -12,9 +10,12 @@
     "test": "lerna run test --",
     "build": "lerna run build",
     "prepublish": "lerna run prepublish",
-    "publish": "lerna publish --no-private"
+    "start:example": "npm run build && yarn --cwd packages/discussion-box link && yarn --cwd node_modules/react link && yarn --cwd ./example link react @eten-lab/discussion-box && yarn --cwd ./example && yarn --cwd ./example run start"
   },
   "devDependencies": {
-    "lerna": "^6.0.1"
+    "@types/jest": "^26.0.14",
+    "lerna": "^6.1.0",
+    "tsdx": "^0.14.1",
+    "typescript": "^4.0.3"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { ChangeEventHandler, useEffect } from "react";
 
 import { Stack, IconButton } from "@mui/material";
 
@@ -6,10 +6,10 @@ import SendIcon from "@mui/icons-material/Send";
 import AddIcon from "@mui/icons-material/Add";
 
 import { useMutation } from "@apollo/client";
-import { client } from "src/graphql/fileGraphql";
-import { UPLOAD_FILE } from "src/graphql/fileQuery";
+import { client } from "../graphql/fileGraphql";
+import { UPLOAD_FILE } from "../graphql/fileQuery";
 
-import { IFileDB, UploadedFile } from "src/utils/types";
+import { IFileDB, UploadedFile } from "../utils/types";
 
 type BottomToolbarType = {
   onSend: () => void;
@@ -32,15 +32,13 @@ export function BottomToolbar({ onSend, onAddAttachment }: BottomToolbarType) {
   }, [data, error, loading]);
 
   // Get a file then upload
-  const handleFileChange = (event) => {
-    const files = event.target.value;
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const files = event.target.files;
 
-    // console.log("files ==> ", files);
+    console.log("files ==> ", files);
     if (files && files.length > 0) {
       uploadFile({ variables: { file: files[0] } });
     }
-
-    event.target.value = null;
   };
 
   const disabled = loading;

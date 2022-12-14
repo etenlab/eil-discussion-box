@@ -1,26 +1,29 @@
-import React, { useRef, useEffect, useState, KeyboardEvent } from "react";
+import React, { useRef, useEffect, KeyboardEvent } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 
-import { Stack } from "@mui/material";
-
-import { AttachmentLabelList } from "src/Attachment";
+import { AttachmentLabelList } from "../Attachment";
 import { BottomToolbar } from "./BottomToolbar";
 import { AttachmentListContainer } from "./styled";
-import { IFileDB } from "src/utils/types";
+import { IFileDB } from "../utils/types";
 
 type ReactQuillProps = {
+  attachments: IFileDB[];
+  onAddAttachment: (file: IFileDB) => void;
+  onCancelAttachment: (file: IFileDB) => void;
   value: string;
   sendToServer(): void;
   onChange(quill: string, plain: string): void;
 };
 
 export function CustomReactQuill({
+  attachments,
+  onAddAttachment,
+  onCancelAttachment,
   value,
   sendToServer,
   onChange,
 }: ReactQuillProps) {
-  const [attachments, setAttachments] = useState<IFileDB[]>([]);
   const ref = useRef<any>();
 
   useEffect(() => {
@@ -44,22 +47,12 @@ export function CustomReactQuill({
 
   const handleChange = (
     value: string,
-    delta: any,
-    source: any,
+    _delta: any,
+    _source: any,
     editor: any
   ) => {
     const text = editor.getText(value);
     onChange(value, text);
-  };
-
-  const onAddAttachment = (file: IFileDB) => {
-    setAttachments((attachments) => [...attachments, file]);
-  };
-
-  const handleAttachmentCancel = (id: number) => {
-    setAttachments((attachments) =>
-      attachments.filter((attachment) => attachment.id !== id)
-    );
   };
 
   return (
@@ -75,7 +68,7 @@ export function CustomReactQuill({
         <AttachmentListContainer>
           <AttachmentLabelList
             attachments={attachments}
-            onCancel={handleAttachmentCancel}
+            onCancel={onCancelAttachment}
           />
         </AttachmentListContainer>
       ) : null}

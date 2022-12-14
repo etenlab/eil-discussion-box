@@ -149,8 +149,8 @@ export const GET_POSTS_BY_DISCUSSION_ID = gql`
 `;
 
 export const CREATE_POST = gql`
-  mutation CreatePost($post: NewPostInput!) {
-    createPost(newPostData: $post) {
+  mutation CreatePost($post: NewPostInput!, $files: [Int]!) {
+    createPost(newPostData: $post, files: $files) {
       id
       discussion {
         id

@@ -15,7 +15,7 @@ export interface IDiscussionDB {
 export interface IPostDB {
   id: number;
   discussion: IDiscussionDB;
-  attachments: string[];
+  files: IRelationshipPostFile[];
   user_id: number;
   quill_text: string;
   plain_text: string;
@@ -38,7 +38,7 @@ export interface IFileDB {
 
 export interface IRelationshipPostFile {
   id: number;
-  file: IFileDB[];
+  file: IFileDB;
 }
 
 export interface IReaction extends IReactionDB {}
@@ -48,7 +48,7 @@ export interface IPost extends IPostDB {
 }
 
 export interface IDiscussion extends IDiscussionDB {
-  posts: Array<IPost> | [];
+  posts: IPost[];
 }
 
 export type DiscussionRouteQuizParams = {

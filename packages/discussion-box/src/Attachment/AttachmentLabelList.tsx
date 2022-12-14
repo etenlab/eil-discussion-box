@@ -7,7 +7,7 @@ import { IFileDB } from "../utils/types";
 
 type AttachmentLabelListProps = {
   attachments: IFileDB[];
-  onCancel: (id: number) => void;
+  onCancel: (attachment: IFileDB) => void;
 };
 
 export function AttachmentLabelList({
@@ -15,13 +15,13 @@ export function AttachmentLabelList({
   onCancel,
 }: AttachmentLabelListProps) {
   return (
-    <Stack gap={2} sx={{ display: "inline-flex" }}>
-      {attachments.map((attachment, index) => (
+    <Stack gap={2} direction="row" sx={{ display: "inline-flex" }}>
+      {attachments.map((attachment) => (
         <AttachmentLabel
           key={attachment.id}
           file={attachment}
           onCancel={() => {
-            onCancel(attachment.id);
+            onCancel(attachment);
           }}
         />
       ))}

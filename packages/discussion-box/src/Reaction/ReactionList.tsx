@@ -8,7 +8,7 @@ import { IReaction } from "../utils/types";
 import { Reaction } from "./Reaction";
 
 interface ReactionListProps {
-  reactions: Array<IReaction> | [];
+  reactions: IReaction[];
   openEmojiPicker(event: MouseEvent<HTMLButtonElement>): void;
   deleteReaction(reaction_id: number): void;
 }
@@ -27,7 +27,7 @@ export function ReactionList({
 
   return reactions?.length > 0 ? (
     <Stack direction="row" sx={{ flexWrap: "wrap" }}>
-      {reactions?.map((reaction) => (
+      {reactions.map((reaction) => (
         <Reaction
           key={reaction.id}
           {...reaction}

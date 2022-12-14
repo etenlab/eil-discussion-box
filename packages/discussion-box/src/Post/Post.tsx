@@ -12,6 +12,7 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { EmojiController, PostContainer, DateViewer } from "./styled";
 import { ReactionList } from "../Reaction";
 import { IPost } from "../utils/types";
+import { AttachmentList } from "../Attachment";
 
 interface PostProps extends IPost {
   openEmojiPicker(anchorEl: HTMLButtonElement, postId: number): void;
@@ -28,6 +29,7 @@ export function Post({
   quill_text,
   created_at,
   reactions,
+  files,
   deleteReaction,
   deletePost,
   openEmojiPicker,
@@ -51,6 +53,9 @@ export function Post({
   const created_at_date =
     typeof created_at === "string" ? new Date(created_at) : created_at;
 
+  console.log("attachment file ===> ", files);
+  const attachementListFiles = files.map(file => file.file);
+
   return (
     <PostContainer>
       <h3>
@@ -59,6 +64,8 @@ export function Post({
       </h3>
 
       <p ref={postElement}></p>
+
+      <AttachmentList files={attachementListFiles} />
 
       <ReactionList
         reactions={reactions}

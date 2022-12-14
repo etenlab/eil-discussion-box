@@ -1,7 +1,7 @@
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { useSubscription, useMutation, useLazyQuery } from "@apollo/client";
 
-import { client } from "src/graphql/discussionGraphql";
+import { client } from "../graphql/discussionGraphql";
 import {
   POST_CREATED_SUBSCRIPTION,
   POST_DELETED_SUBSCRIPTION,
@@ -14,7 +14,7 @@ import {
   CREATE_REACTION,
   DELETE_REACTION,
   GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW,
-} from "src/graphql/discussionQuery";
+} from "../graphql/discussionQuery";
 
 import type {
   IDiscussion,
@@ -40,8 +40,8 @@ interface UseGraphQLForDiscussion {
   reactQuill: {
     quillText: string;
     setQuillText: Dispatch<SetStateAction<string>>;
-    quillAttachment: IFileDB[];
-    setQuillAttachment: Dispatch<SetStateAction<IFileDB[]>>;
+    quillAttachments: IFileDB[];
+    setQuillAttachments: Dispatch<SetStateAction<IFileDB[]>>;
     quillPlain: string;
     setQuillPlain: Dispatch<SetStateAction<string>>;
     setPrevQuillText: Dispatch<SetStateAction<string | null>>;
@@ -68,7 +68,7 @@ export function useGraphQLForDiscussion({
   const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
   const [quillText, setQuillText] = useState<string>("");
   const [quillPlain, setQuillPlain] = useState<string>("");
-  const [quillAttachment, setQuillAttachment] = useState<IFileDB[]>([]);
+  const [quillAttachments, setQuillAttachments] = useState<IFileDB[]>([]);
   const [prevQuillText, setPrevQuillText] = useState<string | null>(null);
 
   const { data: discussionCreatedData, error: discussionCreatedError } =
@@ -302,8 +302,8 @@ export function useGraphQLForDiscussion({
       setQuillText,
       quillPlain,
       setQuillPlain,
-      quillAttachment,
-      setQuillAttachment,
+      quillAttachments,
+      setQuillAttachments,
       setPrevQuillText,
     },
     graphQLAPIs: {
