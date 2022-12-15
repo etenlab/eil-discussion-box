@@ -13,14 +13,14 @@ import { createClient } from "graphql-ws";
 import { typeDefs } from "./discussionQuery";
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:3001/graphql",
-  // uri: "http://10.1.2.2:8202/graphql",
+  // uri: "http://localhost:3001/graphql",
+  uri: "http://10.1.2.2:8202/graphql",
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: "ws://localhost:3001/graphql",
-    // url: "ws://10.1.2.2:8202/graphql",
+    // url: "ws://localhost:3001/graphql",
+    url: "ws://10.1.2.2:8202/graphql",
   })
 );
 

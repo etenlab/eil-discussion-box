@@ -185,7 +185,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     <>
       <Stack
         justifyContent="space-between"
-        sx={{ height: "calc(100vh - 170px)", padding: "0px 20px" }}
+        sx={{ height: "calc(100vh - 200px)", padding: "0px 20px" }}
       >
         {discussion ? (
           <DiscussionContainer ref={discussionRef}>
