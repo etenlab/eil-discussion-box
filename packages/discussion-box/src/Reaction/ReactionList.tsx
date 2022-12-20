@@ -1,15 +1,18 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useMemo } from 'react';
 
-import { Stack } from "@mui/material";
-import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
+import { Stack } from '@mui/material';
+import AddReactionOutlinedIcon from '@mui/icons-material/AddReactionOutlined';
 
-import { AddReactionIconButton } from "./styled";
-import { IReaction } from "../utils/types";
-import { Reaction } from "./Reaction";
+import { AddReactionIconButton } from './styled';
+import { IReaction } from '../utils/types';
+import { sortByContent } from '../utils/helpers';
+import { Reaction } from './Reaction';
 
 interface ReactionListProps {
   reactions: IReaction[];
+  user_id: number;
   openEmojiPicker(event: MouseEvent<HTMLButtonElement>): void;
+  addReaction(content: string): void;
   deleteReaction(reaction_id: number): void;
 }
 
@@ -18,20 +21,38 @@ interface ReactionListProps {
  */
 export function ReactionList({
   reactions,
+  user_id,
   openEmojiPicker,
+  addReaction,
   deleteReaction,
 }: ReactionListProps) {
   if (reactions?.length === 0) {
     return null;
   }
 
-  return reactions?.length > 0 ? (
-    <Stack direction="row" sx={{ flexWrap: "wrap" }}>
-      {reactions.map((reaction) => (
+  const handleclick = (content: string) => {
+    const reaction = reactions.find(
+      (reaction) =>
+        reaction.content === content && reaction.user_id === user_id,
+    );
+
+    if (reaction) {
+      deleteReaction(reaction.id);
+    } else {
+      addReaction(content);
+    }
+  };
+
+  const contentReactions = useMemo(() => sortByContent(reactions), [reactions]);
+
+  return contentReactions?.length > 0 ? (
+    <Stack direction="row" sx={{ flexWrap: 'wrap' }}>
+      {contentReactions.map((contentReaction) => (
         <Reaction
-          key={reaction.id}
-          {...reaction}
-          deleteReaction={deleteReaction}
+          key={contentReaction.content}
+          content={contentReaction.content}
+          reactions={contentReaction.reactions}
+          onClick={handleclick}
         />
       ))}
 
