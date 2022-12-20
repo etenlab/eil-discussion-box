@@ -2,6 +2,7 @@ import { useEffect, Dispatch, SetStateAction } from "react";
 import { useSubscription, useMutation } from "@apollo/client";
 
 import { discussionClient } from "../graphql/discussionGraphql";
+import { aggregationClient } from "../graphql/aggregationGraphql";
 import { CREATE_POST, DELETE_POST } from "../graphql/discussionQuery";
 import { discussionSubscriptionClient } from "../graphql/discussionSubscriptionGraphql";
 import {
@@ -15,6 +16,11 @@ import {
   recalcDiscusionWithNewPost,
   recalcDiscussionWithDeletedPostId,
 } from "../utils/helpers";
+
+const client =
+  process.env.REACT_APP_GRAPHQL_MODDE === "aggregation"
+    ? aggregationClient
+    : discussionClient;
 
 type UseGraphQLPostProps = {
   discussion: IDiscussion | null;
@@ -49,11 +55,11 @@ export function useGraphQLPost({
     createPost,
     { error: createPostError, loading: createPostLoading },
   ] = useMutation(CREATE_POST, {
-    client: discussionClient,
+    client,
   });
 
   const [deletePost, { error: deletePostError }] = useMutation(DELETE_POST, {
-    client: discussionClient,
+    client,
   });
 
   // Sync 'discussion' with 'postCreated' subscription
@@ -61,8 +67,6 @@ export function useGraphQLPost({
     if (postCreatedData === undefined || postCreatedError) {
       return;
     }
-
-    console.log("postCreatedData", postCreatedData);
 
     setDiscussion(
       (discussion) =>
@@ -77,7 +81,6 @@ export function useGraphQLPost({
       return;
     }
 
-    console.log("postDeletedData", postDeletedData);
     setDiscussion(
       (discussion) =>
         discussion &&

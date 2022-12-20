@@ -1,6 +1,6 @@
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
 
-import { IDiscussion, IFileDB } from "../utils/types";
+import { IDiscussion, IFile } from "../utils/types";
 
 import { useGraphQLDiscussion } from "./useGraphQLDiscussion";
 import { useGraphQLPost } from "./useGraphQLPost";
@@ -13,9 +13,9 @@ interface UseGraphQL {
   reactQuill: {
     quillText: string;
     setQuillText: Dispatch<SetStateAction<string>>;
-    quillAttachments: IFileDB[];
-    setQuillAttachments: Dispatch<SetStateAction<IFileDB[]>>;
-    setPrevAttachments: Dispatch<SetStateAction<IFileDB[]>>;
+    quillAttachments: IFile[];
+    setQuillAttachments: Dispatch<SetStateAction<IFile[]>>;
+    setPrevAttachments: Dispatch<SetStateAction<IFile[]>>;
     quillPlain: string;
     setQuillPlain: Dispatch<SetStateAction<string>>;
     setPrevQuillText: Dispatch<SetStateAction<string | null>>;
@@ -38,9 +38,9 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
   const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
   const [quillText, setQuillText] = useState<string>("");
   const [quillPlain, setQuillPlain] = useState<string>("");
-  const [quillAttachments, setQuillAttachments] = useState<IFileDB[]>([]);
+  const [quillAttachments, setQuillAttachments] = useState<IFile[]>([]);
   const [prevQuillText, setPrevQuillText] = useState<string | null>(null);
-  const [prevAttachments, setPrevAttachments] = useState<IFileDB[]>([]);
+  const [prevAttachments, setPrevAttachments] = useState<IFile[]>([]);
 
   const {
     loading: discussionLoading,

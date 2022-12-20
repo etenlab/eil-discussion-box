@@ -2,6 +2,7 @@ import { useEffect, Dispatch, SetStateAction } from "react";
 import { useSubscription, useMutation } from "@apollo/client";
 
 import { discussionClient } from "../graphql/discussionGraphql";
+import { aggregationClient } from "../graphql/aggregationGraphql";
 import { CREATE_REACTION, DELETE_REACTION } from "../graphql/discussionQuery";
 import { discussionSubscriptionClient } from "../graphql/discussionSubscriptionGraphql";
 import {
@@ -19,6 +20,11 @@ import {
   recalcDiscussionWithNewReation,
   recalcDiscusionWithDeletedReactionId,
 } from "../utils/helpers";
+
+const client =
+  process.env.REACT_APP_GRAPHQL_MODDE === "aggregation"
+    ? aggregationClient
+    : discussionClient;
 
 type UseGraphQLReactionProps = {
   discussion: IDiscussion | null;
@@ -54,12 +60,12 @@ export function useGraphQLReaction({
   const [
     createReaction,
     { error: createReactionError },
-  ] = useMutation(CREATE_REACTION, { client: discussionClient });
+  ] = useMutation(CREATE_REACTION, { client });
 
   const [
     deleteReaction,
     { error: deleteReactionError },
-  ] = useMutation(DELETE_REACTION, { client: discussionClient });
+  ] = useMutation(DELETE_REACTION, { client });
 
   // Sync 'discussion' with 'reactionCreated' subscription
   useEffect(() => {

@@ -2,6 +2,7 @@ import { useEffect, Dispatch, SetStateAction } from "react";
 import { useSubscription, useMutation, useLazyQuery } from "@apollo/client";
 
 import { discussionClient } from "../graphql/discussionGraphql";
+import { aggregationClient } from "../graphql/aggregationGraphql";
 import {
   GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW,
   CREATE_DISCUSSION,
@@ -10,6 +11,11 @@ import { discussionSubscriptionClient } from "../graphql/discussionSubscriptionG
 import { DISCUSSION_CREAETD_SUBSCRIPTION } from "../graphql/discussionSubscriptionQuery";
 
 import { IDiscussion, DiscussionCreatedData } from "../utils/types";
+
+const client =
+  process.env.REACT_APP_GRAPHQL_MODDE === "aggregation"
+    ? aggregationClient
+    : discussionClient;
 
 type UseGraphQLDiscussionProps = {
   table_name: string;
@@ -38,7 +44,7 @@ export function useGraphQLDiscussion({
   const [
     createDiscussion,
     { error: createDiscussionError, data: newDiscussionData },
-  ] = useMutation(CREATE_DISCUSSION, { client: discussionClient });
+  ] = useMutation(CREATE_DISCUSSION, { client });
 
   const [
     getDiscussionsByTableNameAndRow,
@@ -50,7 +56,7 @@ export function useGraphQLDiscussion({
     },
   ] = useLazyQuery(GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW, {
     fetchPolicy: "no-cache",
-    client: discussionClient,
+    client,
   });
 
   // Query for fetching Discussion data from server
