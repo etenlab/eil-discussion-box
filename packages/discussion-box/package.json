@@ -7,7 +7,9 @@
   "umd:main": "dist/discussion-box.umd.production.js",
   "module": "dist/discussion-box.esm.js",
   "typings": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "react": ">=16.8.0"
   },

@@ -5,7 +5,7 @@ declare module 'tiny-warning' {
 declare module 'react-lifecycles-compat' {
   import React from 'react';
   export function polyfill<P>(
-    Comp: React.ComponentType<P>
+    Comp: React.ComponentType<P>,
   ): React.ComponentType<P>;
 }
 
@@ -15,12 +15,12 @@ declare module 'deepmerge' {
   function deepmerge<T>(
     x: Partial<T>,
     y: Partial<T>,
-    options?: deepmerge.Options
+    options?: deepmerge.Options,
   ): T;
   function deepmerge<T1, T2>(
     x: T1,
     y: T2,
-    options?: deepmerge.Options
+    options?: deepmerge.Options,
   ): T1 & T2;
 
   namespace deepmerge {
@@ -44,7 +44,7 @@ declare module 'scheduler' {
 
   export function unstable_runWithPriority<T>(
     priorityLevel: number,
-    eventHandler: () => T
+    eventHandler: () => T,
   ): T;
 
   export interface Task {
@@ -58,7 +58,7 @@ declare module 'scheduler' {
   export function unstable_scheduleCallback(
     priorityLevel: number,
     callback: () => void,
-    options?: ScheduleCallbackOptions
+    options?: ScheduleCallbackOptions,
   ): Task;
 
   export function unstable_cancelCallback(task: Task): void;
