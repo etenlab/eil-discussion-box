@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const typeDefs = gql`
   extend input NewDiscussionInput {
@@ -89,39 +89,6 @@ export const CREATE_DISCUSSION = gql`
   }
 `;
 
-export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
-  subscription OnDiscussionCreated {
-    discussionCreated {
-      id
-      app
-      org
-      table_name
-      row
-      posts {
-        id
-        user_id
-        plain_text
-        quill_text
-        postgres_language
-        created_at
-        reactions {
-          id
-          user_id
-          content
-        }
-        files {
-          id
-          file {
-            id
-            filename
-            url
-          }
-        }
-      }
-    }
-  }
-`;
-
 export const DELETE_DISCUSSION = gql`
   mutation DeleteDiscussion($id: Int!) {
     deleteDiscussion(id: $id)
@@ -181,44 +148,9 @@ export const CREATE_POST = gql`
   }
 `;
 
-export const POST_CREATED_SUBSCRIPTION = gql`
-  subscription OnPostCreated($discussionId: Int!) {
-    postCreated(discussionId: $discussionId) {
-      id
-      discussion {
-        id
-      }
-      user_id
-      quill_text
-      plain_text
-      postgres_language
-      reactions {
-        id
-        user_id
-        content
-      }
-      files {
-        id
-        file {
-          id
-          filename
-          url
-        }
-      }
-      created_at
-    }
-  }
-`;
-
 export const DELETE_POST = gql`
   mutation DeletePost($id: Int!, $userId: Int!) {
     deletePost(id: $id, userId: $userId)
-  }
-`;
-
-export const POST_DELETED_SUBSCRIPTION = gql`
-  subscription OnPostDeleted {
-    postDeleted
   }
 `;
 
@@ -278,31 +210,9 @@ export const CREATE_REACTION = gql`
   }
 `;
 
-export const REACTION_CREATED_SUBSCRIPTION = gql`
-  subscription OnReactionCreated {
-    reactionCreated {
-      id
-      post {
-        id
-        discussion {
-          id
-        }
-      }
-      user_id
-      content
-    }
-  }
-`;
-
 export const DELETE_REACTION = gql`
   mutation DeleteReaction($id: Int!, $userId: Int!) {
     deleteReaction(id: $id, userId: $userId)
-  }
-`;
-
-export const REACTION_DELETED_SUBSCRIPTION = gql`
-  subscription OnReactionDeleted {
-    reactionDeleted
   }
 `;
 
