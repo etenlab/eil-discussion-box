@@ -7,12 +7,12 @@ import {
   EmojiCount,
   EmojiContainer,
 } from './styled';
-import { IReactionDB } from '../utils/types';
+import { IReaction } from '../utils/types';
 import { TooltipContent } from './TooltipContent';
 
 interface ReactionProps {
   content: string;
-  reactions: IReactionDB[];
+  reactions: IReaction[];
   onClick(content: string): void;
 }
 

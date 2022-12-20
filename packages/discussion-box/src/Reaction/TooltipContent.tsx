@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Emoji, EmojiStyle } from 'emoji-picker-react';
 
-import { IReactionDB } from '../utils/types';
+import { IReaction } from '../utils/types';
 import { EmojiBigWrapper, TooltipUserName } from './styled';
 
 type TooltipContentProps = {
-  reactions: IReactionDB[];
+  reactions: IReaction[];
   emoji: string;
 };
 

@@ -45,14 +45,12 @@ export const AddReactionIconButton = styled('span')({
   display: 'inline-flex',
   border: '1px solid #000',
   borderRadius: '4px',
-  padding: '0px 12px',
-  height: '25px',
-  lineHeight: '25px',
+  padding: '4px',
   background: '#fff',
-  color: '#fff',
+  color: '#000',
   '&: hover': {
-    background: '#fff',
-    borderColor: '#a9a9a9',
+    background: '#eee',
+    borderColor: '#222',
   },
   '& svg': {
     fontSize: '16px',
