@@ -1,7 +1,7 @@
-import React, { useState, useEffect, ChangeEventHandler } from "react";
-import { useMutation } from "@apollo/client";
-import { client } from "../graphql/discussionGraphql";
-import { CREATE_USER } from "../graphql/discussionQuery";
+import React, { useState, useEffect, ChangeEventHandler } from 'react';
+import { useMutation } from '@apollo/client';
+import { discussionClient } from '../graphql/discussionGraphql';
+import { CREATE_USER } from '../graphql/discussionQuery';
 
 type MockLoginFormProps = {
   mockUserId: number | null;
@@ -12,13 +12,13 @@ export function MockLoginForm({
   mockUserId,
   setMockUserId,
 }: MockLoginFormProps) {
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
   const [createUser, { loading, error, data }] = useMutation(CREATE_USER, {
-    client,
+    client: discussionClient,
   });
 
   useEffect(() => {
-    if (loading === false && error === undefined && data ) {
+    if (loading === false && error === undefined && data) {
       setMockUserId(data.createUser.user_id);
     }
   }, [data, loading, error, setMockUserId]);
@@ -42,14 +42,14 @@ export function MockLoginForm({
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "300px",
+        display: 'flex',
+        flexDirection: 'column',
+        width: '300px',
       }}
     >
       <input
         type="number"
-        value={mockUserId ? mockUserId : ""}
+        value={mockUserId ? mockUserId : ''}
         onChange={handleMockUserIdChange}
         placeholder="User Id"
       />

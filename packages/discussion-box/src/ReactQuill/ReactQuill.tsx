@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, KeyboardEvent } from "react";
-import "react-quill/dist/quill.snow.css";
-import ReactQuill from "react-quill";
+import React, { useRef, useEffect, KeyboardEvent } from 'react';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 
-import { AttachmentLabelList } from "../Attachment";
-import { BottomToolbar } from "./BottomToolbar";
-import { AttachmentListContainer } from "./styled";
-import { IFileDB } from "../utils/types";
+import { AttachmentLabelList } from '../Attachment';
+import { BottomToolbar } from './BottomToolbar';
+import { AttachmentListContainer } from './styled';
+import { IFileDB } from '../utils/types';
 
 type ReactQuillProps = {
   attachments: IFileDB[];
@@ -29,7 +29,7 @@ export function CustomReactQuill({
   useEffect(() => {
     if (ref.current) {
       const editor = ref.current.getEditor();
-      const keyboard = editor.getModule("keyboard");
+      const keyboard = editor.getModule('keyboard');
       keyboard.bindings[13].unshift({
         key: 13,
         handler: () => {
@@ -40,7 +40,7 @@ export function CustomReactQuill({
   }, []);
 
   const handleKeyEvent = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       sendToServer();
     }
   };
@@ -49,7 +49,7 @@ export function CustomReactQuill({
     value: string,
     _delta: any,
     _source: any,
-    editor: any
+    editor: any,
   ) => {
     const text = editor.getText(value);
     onChange(value, text);

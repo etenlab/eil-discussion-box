@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import {
   Stack,
@@ -7,23 +7,23 @@ import {
   Popover,
   CircularProgress,
   Backdrop,
-} from "@mui/material";
+} from '@mui/material';
 
-import { QuillContainer, DiscussionContainer } from "./styled";
+import { QuillContainer, DiscussionContainer } from './styled';
 
-import { ReactQuill } from "./ReactQuill";
-import { EmojiPicker } from "./EmojiPicker";
-import { EmojiClickData } from "emoji-picker-react";
+import { ReactQuill } from './ReactQuill';
+import { EmojiPicker } from './EmojiPicker';
+import { EmojiClickData } from 'emoji-picker-react';
 
 import {
   IPost,
   IFileDB,
   EmojiPopoverState,
   SnackbarState,
-} from "./utils/types";
+} from './utils/types';
 
-import { useGraphQLForDiscussion } from "./utils/useGraphQLForDiscussion";
-import { Post } from "./Post";
+import { useGraphQL } from './hooks/useGraphQL';
+import { Post } from './Post';
 
 type DiscussionProps = {
   userId: number;
@@ -51,15 +51,15 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
       setPrevQuillText,
     },
     graphQLAPIs: { createPost, deletePost, createReaction, deleteReaction },
-  } = useGraphQLForDiscussion({ table_name: tableName, row: rowId });
+  } = useGraphQL({ table_name: tableName, row: rowId });
   const [popoverState, setPopoverState] = useState<EmojiPopoverState>({
     anchorEl: null,
     postId: 0,
   });
   const [snackbarState, setSnackbarState] = useState<SnackbarState>({
     open: false,
-    message: "This is a success message!",
-    severity: "success",
+    message: 'This is a success message!',
+    severity: 'success',
   });
   const discussionRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +68,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
       setSnackbarState({
         open: true,
         message: `Oops, Something went to wrong, Check your network connection`,
-        severity: "error",
+        severity: 'error',
       });
     }
   }, [error]);
@@ -84,13 +84,13 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
 
   const handleCancelAttachment = (file: IFileDB) => {
     setQuillAttachments((attachments) =>
-      attachments.filter((attachment) => attachment.id !== file.id)
+      attachments.filter((attachment) => attachment.id !== file.id),
     );
   };
 
   const sendToServer = () => {
     if (
-      (quillText.length === 0 || quillText === "<p><br></p>") &&
+      (quillText.length === 0 || quillText === '<p><br></p>') &&
       quillAttachments.length === 0
     ) {
       return;
@@ -101,7 +101,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         post: {
           discussion_id: discussion!.id,
           plain_text: quillPlain,
-          postgres_language: "simple",
+          postgres_language: 'simple',
           quill_text: quillText,
           user_id: userId,
         },
@@ -111,7 +111,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
 
     setPrevQuillText(quillText);
     setPrevAttachments(quillAttachments);
-    setQuillText("");
+    setQuillText('');
     setQuillAttachments([]);
   };
 
@@ -136,7 +136,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         },
       });
     },
-    [createReaction]
+    [createReaction],
   );
 
   const handleDeleteReaction = (reaction_id: number) => {
@@ -154,7 +154,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
 
   const handleOpenEmojiPicker = (
     anchorEl: HTMLButtonElement,
-    postId: number
+    postId: number,
   ) => {
     setPopoverState({
       anchorEl,
@@ -176,7 +176,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         handleAddReaction(popoverState.postId, userId, emojiData.unified);
       }
     },
-    [popoverState, handleCloseEmojiPicker, handleAddReaction, userId]
+    [popoverState, handleCloseEmojiPicker, handleAddReaction, userId],
   );
 
   const openEmojiPicker = Boolean(popoverState?.anchorEl);
@@ -185,7 +185,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     <>
       <Stack
         justifyContent="space-between"
-        sx={{ height: "calc(100vh - 200px)", padding: "0px 20px" }}
+        sx={{ height: 'calc(100vh - 200px)', padding: '0px 20px' }}
       >
         {discussion ? (
           <DiscussionContainer ref={discussionRef}>
@@ -193,6 +193,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
               <Post
                 key={post.id}
                 {...post}
+                addReaction={handleAddReaction}
                 deleteReaction={handleDeleteReaction}
                 deletePost={handleDeletePost}
                 openEmojiPicker={handleOpenEmojiPicker}
@@ -222,11 +223,11 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         }
         onClose={handleCloseEmojiPicker}
         anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
+          vertical: 'top',
+          horizontal: 'right',
         }}
         sx={{
-          display: openEmojiPicker ? "inherit" : "none",
+          display: openEmojiPicker ? 'inherit' : 'none',
         }}
       >
         <EmojiPicker onEmojiClick={handleEmojiClick} />
@@ -237,23 +238,23 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         autoHideDuration={2000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
+          vertical: 'bottom',
+          horizontal: 'right',
         }}
         key="bottom-right"
       >
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbarState.severity}
-          sx={{ width: "100%" }}
+          sx={{ width: '100%' }}
         >
           {snackbarState.message}
         </Alert>
       </Snackbar>
 
-      <Backdrop sx={{ color: "#fff", zIndex: 1000 }} open={loading}>
+      <Backdrop sx={{ color: '#fff', zIndex: 1000 }} open={loading}>
         <Stack justifyContent="center">
-          <div style={{ margin: "auto" }}>
+          <div style={{ margin: 'auto' }}>
             <CircularProgress color="inherit" />
           </div>
           <div>LOADING</div>

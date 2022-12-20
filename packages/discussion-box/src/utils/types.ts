@@ -59,7 +59,7 @@ export type DiscussionRouteQuizParams = {
 export interface SnackbarState {
   open: boolean;
   message: string;
-  severity: "success" | "error" | "warning" | "info";
+  severity: 'success' | 'error' | 'warning' | 'info';
 }
 
 export interface EmojiPopoverState {

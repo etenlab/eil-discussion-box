@@ -1,15 +1,15 @@
-import React, { ChangeEventHandler, useEffect } from "react";
+import React, { ChangeEventHandler, useEffect } from 'react';
 
-import { Stack, IconButton } from "@mui/material";
+import { Stack, IconButton } from '@mui/material';
 
-import SendIcon from "@mui/icons-material/Send";
-import AddIcon from "@mui/icons-material/Add";
+import SendIcon from '@mui/icons-material/Send';
+import AddIcon from '@mui/icons-material/Add';
 
-import { useMutation } from "@apollo/client";
-import { client } from "../graphql/fileGraphql";
-import { UPLOAD_FILE } from "../graphql/fileQuery";
+import { useMutation } from '@apollo/client';
+import { client } from '../graphql/fileGraphql';
+import { UPLOAD_FILE } from '../graphql/fileQuery';
 
-import { IFileDB, UploadedFile } from "../utils/types";
+import { IFileDB, UploadedFile } from '../utils/types';
 
 type BottomToolbarType = {
   onSend: () => void;
@@ -21,7 +21,7 @@ export function BottomToolbar({ onSend, onAddAttachment }: BottomToolbarType) {
     UPLOAD_FILE,
     {
       client,
-    }
+    },
   );
 
   // Upload is successful then trigger onAddAttachment
@@ -47,9 +47,9 @@ export function BottomToolbar({ onSend, onAddAttachment }: BottomToolbarType) {
       direction="row"
       justifyContent="space-between"
       sx={{
-        border: "1px solid #CCCCCA",
-        borderTop: "none",
-        padding: "4px",
+        border: '1px solid #CCCCCA',
+        borderTop: 'none',
+        padding: '4px',
       }}
     >
       <IconButton color="primary" component="label" disabled={disabled}>

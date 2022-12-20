@@ -1,21 +1,19 @@
-import React, { useRef, useLayoutEffect, MouseEvent } from "react";
+import React, { useRef, useLayoutEffect, MouseEvent } from 'react';
 
-import { 
-  Button,
-  IconButton
-} from "@mui/material";
+import { Button, IconButton } from '@mui/material';
 
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import AddReactionOutlinedIcon from '@mui/icons-material/AddReactionOutlined';
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 
-import { EmojiController, PostContainer, DateViewer } from "./styled";
-import { ReactionList } from "../Reaction";
-import { IPost } from "../utils/types";
-import { AttachmentList } from "../Attachment";
+import { EmojiController, PostContainer, DateViewer } from './styled';
+import { ReactionList } from '../Reaction';
+import { IPost } from '../utils/types';
+import { AttachmentList } from '../Attachment';
 
 interface PostProps extends IPost {
   openEmojiPicker(anchorEl: HTMLButtonElement, postId: number): void;
+  addReaction(post_id: number, user_id: number, content: string): void;
   deleteReaction(reaction_id: number): void;
   deletePost(post_id: number): void;
 }
@@ -30,6 +28,7 @@ export function Post({
   created_at,
   reactions,
   files,
+  addReaction,
   deleteReaction,
   deletePost,
   openEmojiPicker,
@@ -50,10 +49,14 @@ export function Post({
     openEmojiPicker(event.currentTarget, id);
   };
 
-  const created_at_date =
-    typeof created_at === "string" ? new Date(created_at) : created_at;
+  const handleAddReaction = (content: string) => {
+    addReaction(id, user_id, content);
+  };
 
-  const attachementListFiles = files.map(file => file.file);
+  const created_at_date =
+    typeof created_at === 'string' ? new Date(created_at) : created_at;
+
+  const attachementListFiles = files.map((file) => file.file);
 
   return (
     <PostContainer>
@@ -67,8 +70,10 @@ export function Post({
       <AttachmentList files={attachementListFiles} />
 
       <ReactionList
+        user_id={user_id}
         reactions={reactions}
         openEmojiPicker={handleOpenEmojiPicker}
+        addReaction={handleAddReaction}
         deleteReaction={deleteReaction}
       />
 
