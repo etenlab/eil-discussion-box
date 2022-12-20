@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import { Stack } from "@mui/material";
+import { Stack } from '@mui/material';
 
-import { Attachment } from "./Attachment";
-import { IFileDB } from "../utils/types";
+import { Attachment } from './Attachment';
+import { IFileDB } from '../utils/types';
 
 type AttachmentListProps = {
   files: IFileDB[];

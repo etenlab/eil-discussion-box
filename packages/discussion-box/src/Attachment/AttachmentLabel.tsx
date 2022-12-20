@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { AttachmentContainer } from "./styled";
+import { AttachmentContainer } from './styled';
 
-import { IFileDB } from "../utils/types";
+import { IFileDB } from '../utils/types';
 
 type AttachmentLabelProps = {
   file: IFileDB;

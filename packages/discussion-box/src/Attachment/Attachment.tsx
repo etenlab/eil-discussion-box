@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import { Button } from "@mui/material";
+import { Button } from '@mui/material';
 
-import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
-import { IFileDB } from "../utils/types";
+import { IFileDB } from '../utils/types';
 
 type AttachmentProps = {
   file: IFileDB;
@@ -13,7 +13,7 @@ type AttachmentProps = {
 
 export function Attachment({ file }: AttachmentProps) {
   const handleDownload = () => {
-    let hiddenElement = document.createElement("a");
+    let hiddenElement = document.createElement('a');
     hiddenElement.href = encodeURI(file.url);
     hiddenElement.download = file.filename;
     hiddenElement.click();

@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import { Stack } from "@mui/material";
+import { Stack } from '@mui/material';
 
-import { AttachmentLabel } from "./AttachmentLabel";
-import { IFileDB } from "../utils/types";
+import { AttachmentLabel } from './AttachmentLabel';
+import { IFileDB } from '../utils/types';
 
 type AttachmentLabelListProps = {
   attachments: IFileDB[];
@@ -15,7 +15,7 @@ export function AttachmentLabelList({
   onCancel,
 }: AttachmentLabelListProps) {
   return (
-    <Stack gap={2} direction="row" sx={{ display: "inline-flex" }}>
+    <Stack gap={2} direction="row" sx={{ display: 'inline-flex' }}>
       {attachments.map((attachment) => (
         <AttachmentLabel
           key={attachment.id}
