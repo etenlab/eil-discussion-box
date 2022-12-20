@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { useHistory, useParams } from "react-router";
+import React, { useState } from 'react';
+import { useHistory, useParams } from 'react-router';
 
-import { Stack, Button } from "@mui/material";
+import { Stack, Button } from '@mui/material';
 
 import {
   Discussion,
   DiscussionHeader,
   MockLoginForm,
   DiscussionRouteQuizParams,
-} from "@eten-lab/discussion-box";
+} from '@eten-lab/discussion-box';
 
 function existsAll(
   userId: number | null,
   tableName: string | null,
-  rowId: number | null
+  rowId: number | null,
 ) {
   if (userId !== null && tableName !== null && rowId !== null) {
     return true;
@@ -32,13 +32,13 @@ export function DiscussionPage() {
   const [mockUserId, setMockUserId] = useState<number | null>(null);
 
   const tableName = table_name || null;
-  const rowId = (row && row.length > 0) ? +row : null;
+  const rowId = row && row.length > 0 ? +row : null;
 
   return (
     <>
       <Stack
         justifyContent="space-between"
-        sx={{ height: "100vh", padding: "0px 20px" }}
+        sx={{ height: '100vh', padding: '0px 20px' }}
       >
         <DiscussionHeader>
           <Stack
@@ -65,7 +65,11 @@ export function DiscussionPage() {
         />
 
         {existsAll(mockUserId, tableName, rowId) && (
-          <Discussion userId={mockUserId!} tableName={tableName!} rowId={rowId!} />
+          <Discussion
+            userId={mockUserId!}
+            tableName={tableName!}
+            rowId={rowId!}
+          />
         )}
       </Stack>
     </>
