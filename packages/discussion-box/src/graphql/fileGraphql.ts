@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
 
-export const client = new ApolloClient({
+export const fileClient = new ApolloClient({
   link: createUploadLink({
     uri: process.env.REACT_APP_FILE_API,
   }),

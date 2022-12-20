@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
   subscription OnDiscussionCreated($table_name: String!, $row: Int!) {
@@ -11,6 +11,7 @@ export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
       posts {
         id
         user_id
+        discussion_id
         plain_text
         quill_text
         postgres_language
@@ -18,6 +19,7 @@ export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
         reactions {
           id
           user_id
+          post_id
           content
         }
         files {
@@ -37,15 +39,14 @@ export const POST_CREATED_SUBSCRIPTION = gql`
   subscription OnPostCreated($discussionId: Int!) {
     postCreated(discussionId: $discussionId) {
       id
-      discussion {
-        id
-      }
+      discussion_id
       user_id
       quill_text
       plain_text
       postgres_language
       reactions {
         id
+        post_id
         user_id
         content
       }
@@ -72,12 +73,7 @@ export const REACTION_CREATED_SUBSCRIPTION = gql`
   subscription OnReactionCreated($discussionId: Int!) {
     reactionCreated(discussionId: $discussionId) {
       id
-      post {
-        id
-        discussion {
-          id
-        }
-      }
+      post_id
       user_id
       content
     }

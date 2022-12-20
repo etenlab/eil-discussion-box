@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const typeDefs = gql`
   extend input NewDiscussionInput {
@@ -34,6 +34,7 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
       posts {
         id
         user_id
+        discussion_id
         plain_text
         quill_text
         postgres_language
@@ -41,6 +42,7 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
         reactions {
           id
           user_id
+          post_id
           content
         }
         files {
@@ -67,6 +69,7 @@ export const CREATE_DISCUSSION = gql`
       posts {
         id
         user_id
+        discussion_id
         plain_text
         quill_text
         postgres_language
@@ -74,6 +77,7 @@ export const CREATE_DISCUSSION = gql`
         reactions {
           id
           user_id
+          post_id
           content
         }
         files {
@@ -99,14 +103,22 @@ export const GET_POSTS_BY_DISCUSSION_ID = gql`
   query GetPosts($discussionId: Int!) {
     postsByDiscussionId(discussionId: $discussionId) {
       id
-      discussion {
-        id
-        app
-        org
-        table_name
-        row
-      }
+      discussion_id
       user_id
+      reactions {
+        id
+        user_id
+        post_id
+        content
+      }
+      files {
+        id
+        file {
+          id
+          filename
+          url
+        }
+      }
       quill_text
       plain_text
       postgres_language
@@ -119,13 +131,7 @@ export const CREATE_POST = gql`
   mutation CreatePost($post: NewPostInput!, $files: [Int]!) {
     createPost(newPostData: $post, files: $files) {
       id
-      discussion {
-        id
-        app
-        org
-        table_name
-        row
-      }
+      discussion_id
       user_id
       quill_text
       plain_text
@@ -133,6 +139,7 @@ export const CREATE_POST = gql`
       reactions {
         id
         user_id
+        post_id
         content
       }
       files {
@@ -164,21 +171,7 @@ export const GET_REACTION_BY_POST_ID = gql`
   query GetReactionsByPostId($postId: Int!) {
     reactionsByPostId(postId: $postId) {
       id
-      post {
-        id
-        discussion {
-          id
-          app
-          org
-          table_name
-          row
-        }
-        user_id
-        quill_text
-        plain_text
-        postgres_language
-        created_at
-      }
+      post_id
       user_id
       content
     }
@@ -189,21 +182,7 @@ export const CREATE_REACTION = gql`
   mutation CreateReaction($reaction: NewReactionInput!) {
     createReaction(newReactionData: $reaction) {
       id
-      post {
-        id
-        discussion {
-          id
-          app
-          org
-          table_name
-          row
-        }
-        user_id
-        quill_text
-        plain_text
-        postgres_language
-        created_at
-      }
+      post_id
       user_id
       content
     }
