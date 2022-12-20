@@ -5,10 +5,10 @@ import { Button } from '@mui/material';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
-import { IFileDB } from '../utils/types';
+import { IFile } from '../utils/types';
 
 type AttachmentProps = {
-  file: IFileDB;
+  file: IFile;
 };
 
 export function Attachment({ file }: AttachmentProps) {

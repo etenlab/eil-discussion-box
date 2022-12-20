@@ -2,10 +2,10 @@ import React from 'react';
 
 import { AttachmentContainer } from './styled';
 
-import { IFileDB } from '../utils/types';
+import { IFile } from '../utils/types';
 
 type AttachmentLabelProps = {
-  file: IFileDB;
+  file: IFile;
   onCancel: () => void;
 };
 

@@ -4,33 +4,14 @@ export type APIReturnType<T = any> = {
   data?: T;
 };
 
-export interface IDiscussionDB {
+export interface IReaction {
   id: number;
-  app?: number;
-  org?: number;
-  table_name: string;
-  row: number;
-}
-
-export interface IPostDB {
-  id: number;
-  discussion: IDiscussionDB;
-  files: IRelationshipPostFile[];
-  user_id: number;
-  quill_text: string;
-  plain_text: string;
-  postgres_language: string;
-  created_at: Date;
-}
-
-export interface IReactionDB {
-  id: number;
-  post: IPostDB;
+  post_id: number;
   user_id: number;
   content: string;
 }
 
-export interface IFileDB {
+export interface IFile {
   id: number;
   filename: string;
   url: string;
@@ -38,16 +19,27 @@ export interface IFileDB {
 
 export interface IRelationshipPostFile {
   id: number;
-  file: IFileDB;
+  file: IFile;
 }
 
-export interface IReaction extends IReactionDB {}
-
-export interface IPost extends IPostDB {
-  reactions: Array<IReaction> | [];
+export interface IPost {
+  id: number;
+  user_id: number;
+  discussion_id: number;
+  quill_text: string;
+  plain_text: string;
+  postgres_language: string;
+  files: IRelationshipPostFile[];
+  reactions: IReaction[];
+  created_at: Date;
 }
 
-export interface IDiscussion extends IDiscussionDB {
+export interface IDiscussion {
+  id: number;
+  app?: number;
+  org?: number;
+  table_name: string;
+  row: number;
   posts: IPost[];
 }
 
@@ -59,12 +51,12 @@ export type DiscussionRouteQuizParams = {
 export interface SnackbarState {
   open: boolean;
   message: string;
-  severity: 'success' | 'error' | 'warning' | 'info';
+  severity: "success" | "error" | "warning" | "info";
 }
 
 export interface EmojiPopoverState {
   anchorEl: Element | null;
-  postId: number;
+  post: IPost | null;
 }
 
 export interface DiscussionCreatedData {
@@ -88,5 +80,5 @@ export interface ReactionDeletedData {
 }
 
 export interface UploadedFile {
-  uploadFile: IFileDB;
+  uploadFile: IFile;
 }

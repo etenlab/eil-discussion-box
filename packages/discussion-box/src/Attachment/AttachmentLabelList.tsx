@@ -3,11 +3,11 @@ import React from 'react';
 import { Stack } from '@mui/material';
 
 import { AttachmentLabel } from './AttachmentLabel';
-import { IFileDB } from '../utils/types';
+import { IFile } from '../utils/types';
 
 type AttachmentLabelListProps = {
-  attachments: IFileDB[];
-  onCancel: (attachment: IFileDB) => void;
+  attachments: IFile[];
+  onCancel: (attachment: IFile) => void;
 };
 
 export function AttachmentLabelList({

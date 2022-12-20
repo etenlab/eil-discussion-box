@@ -3,10 +3,10 @@ import React from 'react';
 import { Stack } from '@mui/material';
 
 import { Attachment } from './Attachment';
-import { IFileDB } from '../utils/types';
+import { IFile } from '../utils/types';
 
 type AttachmentListProps = {
-  files: IFileDB[];
+  files: IFile[];
 };
 
 export function AttachmentList({ files }: AttachmentListProps) {
