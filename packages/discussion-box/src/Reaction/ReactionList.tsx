@@ -1,12 +1,11 @@
 import React, { MouseEvent, useMemo } from "react";
 
 import { Stack } from "@mui/material";
-import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 
-import { AddReactionIconButton } from "./styled";
 import { IReaction } from "../utils/types";
 import { sortByContent } from "../utils/helpers";
 import { Reaction } from "./Reaction";
+import { AddReactionButton } from "./AddReactionButton";
 
 interface ReactionListProps {
   reactions: IReaction[];
@@ -34,9 +33,7 @@ export function ReactionList({
           onClick={onClickReaction}
         />
       ))}
-      <AddReactionIconButton onClick={openEmojiPicker}>
-        <SentimentSatisfiedAltIcon />
-      </AddReactionIconButton>
+      <AddReactionButton openEmojiPicker={openEmojiPicker} />
     </Stack>
   );
 }

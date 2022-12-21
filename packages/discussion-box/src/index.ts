@@ -1,4 +1,8 @@
-export { Discussion } from './Discussion';
-export { DiscussionRouteQuizParams } from './utils/types';
-export { DiscussionHeader } from './styled';
-export { MockLoginForm } from './MockLoginForm';
+export { Discussion } from "./Discussion";
+
+export { DiscussionHeader } from "./styled";
+export { MockLoginForm } from "./MockLoginForm";
+
+export * from "./utils/types";
+
+export * from "./ReactQuill";

@@ -1,20 +1,20 @@
-import React, { useRef, useLayoutEffect, MouseEvent } from 'react';
+import React, { useRef, useLayoutEffect, MouseEvent } from "react";
 
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Stack } from "@mui/material";
 
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import AddReactionOutlinedIcon from '@mui/icons-material/AddReactionOutlined';
-import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
+import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 
-import { EmojiController, PostContainer, DateViewer } from './styled';
-import { ReactionList } from '../Reaction';
-import { IPost } from '../utils/types';
-import { AttachmentList } from '../Attachment';
+import { EmojiController, PostContainer, PostText, DateViewer } from "./styled";
+import { ReactionList } from "../Reaction";
+import { IPost } from "../utils/types";
+import { AttachmentList } from "../Attachment";
 
-interface PostProps extends IPost {
-  openEmojiPicker(anchorEl: HTMLButtonElement, postId: number): void;
-  addReaction(post_id: number, user_id: number, content: string): void;
-  deleteReaction(reaction_id: number): void;
+interface PostProps {
+  post: IPost;
+  openEmojiPicker(anchorEl: HTMLButtonElement, post: IPost): void;
+  onClickReaction(post: IPost, content: string): void;
   deletePost(post_id: number): void;
 }
 
@@ -22,17 +22,13 @@ interface PostProps extends IPost {
  * This component basically renders Post, ReactionList.
  */
 export function Post({
-  id,
-  user_id,
-  quill_text,
-  created_at,
-  reactions,
-  files,
-  addReaction,
-  deleteReaction,
+  post,
+  onClickReaction,
   deletePost,
   openEmojiPicker,
 }: PostProps) {
+  const { id, user_id, quill_text, created_at, reactions, files } = post;
+
   const postElement = useRef<HTMLParagraphElement>(null);
 
   useLayoutEffect(() => {
@@ -46,15 +42,15 @@ export function Post({
   };
 
   const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
-    openEmojiPicker(event.currentTarget, id);
+    openEmojiPicker(event.currentTarget, post);
   };
 
-  const handleAddReaction = (content: string) => {
-    addReaction(id, user_id, content);
-  };
+  const handleClickReaction = (content: string) => {
+    onClickReaction(post, content);
+  }
 
   const created_at_date =
-    typeof created_at === 'string' ? new Date(created_at) : created_at;
+    typeof created_at === "string" ? new Date(created_at) : created_at;
 
   const attachementListFiles = files.map((file) => file.file);
 
@@ -65,17 +61,17 @@ export function Post({
         <DateViewer>{created_at_date.toDateString()}</DateViewer>
       </h3>
 
-      <p ref={postElement}></p>
+      <Stack gap="10px">
+        <PostText ref={postElement} />
 
-      <AttachmentList files={attachementListFiles} />
+        <AttachmentList files={attachementListFiles} />
 
-      <ReactionList
-        user_id={user_id}
-        reactions={reactions}
-        openEmojiPicker={handleOpenEmojiPicker}
-        addReaction={handleAddReaction}
-        deleteReaction={deleteReaction}
-      />
+        <ReactionList
+          reactions={reactions}
+          openEmojiPicker={handleOpenEmojiPicker}
+          onClickReaction={handleClickReaction}
+        />
+      </Stack>
 
       <EmojiController className="emoji-controller">
         <Button

@@ -5,12 +5,12 @@ import ReactQuill from 'react-quill';
 import { AttachmentLabelList } from '../Attachment';
 import { BottomToolbar } from './BottomToolbar';
 import { AttachmentListContainer } from './styled';
-import { IFileDB } from '../utils/types';
+import { IFile } from '../utils/types';
 
 type ReactQuillProps = {
-  attachments: IFileDB[];
-  onAddAttachment: (file: IFileDB) => void;
-  onCancelAttachment: (file: IFileDB) => void;
+  attachments: IFile[];
+  onAddAttachment: (file: IFile) => void;
+  onCancelAttachment: (file: IFile) => void;
   value: string;
   sendToServer(): void;
   onChange(quill: string, plain: string): void;

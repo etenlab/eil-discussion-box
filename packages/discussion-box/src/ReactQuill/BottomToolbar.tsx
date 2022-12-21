@@ -1,19 +1,28 @@
-import React, { ChangeEventHandler, useEffect } from 'react';
+import React, { ChangeEventHandler, useEffect } from "react";
 
-import { Stack, IconButton } from '@mui/material';
+import { Stack, IconButton } from "@mui/material";
 
-import SendIcon from '@mui/icons-material/Send';
-import AddIcon from '@mui/icons-material/Add';
+import SendIcon from "@mui/icons-material/Send";
+import AddIcon from "@mui/icons-material/Add";
 
-import { useMutation } from '@apollo/client';
-import { client } from '../graphql/fileGraphql';
-import { UPLOAD_FILE } from '../graphql/fileQuery';
+import { useMutation } from "@apollo/client";
 
-import { IFileDB, UploadedFile } from '../utils/types';
+import { fileClient } from "../graphql/fileGraphql";
+// import { aggregationClient } from "../graphql/aggregationGraphql";
+import { UPLOAD_FILE } from "../graphql/fileQuery";
+
+import { IFile, UploadedFile } from "../utils/types";
+
+// const client =
+//   process.env.REACT_APP_GRAPHQL_MODDE === "aggregation"
+//     ? aggregationClient
+//     : fileClient;
+
+const client = fileClient;
 
 type BottomToolbarType = {
   onSend: () => void;
-  onAddAttachment: (file: IFileDB) => void;
+  onAddAttachment: (file: IFile) => void;
 };
 
 export function BottomToolbar({ onSend, onAddAttachment }: BottomToolbarType) {
@@ -21,7 +30,7 @@ export function BottomToolbar({ onSend, onAddAttachment }: BottomToolbarType) {
     UPLOAD_FILE,
     {
       client,
-    },
+    }
   );
 
   // Upload is successful then trigger onAddAttachment
@@ -47,9 +56,9 @@ export function BottomToolbar({ onSend, onAddAttachment }: BottomToolbarType) {
       direction="row"
       justifyContent="space-between"
       sx={{
-        border: '1px solid #CCCCCA',
-        borderTop: 'none',
-        padding: '4px',
+        border: "1px solid #CCCCCA",
+        borderTop: "none",
+        padding: "4px",
       }}
     >
       <IconButton color="primary" component="label" disabled={disabled}>
