@@ -1,8 +1,8 @@
-import { IDiscussion, IPost, IReaction } from './types';
+import { IDiscussion, IPost, IReaction } from "./types";
 
 export function recalcDiscusionWithNewPost(
   discussion: IDiscussion,
-  newPost: IPost,
+  newPost: IPost
 ): IDiscussion {
   if (discussion.posts.find((post: IPost) => post.id === newPost.id)) {
     return discussion;
@@ -16,7 +16,7 @@ export function recalcDiscusionWithNewPost(
 
 export function recalcDiscussionWithDeletedPostId(
   discussion: IDiscussion,
-  postId: number,
+  postId: number
 ): IDiscussion {
   return {
     ...discussion,
@@ -26,15 +26,11 @@ export function recalcDiscussionWithDeletedPostId(
 
 export function recalcDiscussionWithNewReation(
   discussion: IDiscussion,
-  newReaction: IReaction,
+  newReaction: IReaction
 ): IDiscussion {
-  const discussion_id = newReaction.post.discussion.id;
-  const post_id = newReaction.post.id;
+  // const discussion_id = newReaction.post.discussion.id;
+  const post_id = newReaction.post_id;
   const reaction_id = newReaction.id;
-
-  if (discussion.id !== discussion_id) {
-    return discussion;
-  }
 
   return {
     ...discussion,
@@ -57,14 +53,14 @@ export function recalcDiscussionWithNewReation(
 
 export function recalcDiscusionWithDeletedReactionId(
   discussion: IDiscussion,
-  reactionId: number,
+  reactionId: number
 ): IDiscussion {
   return {
     ...discussion,
     posts: discussion.posts.map((post) => ({
       ...post,
       reactions: post.reactions.filter(
-        (reaction) => reaction.id !== reactionId,
+        (reaction) => reaction.id !== reactionId
       ),
     })),
   };
