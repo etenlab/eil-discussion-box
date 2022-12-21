@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import {
   Stack,
@@ -7,23 +7,18 @@ import {
   Popover,
   CircularProgress,
   Backdrop,
-} from '@mui/material';
+} from "@mui/material";
 
-import { QuillContainer, DiscussionContainer } from './styled';
+import { QuillContainer, DiscussionContainer } from "./styled";
 
-import { ReactQuill } from './ReactQuill';
-import { EmojiPicker } from './EmojiPicker';
-import { EmojiClickData } from 'emoji-picker-react';
+import { ReactQuill } from "./ReactQuill";
+import { EmojiPicker } from "./EmojiPicker";
+import { EmojiClickData } from "emoji-picker-react";
 
-import {
-  IPost,
-  IFileDB,
-  EmojiPopoverState,
-  SnackbarState,
-} from './utils/types';
+import { IPost, IFile, EmojiPopoverState, SnackbarState } from "./utils/types";
 
-import { useGraphQL } from './hooks/useGraphQL';
-import { Post } from './Post';
+import { useGraphQL } from "./hooks/useGraphQL";
+import { Post } from "./Post";
 
 type DiscussionProps = {
   userId: number;
@@ -52,15 +47,18 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     },
     graphQLAPIs: { createPost, deletePost, createReaction, deleteReaction },
   } = useGraphQL({ table_name: tableName, row: rowId });
+
   const [popoverState, setPopoverState] = useState<EmojiPopoverState>({
     anchorEl: null,
-    postId: 0,
+    post: null,
   });
+
   const [snackbarState, setSnackbarState] = useState<SnackbarState>({
     open: false,
-    message: 'This is a success message!',
-    severity: 'success',
+    message: "This is a success message!",
+    severity: "success",
   });
+
   const discussionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,29 +66,38 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
       setSnackbarState({
         open: true,
         message: `Oops, Something went to wrong, Check your network connection`,
-        severity: 'error',
+        severity: "error",
       });
     }
   }, [error]);
 
-  const handleQuillChange = (quill: string, plain: string) => {
-    setQuillText(quill);
-    setQuillPlain(plain);
-  };
+  const handleQuillChange = useCallback(
+    (quill: string, plain: string) => {
+      setQuillText(quill);
+      setQuillPlain(plain);
+    },
+    [setQuillText, setQuillPlain]
+  );
 
-  const handleAddAttachment = (file: IFileDB) => {
-    setQuillAttachments((attachments) => [...attachments, file]);
-  };
+  const handleAddAttachment = useCallback(
+    (file: IFile) => {
+      setQuillAttachments((attachments) => [...attachments, file]);
+    },
+    [setQuillAttachments]
+  );
 
-  const handleCancelAttachment = (file: IFileDB) => {
-    setQuillAttachments((attachments) =>
-      attachments.filter((attachment) => attachment.id !== file.id),
-    );
-  };
+  const handleCancelAttachment = useCallback(
+    (file: IFile) => {
+      setQuillAttachments((attachments) =>
+        attachments.filter((attachment) => attachment.id !== file.id)
+      );
+    },
+    [setQuillAttachments]
+  );
 
   const sendToServer = () => {
     if (
-      (quillText.length === 0 || quillText === '<p><br></p>') &&
+      (quillText.length === 0 || quillText === "<p><br></p>") &&
       quillAttachments.length === 0
     ) {
       return;
@@ -101,7 +108,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         post: {
           discussion_id: discussion!.id,
           plain_text: quillPlain,
-          postgres_language: 'simple',
+          postgres_language: "simple",
           quill_text: quillText,
           user_id: userId,
         },
@@ -111,72 +118,113 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
 
     setPrevQuillText(quillText);
     setPrevAttachments(quillAttachments);
-    setQuillText('');
+    setQuillText("");
     setQuillAttachments([]);
   };
 
-  const handleDeletePost = (post_id: number) => {
-    deletePost({
-      variables: {
-        id: post_id,
-        userId: userId,
-      },
-    });
-  };
+  const handleDeletePost = useCallback(
+    (post_id: number) => {
+      deletePost({
+        variables: {
+          id: post_id,
+          userId: userId,
+        },
+      });
+    },
+    [userId, deletePost]
+  );
 
   const handleAddReaction = useCallback(
-    (post_id: number, user_id: number, content: string) => {
+    (post_id: number, content: string) => {
       createReaction({
         variables: {
           reaction: {
             post_id,
             content,
-            user_id,
+            user_id: userId,
           },
         },
       });
     },
-    [createReaction],
+    [userId, createReaction]
   );
 
-  const handleDeleteReaction = (reaction_id: number) => {
-    deleteReaction({
-      variables: {
-        id: reaction_id,
-        userId,
-      },
-    });
-  };
+  const handleDeleteReaction = useCallback(
+    (reaction_id: number) => {
+      deleteReaction({
+        variables: {
+          id: reaction_id,
+          userId,
+        },
+      });
+    },
+    [userId, deleteReaction]
+  );
 
-  const handleCloseSnackbar = () => {
+  const handleCloseSnackbar = useCallback(() => {
     setSnackbarState((state) => ({ ...state, open: false }));
-  };
+  }, []);
 
-  const handleOpenEmojiPicker = (
-    anchorEl: HTMLButtonElement,
-    postId: number,
-  ) => {
-    setPopoverState({
-      anchorEl,
-      postId,
-    });
-  };
+  const handleOpenEmojiPicker = useCallback(
+    (anchorEl: HTMLButtonElement, post: IPost) => {
+      setPopoverState({
+        anchorEl,
+        post,
+      });
+    },
+    []
+  );
 
   const handleCloseEmojiPicker = useCallback(() => {
     setPopoverState({
       anchorEl: null,
-      postId: 0,
+      post: null,
     });
   }, []);
 
   const handleEmojiClick = useCallback(
     (emojiData: EmojiClickData) => {
-      if (popoverState) {
+      const { post } = popoverState;
+
+      if (post) {
+        const reaction = post.reactions.find(
+          (reaction) =>
+            reaction.content === emojiData.unified &&
+            reaction.user_id === userId
+        );
+
+        if (reaction) {
+          handleDeleteReaction(reaction.id);
+        } else {
+          handleAddReaction(post.id, emojiData.unified);
+        }
+
         handleCloseEmojiPicker();
-        handleAddReaction(popoverState.postId, userId, emojiData.unified);
       }
     },
-    [popoverState, handleCloseEmojiPicker, handleAddReaction, userId],
+    [
+      popoverState,
+      userId,
+      handleCloseEmojiPicker,
+      handleAddReaction,
+      handleDeleteReaction,
+    ]
+  );
+
+  const handleClickReaction = useCallback(
+    (post: IPost, content: string) => {
+      const reaction = post.reactions.find(
+        (reaction) =>
+          reaction.content === content && reaction.user_id === userId
+      );
+
+      if (reaction) {
+        handleDeleteReaction(reaction.id);
+      } else {
+        handleAddReaction(post.id, content);
+      }
+    },
+    [handleDeleteReaction, handleAddReaction, userId]
   );
 
   const openEmojiPicker = Boolean(popoverState?.anchorEl);
@@ -185,16 +233,15 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     <>
       <Stack
         justifyContent="space-between"
-        sx={{ height: 'calc(100vh - 200px)', padding: '0px 20px' }}
+        sx={{ height: "calc(100vh - 200px)", padding: "0px 20px" }}
       >
         {discussion ? (
           <DiscussionContainer ref={discussionRef}>
             {discussion!.posts!.map((post: IPost) => (
               <Post
                 key={post.id}
-                {...post}
-                addReaction={handleAddReaction}
-                deleteReaction={handleDeleteReaction}
+                post={post}
+                onClickReaction={handleClickReaction}
                 deletePost={handleDeletePost}
                 openEmojiPicker={handleOpenEmojiPicker}
               />
@@ -223,11 +270,11 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         }
         onClose={handleCloseEmojiPicker}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         sx={{
-          display: openEmojiPicker ? 'inherit' : 'none',
+          display: openEmojiPicker ? "inherit" : "none",
         }}
       >
         <EmojiPicker onEmojiClick={handleEmojiClick} />
@@ -238,23 +285,23 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         autoHideDuration={2000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
+          vertical: "bottom",
+          horizontal: "right",
         }}
         key="bottom-right"
       >
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbarState.severity}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snackbarState.message}
         </Alert>
       </Snackbar>
 
-      <Backdrop sx={{ color: '#fff', zIndex: 1000 }} open={loading}>
+      <Backdrop sx={{ color: "#fff", zIndex: 1000 }} open={loading}>
         <Stack justifyContent="center">
-          <div style={{ margin: 'auto' }}>
+          <div style={{ margin: "auto" }}>
             <CircularProgress color="inherit" />
           </div>
           <div>LOADING</div>
