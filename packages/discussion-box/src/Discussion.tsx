@@ -9,7 +9,7 @@ import {
   Backdrop,
 } from "@mui/material";
 
-import { QuillContainer, DiscussionContainer } from "./styled";
+import { QuillContainer } from "./styled";
 
 import { ReactQuill } from "./ReactQuill";
 import { EmojiPicker } from "./EmojiPicker";
@@ -18,7 +18,7 @@ import { EmojiClickData } from "emoji-picker-react";
 import { IPost, IFile, EmojiPopoverState, SnackbarState } from "./utils/types";
 
 import { useGraphQL } from "./hooks/useGraphQL";
-import { Post } from "./Post";
+import { PostList } from "./Post";
 
 type DiscussionProps = {
   userId: number;
@@ -59,7 +59,7 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     severity: "success",
   });
 
-  const discussionRef = useRef<HTMLDivElement>(null);
+  const discussionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (error) {
@@ -133,6 +133,14 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     },
     [userId, deletePost]
   );
+
+  const handleEditPost = useCallback((post_id: number) => {
+    console.log(post_id);
+  }, []);
+
+  const handleReplyPost = useCallback((post_id: number) => {
+    console.log(post_id);
+  }, []);
 
   const handleAddReaction = useCallback(
     (post_id: number, content: string) => {
@@ -236,17 +244,15 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         sx={{ height: "calc(100vh - 200px)", padding: "0px 20px" }}
       >
         {discussion ? (
-          <DiscussionContainer ref={discussionRef}>
-            {discussion!.posts!.map((post: IPost) => (
-              <Post
-                key={post.id}
-                post={post}
-                onClickReaction={handleClickReaction}
-                deletePost={handleDeletePost}
-                openEmojiPicker={handleOpenEmojiPicker}
-              />
-            ))}
-          </DiscussionContainer>
+          <PostList
+            ref={discussionRef}
+            posts={discussion.posts}
+            onClickReaction={handleClickReaction}
+            openEmojiPicker={handleOpenEmojiPicker}
+            editPost={handleEditPost}
+            deletePost={handleDeletePost}
+            replyPost={handleReplyPost}
+          />
         ) : null}
 
         <QuillContainer>
