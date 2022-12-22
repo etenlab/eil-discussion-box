@@ -1,20 +1,24 @@
-import React, { useRef, useLayoutEffect, MouseEvent } from "react";
+import React, { useState, useRef, useLayoutEffect, MouseEvent } from "react";
 
-import { Button, IconButton, Stack } from "@mui/material";
+import { Stack, Popover } from "@mui/material";
 
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import EditIcon from "@mui/icons-material/Edit";
+import ReplyIcon from "@mui/icons-material/Reply";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-import { EmojiController, PostContainer, PostText, DateViewer } from "./styled";
+import { PostText } from "./styled";
 import { ReactionList } from "../Reaction";
 import { IPost } from "../utils/types";
 import { AttachmentList } from "../Attachment";
+import { PostHeader } from "./PostHeader";
+import { ActionList } from "./ActionList";
 
 interface PostProps {
   post: IPost;
   openEmojiPicker(anchorEl: HTMLButtonElement, post: IPost): void;
   onClickReaction(post: IPost, content: string): void;
+  editPost(post_id: number): void;
+  replyPost(post_id: number): void;
   deletePost(post_id: number): void;
 }
 
@@ -24,11 +28,13 @@ interface PostProps {
 export function Post({
   post,
   onClickReaction,
-  deletePost,
   openEmojiPicker,
+  editPost,
+  replyPost,
+  deletePost,
 }: PostProps) {
   const { id, user_id, quill_text, created_at, reactions, files } = post;
-
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const postElement = useRef<HTMLParagraphElement>(null);
 
   useLayoutEffect(() => {
@@ -37,29 +43,66 @@ export function Post({
     }
   }, [quill_text]);
 
-  const handleDeletePostClick = () => {
-    deletePost(id);
-  };
-
   const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
     openEmojiPicker(event.currentTarget, post);
   };
 
   const handleClickReaction = (content: string) => {
     onClickReaction(post, content);
-  }
+  };
+
+  const attachementListFiles = files.map((file) => file.file);
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleEditPost = () => {
+    editPost(id);
+  };
+  const handleDeletePost = () => {
+    deletePost(id);
+  };
+  const handleReplyPost = () => {
+    replyPost(id);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   const created_at_date =
     typeof created_at === "string" ? new Date(created_at) : created_at;
 
-  const attachementListFiles = files.map((file) => file.file);
+  const open = Boolean(anchorEl);
+
+
+  const actions = [
+    {
+      name: "Edit Post",
+      action: handleEditPost,
+      icon: <EditIcon sx={{ fontSize: 16 }} />,
+    },
+    {
+      name: "Reply",
+      action: handleReplyPost,
+      icon: <ReplyIcon sx={{ fontSize: 16 }} />,
+    },
+    {
+      name: "Delete Post",
+      action: handleDeletePost,
+      icon: <DeleteIcon sx={{ fontSize: 16, color: "red" }} />,
+    },
+  ];
 
   return (
-    <PostContainer>
-      <h3>
-        {user_id}
-        <DateViewer>{created_at_date.toDateString()}</DateViewer>
-      </h3>
+    <>
+      <PostHeader
+        username={`${user_id}`}
+        avatar=""
+        date={created_at_date}
+        openActionList={handlePopoverOpen}
+      />
 
       <Stack gap="10px">
         <PostText ref={postElement} />
@@ -73,23 +116,21 @@ export function Post({
         />
       </Stack>
 
-      <EmojiController className="emoji-controller">
-        <Button
-          onClick={handleOpenEmojiPicker}
-          startIcon={<AddReactionOutlinedIcon />}
-        >
-          React
-        </Button>
-        <Button
-          onClick={handleDeletePostClick}
-          startIcon={<DeleteOutlineIcon />}
-        >
-          Delete
-        </Button>
-        <IconButton>
-          <MoreVertOutlinedIcon />
-        </IconButton>
-      </EmojiController>
-    </PostContainer>
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handlePopoverClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <ActionList actions={actions} />
+      </Popover>
+    </>
   );
 }
