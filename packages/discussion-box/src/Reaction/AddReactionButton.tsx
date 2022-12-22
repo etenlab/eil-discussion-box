@@ -4,12 +4,18 @@ import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt
 import { AddReactionIconButton } from "./styled";
 
 type AddReacitonButtoonProps = {
-  openEmojiPicker(event: MouseEvent<HTMLButtonElement>): void;
+  /**
+   * Click Event handler, 
+   */
+  onClick(event: MouseEvent<HTMLButtonElement>): void;
 }
 
-export function AddReactionButton({ openEmojiPicker }: AddReacitonButtoonProps) {
+/**
+ * Primary UI component to open emoji picker in the discussion-box
+ */
+export function AddReactionButton({ onClick }: AddReacitonButtoonProps) {
   return (
-    <AddReactionIconButton onClick={openEmojiPicker}>
+    <AddReactionIconButton onClick={onClick}>
       <SentimentSatisfiedAltIcon />
     </AddReactionIconButton>
   )

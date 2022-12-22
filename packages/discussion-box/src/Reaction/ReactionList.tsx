@@ -8,13 +8,23 @@ import { Reaction } from "./Reaction";
 import { AddReactionButton } from "./AddReactionButton";
 
 interface ReactionListProps {
+  /**
+   * Lists of reactions about specific post
+   */
   reactions: IReaction[];
+  /**
+   * Event handler to control emoji picker
+   */
   openEmojiPicker(event: MouseEvent<HTMLButtonElement>): void;
+  /**
+   * Event handler to control Reaction component's click event.
+   * @param content This is a unified emoji string
+   */
   onClickReaction(content: string): void;
 }
 
 /**
- * This component render Reactions with from unified strings.
+ * List of Reactions
  */
 export function ReactionList({
   reactions,
@@ -33,7 +43,7 @@ export function ReactionList({
           onClick={onClickReaction}
         />
       ))}
-      <AddReactionButton openEmojiPicker={openEmojiPicker} />
+      <AddReactionButton onClick={openEmojiPicker} />
     </Stack>
   );
 }
