@@ -1,6 +1,6 @@
-import React, { ForwardedRef, forwardRef } from "react";
+import React, { ForwardedRef, forwardRef, Fragment } from "react";
 
-import { Stack } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 
 import { IPost } from "../utils/types";
 
@@ -37,8 +37,8 @@ function PostListPure(
         overflowY: "auto",
       }}
     >
-      {posts.map((post) => (
-        <>
+      {posts.map((post, index) => (
+        <Fragment key={post.id}>
           <Post
             key={post.id}
             post={post}
@@ -48,8 +48,10 @@ function PostListPure(
             replyPost={replyPost}
             deletePost={deletePost}
           />
-          <hr />
-        </>
+          {index !== posts.length - 1 && (
+            <Divider sx={{ borderColor: "#000", marginTop: "10px" }} />
+          )}
+        </Fragment>
       ))}
     </Stack>
   );
