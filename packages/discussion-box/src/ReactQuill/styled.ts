@@ -1,8 +1,49 @@
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 
-export const AttachmentListContainer = styled('div')({
-  overflowX: 'auto',
-  border: '1px solid #CCCCCA',
-  borderTop: 'none',
-  padding: '4px',
+export const AttachmentListContainer = styled("div")({
+  display: "flex",
+  gap: "10px",
+  alignItems: "center",
+  marginBottom: "-8px",
+  overflowX: "auto",
+  border: "1px solid #000",
+  borderBottom: "none",
+  borderRadius: "8px 8px 0 0",
+  padding: "16px",
+});
+
+export const QuillContainer = styled("div")({
+  position: "relative",
+  "& .ql-toolbar": {
+    borderRadius: "8px 8px 0 0",
+    border: "1px solid #000",
+    "& span.ql-formats": {
+      paddingRight: "10px",
+      borderRight: "1px solid #555",
+      "&:last-child": {
+        border: "none",
+      },
+    },
+  },
+  "& .ql-container": {
+    maxHeight: "500px",
+    overflowY: "auto",
+    borderRadius: "0 0 8px 8px",
+    border: "1px solid #000",
+    "& .ql-editor": {
+      margin: "auto 50px",
+    },
+  },
+});
+
+export const AttachmentButtonContainer = styled("div")({
+  position: "absolute",
+  top: "50px",
+  left: "16px",
+});
+
+export const ReactionButtonContainer = styled("div")({
+  position: "absolute",
+  top: "50px",
+  right: "16px",
 });
