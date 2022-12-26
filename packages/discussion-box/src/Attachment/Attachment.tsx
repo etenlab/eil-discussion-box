@@ -1,32 +1,64 @@
-import React from 'react';
+import React, { ReactElement } from "react";
 
-import { Button } from '@mui/material';
+import { IconButton, Stack } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import { AttachmentContainer } from "./styled";
+import { FileGeneral } from "./FileGeneral";
+import { FileImage } from './FileImage';
+import { FileVideo } from './FileVideo';
+import { FileAudio } from './FileAudio';
 
-import { IFile } from '../utils/types';
+import { IFile } from "../utils/types";
+import { getMimeType } from "../utils/helpers";
+
+type WrapperProps = {
+  onRemove(): void;
+  children: JSX.Element;
+};
+
+export function Wrapper({ onRemove, children }: WrapperProps) {
+  return (
+    <Stack direction="row" alignItems="flex-start">
+      <AttachmentContainer>{children}</AttachmentContainer>
+      <IconButton onClick={onRemove}>
+        <CloseIcon />
+      </IconButton>
+    </Stack>
+  );
+}
 
 type AttachmentProps = {
   file: IFile;
+  onRemove(): void;
 };
 
-export function Attachment({ file }: AttachmentProps) {
-  const handleDownload = () => {
-    let hiddenElement = document.createElement('a');
-    hiddenElement.href = encodeURI(file.url);
-    hiddenElement.download = file.filename;
-    hiddenElement.click();
-  };
+export function Attachment({ file, onRemove }: AttachmentProps) {
+  const mime = getMimeType(file.file_type);
+
+  let content: ReactElement;
+  switch (mime) {
+    case "video": {
+      content = <FileVideo src={file.file_url} file_type={file.file_type || ""}  mode="view"/>;
+      break;
+    }
+    case "audio": {
+      content = <FileAudio src={file.file_url} file_type={file.file_type || ""}  mode="view"/>;
+      break;
+    }
+    case "image": {
+      content = <FileImage src={file.file_url} file_name={file.file_name}  mode="view"/>;
+      break;
+    }
+    default: {
+      content = <FileGeneral file={file} mode="view" />;
+      break;
+    }
+  }
 
   return (
-    <Button
-      onClick={handleDownload}
-      variant="outlined"
-      startIcon={<InsertDriveFileOutlinedIcon />}
-      endIcon={<FileDownloadOutlinedIcon />}
-    >
-      {file.filename}
-    </Button>
-  );
+    <Wrapper onRemove={onRemove}>
+      {content}
+    </Wrapper>
+  )
 }

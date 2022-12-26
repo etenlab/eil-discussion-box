@@ -2,22 +2,22 @@ import React from 'react';
 
 import { Stack } from '@mui/material';
 
-import { AttachmentLabel } from './AttachmentLabel';
+import { QuillAttachment } from './QuillAttachment';
 import { IFile } from '../utils/types';
 
-type AttachmentLabelListProps = {
+type QuillAttachmentListProps = {
   attachments: IFile[];
   onCancel: (attachment: IFile) => void;
 };
 
-export function AttachmentLabelList({
+export function QuillAttachmentList({
   attachments,
   onCancel,
-}: AttachmentLabelListProps) {
+}: QuillAttachmentListProps) {
   return (
     <Stack gap={2} direction="row" sx={{ display: 'inline-flex' }}>
       {attachments.map((attachment) => (
-        <AttachmentLabel
+        <QuillAttachment
           key={attachment.id}
           file={attachment}
           onCancel={() => {

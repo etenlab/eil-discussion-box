@@ -13,7 +13,7 @@ export function AttachmentList({ files }: AttachmentListProps) {
   return (
     <Stack gap={2}>
       {files.map((file) => (
-        <Attachment key={file.id} file={file} />
+        <Attachment key={file.id} file={file} onRemove={() => { }} />
       ))}
     </Stack>
   );

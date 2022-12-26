@@ -1,2 +1,2 @@
-export { AttachmentList } from './AttachmentList';
-export { AttachmentLabelList } from './AttachmentLabelList';
+export { AttachmentList } from "./AttachmentList";
+export { QuillAttachmentList } from "./QuillAttachmentList";
