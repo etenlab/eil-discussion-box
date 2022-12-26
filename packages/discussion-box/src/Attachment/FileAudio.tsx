@@ -9,9 +9,11 @@ export function FileAudio({
   file_type: string;
   mode: "view" | "quill";
 }) {
+
   return (
     <audio controls>
       <source src={src} type={file_type} />
+      {mode}
       Your browser does not support the audio element.
     </audio>
   );

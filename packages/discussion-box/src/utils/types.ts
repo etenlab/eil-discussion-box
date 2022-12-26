@@ -13,8 +13,10 @@ export interface IReaction {
 
 export interface IFile {
   id: number;
-  filename: string;
-  url: string;
+  file_name: string;
+  file_type: string | null;
+  file_size: number;
+  file_url: string;
 }
 
 export interface IRelationshipPostFile {
@@ -57,6 +59,7 @@ export interface SnackbarState {
 export interface EmojiPopoverState {
   anchorEl: Element | null;
   post: IPost | null;
+  mode: "quill" | "react" | null;
 }
 
 export interface DiscussionCreatedData {
@@ -82,3 +85,9 @@ export interface ReactionDeletedData {
 export interface UploadedFile {
   uploadFile: IFile;
 }
+
+export const FileMimeTypes = {
+  Video: "video",
+  Audio: "audio",
+  Image: "image",
+};

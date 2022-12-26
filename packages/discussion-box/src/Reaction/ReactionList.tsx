@@ -5,7 +5,7 @@ import { Stack } from "@mui/material";
 import { IReaction } from "../utils/types";
 import { sortByContent } from "../utils/helpers";
 import { Reaction } from "./Reaction";
-import { AddReactionButton } from "./AddReactionButton";
+import { AddReactionButton } from "../common/AddReactionButton";
 
 interface ReactionListProps {
   /**

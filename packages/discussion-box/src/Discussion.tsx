@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  CSSProperties,
+} from "react";
 
 import {
   Stack,
@@ -8,8 +14,6 @@ import {
   CircularProgress,
   Backdrop,
 } from "@mui/material";
-
-import { QuillContainer } from "./styled";
 
 import { ReactQuill } from "./ReactQuill";
 import { EmojiPicker } from "./EmojiPicker";
@@ -24,18 +28,26 @@ type DiscussionProps = {
   userId: number;
   tableName: string;
   rowId: number;
+  style: CSSProperties | undefined;
 };
 
 /**
  * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
  * The responsibility is to control Discussion Page and interact with server such as fetching, saving, deleting discussion data.
  */
-export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
+export function Discussion({
+  userId,
+  tableName,
+  rowId,
+  style,
+}: DiscussionProps) {
   const {
     error,
     loading,
     discussion,
     reactQuill: {
+      editor,
+      setEditor,
       quillText,
       setQuillText,
       quillAttachments,
@@ -45,12 +57,19 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
       setQuillPlain,
       setPrevQuillText,
     },
-    graphQLAPIs: { createPost, deletePost, createReaction, deleteReaction },
+    graphQLAPIs: {
+      createPost,
+      updatePost,
+      deletePost,
+      createReaction,
+      deleteReaction,
+    },
   } = useGraphQL({ table_name: tableName, row: rowId });
 
   const [popoverState, setPopoverState] = useState<EmojiPopoverState>({
     anchorEl: null,
     post: null,
+    mode: null,
   });
 
   const [snackbarState, setSnackbarState] = useState<SnackbarState>({
@@ -97,28 +116,46 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
 
   const sendToServer = () => {
     if (
-      (quillText.length === 0 || quillText === "<p><br></p>") &&
+      (quillText === undefined ||
+        quillText?.length === 0 ||
+        quillText === "<p><br></p>") &&
       quillAttachments.length === 0
     ) {
       return;
     }
 
-    createPost({
-      variables: {
-        post: {
-          discussion_id: discussion!.id,
-          plain_text: quillPlain,
-          postgres_language: "simple",
-          quill_text: quillText,
-          user_id: userId,
+    if (editor) {
+      updatePost({
+        variables: {
+          post: {
+            discussion_id: discussion!.id,
+            plain_text: quillPlain,
+            postgres_language: "simple",
+            quill_text: quillText,
+            user_id: userId,
+          },
+          id: editor,
         },
-        files: quillAttachments.map((file) => file.id),
-      },
-    });
+      });
+    } else {
+      createPost({
+        variables: {
+          post: {
+            discussion_id: discussion!.id,
+            plain_text: quillPlain,
+            postgres_language: "simple",
+            quill_text: quillText,
+            user_id: userId,
+          },
+          files: quillAttachments.map((file) => file.id),
+        },
+      });
+    }
 
+    setEditor(null);
     setPrevQuillText(quillText);
     setPrevAttachments(quillAttachments);
-    setQuillText("");
+    setQuillText(undefined);
     setQuillAttachments([]);
   };
 
@@ -134,9 +171,12 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     [userId, deletePost]
   );
 
-  const handleEditPost = useCallback((post_id: number) => {
-    console.log(post_id);
-  }, []);
+  const handleEditPost = useCallback(
+    (post_id: number) => {
+      setEditor(post_id);
+    },
+    [setEditor]
+  );
 
   const handleReplyPost = useCallback((post_id: number) => {
     console.log(post_id);
@@ -173,27 +213,35 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
     setSnackbarState((state) => ({ ...state, open: false }));
   }, []);
 
-  const handleOpenEmojiPicker = useCallback(
+  const handleOpenEmojiPickerByReact = useCallback(
     (anchorEl: HTMLButtonElement, post: IPost) => {
       setPopoverState({
         anchorEl,
         post,
+        mode: "react",
       });
     },
     []
   );
 
+  const handleOpenEmojiPickerByQuill = useCallback((anchorEl: Element) => {
+    setPopoverState({
+      anchorEl,
+      post: null,
+      mode: "quill",
+    });
+  }, []);
+
   const handleCloseEmojiPicker = useCallback(() => {
     setPopoverState({
       anchorEl: null,
       post: null,
+      mode: null,
     });
   }, []);
 
-  const handleEmojiClick = useCallback(
-    (emojiData: EmojiClickData) => {
-      const { post } = popoverState;
-
+  const handleEmojiClickByReact = useCallback(
+    (post: IPost | null, emojiData: EmojiClickData) => {
       if (post) {
         const reaction = post.reactions.find(
           (reaction) =>
@@ -206,16 +254,35 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
         } else {
           handleAddReaction(post.id, emojiData.unified);
         }
-
-        handleCloseEmojiPicker();
       }
+    },
+    [handleDeleteReaction, handleAddReaction, userId]
+  );
+
+  const handleEmojiClickByQuill = useCallback(
+    (emojiData: EmojiClickData) => {
+      setQuillText((quillText) => `${quillText}${emojiData.emoji}`);
+    },
+    [setQuillText]
+  );
+
+  const handleEmojiClick = useCallback(
+    (emojiData: EmojiClickData) => {
+      if (popoverState.mode === "quill") {
+        handleEmojiClickByQuill(emojiData);
+      }
+
+      if (popoverState.mode === "react") {
+        handleEmojiClickByReact(popoverState.post, emojiData);
+      }
+
+      handleCloseEmojiPicker();
     },
     [
       popoverState,
-      userId,
+      handleEmojiClickByQuill,
+      handleEmojiClickByReact,
       handleCloseEmojiPicker,
-      handleAddReaction,
-      handleDeleteReaction,
     ]
   );
 
@@ -239,32 +306,28 @@ export function Discussion({ userId, tableName, rowId }: DiscussionProps) {
 
   return (
     <>
-      <Stack
-        justifyContent="space-between"
-        sx={{ height: "calc(100vh - 200px)", padding: "0px 20px" }}
-      >
+      <Stack justifyContent="space-between" gap="20px" style={style}>
         {discussion ? (
           <PostList
             ref={discussionRef}
             posts={discussion.posts}
             onClickReaction={handleClickReaction}
-            openEmojiPicker={handleOpenEmojiPicker}
+            openEmojiPicker={handleOpenEmojiPickerByReact}
             editPost={handleEditPost}
             deletePost={handleDeletePost}
             replyPost={handleReplyPost}
           />
         ) : null}
 
-        <QuillContainer>
-          <ReactQuill
-            attachments={quillAttachments}
-            onAddAttachment={handleAddAttachment}
-            onCancelAttachment={handleCancelAttachment}
-            value={quillText}
-            sendToServer={sendToServer}
-            onChange={handleQuillChange}
-          />
-        </QuillContainer>
+        <ReactQuill
+          attachments={quillAttachments}
+          onAddAttachment={handleAddAttachment}
+          onCancelAttachment={handleCancelAttachment}
+          value={quillText}
+          sendToServer={sendToServer}
+          onChange={handleQuillChange}
+          openEmojiPicker={handleOpenEmojiPickerByQuill}
+        />
       </Stack>
 
       <Popover

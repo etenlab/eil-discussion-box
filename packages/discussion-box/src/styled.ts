@@ -1,10 +1,5 @@
 import { styled } from "@mui/material/styles";
 
-export const QuillContainer = styled("div")({
-  width: "100%",
-  background: "#fff",
-});
-
 export const DiscussionHeader = styled("h3")({
   width: "100%",
   margin: 0,

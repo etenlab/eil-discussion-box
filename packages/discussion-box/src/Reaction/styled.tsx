@@ -41,25 +41,6 @@ export const EmojiBigWrapper = styled('div')({
   background: '#fff',
 });
 
-export const AddReactionIconButton = styled('span')({
-  display: 'inline-flex',
-  border: '1px solid #000',
-  borderRadius: '4px',
-  padding: '4px',
-  background: '#fff',
-  color: '#000',
-  '&: hover': {
-    background: '#eee',
-    borderColor: '#222',
-  },
-  '& svg': {
-    fontSize: '16px',
-  },
-  fontFamily: 'Inter',
-  fontStyle: 'normal',
-  fontWeight: '600',
-});
-
 export const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
