@@ -26,8 +26,10 @@ export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
           id
           file {
             id
-            filename
-            url
+            file_name
+            file_type
+            file_size
+            file_url
           }
         }
       }
@@ -54,8 +56,10 @@ export const POST_CREATED_SUBSCRIPTION = gql`
         id
         file {
           id
-          filename
-          url
+          file_name
+          file_type
+          file_size
+          file_url
         }
       }
       created_at

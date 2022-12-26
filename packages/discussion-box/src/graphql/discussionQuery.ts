@@ -49,8 +49,10 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
           id
           file {
             id
-            filename
-            url
+            file_name
+            file_type
+            file_size
+            file_url
           }
         }
       }
@@ -84,8 +86,10 @@ export const CREATE_DISCUSSION = gql`
           id
           file {
             id
-            filename
-            url
+            file_name
+            file_type
+            file_size
+            file_url
           }
         }
       }
@@ -115,8 +119,10 @@ export const GET_POSTS_BY_DISCUSSION_ID = gql`
         id
         file {
           id
-          filename
-          url
+          file_name
+          file_type
+          file_size
+          file_url
         }
       }
       quill_text
@@ -146,8 +152,40 @@ export const CREATE_POST = gql`
         id
         file {
           id
-          filename
-          url
+          file_name
+          file_type
+          file_size
+          file_url
+        }
+      }
+      created_at
+    }
+  }
+`;
+
+export const UPDATE_POST = gql`
+  mutation UpdatePost($post: NewPostInput!, $id: Int!) {
+    updatePost(data: $post, id: $id) {
+      id
+      discussion_id
+      user_id
+      quill_text
+      plain_text
+      postgres_language
+      reactions {
+        id
+        user_id
+        post_id
+        content
+      }
+      files {
+        id
+        file {
+          id
+          file_name
+          file_type
+          file_size
+          file_url
         }
       }
       created_at
