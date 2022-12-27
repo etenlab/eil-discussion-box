@@ -5,15 +5,21 @@ import { Stack } from '@mui/material';
 import { Attachment } from './Attachment';
 import { IFile } from '../utils/types';
 
-type AttachmentListProps = {
-  files: IFile[];
+type RelationshipFile = {
+  id: number;
+  file: IFile;
 };
 
-export function AttachmentList({ files }: AttachmentListProps) {
+type AttachmentListProps = {
+  files: RelationshipFile[];
+  onRemove(id: number): void;
+};
+
+export function AttachmentList({ files, onRemove }: AttachmentListProps) {
   return (
     <Stack gap={2}>
       {files.map((file) => (
-        <Attachment key={file.id} file={file} onRemove={() => { }} />
+        <Attachment key={file.id} file={file.file} onRemove={() => { onRemove(file.id) }} />
       ))}
     </Stack>
   );
