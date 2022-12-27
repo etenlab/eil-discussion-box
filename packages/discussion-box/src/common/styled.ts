@@ -18,3 +18,22 @@ export const AddButtonWrapper = styled("span")({
   fontStyle: "normal",
   fontWeight: "600",
 });
+
+export const SendButtonWrapper = styled("span")({
+  display: "inline-flex",
+  border: "1px solid #c2c2c",
+  borderRadius: "4px",
+  padding: "5px",
+  background: "#006762",
+  color: "#fff",
+  "&: hover": {
+    background: "#007A71",
+    borderColor: "#222",
+  },
+  "& svg": {
+    fontSize: "16px",
+  },
+  fontFamily: "Inter",
+  fontStyle: "normal",
+  fontWeight: "600",
+});

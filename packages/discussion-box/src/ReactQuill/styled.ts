@@ -47,3 +47,9 @@ export const ReactionButtonContainer = styled("div")({
   top: "50px",
   right: "16px",
 });
+
+export const ReplyButtonContainer = styled("div")({
+  position: "absolute",
+  top: "10px",
+  right: "16px",
+});

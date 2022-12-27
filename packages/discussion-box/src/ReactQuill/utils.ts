@@ -29,3 +29,22 @@ export const formats = [
   "code",
   "code-block",
 ];
+
+export const Skeletons = {
+  normal: {
+    width: "200px",
+    height: "70px",
+  },
+  image: {
+    width: "70px",
+    height: "70px",
+  },
+  video: {
+    width: "70px",
+    height: "70px",
+  },
+  audio: {
+    width: "300px",
+    height: "70px",
+  },
+};
