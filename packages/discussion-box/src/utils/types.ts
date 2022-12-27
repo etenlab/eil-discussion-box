@@ -70,6 +70,10 @@ export interface PostCreatedData {
   postCreated: IPost;
 }
 
+export interface PostUpdatedData {
+  postUpdated: IPost;
+}
+
 export interface PostDeletedData {
   postDeleted: number;
 }

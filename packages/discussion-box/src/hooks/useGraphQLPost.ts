@@ -7,18 +7,25 @@ import {
   CREATE_POST,
   UPDATE_POST,
   DELETE_POST,
+  DELETE_ATTACHMENT,
 } from "../graphql/discussionQuery";
 import { discussionSubscriptionClient } from "../graphql/discussionSubscriptionGraphql";
 import {
   POST_CREATED_SUBSCRIPTION,
   POST_DELETED_SUBSCRIPTION,
-  // POST_UPDATED_SUBSCRIPTION,
+  POST_UPDATED_SUBSCRIPTION,
 } from "../graphql/discussionSubscriptionQuery";
 
-import { IDiscussion, PostCreatedData, PostDeletedData } from "../utils/types";
+import {
+  IDiscussion,
+  PostCreatedData,
+  PostUpdatedData,
+  PostDeletedData,
+} from "../utils/types";
 
 import {
   recalcDiscusionWithNewPost,
+  recalcDiscusionWithUpdatedPost,
   recalcDiscussionWithDeletedPostId,
 } from "../utils/helpers";
 
@@ -38,6 +45,15 @@ export function useGraphQLPost({
 }: UseGraphQLPostProps) {
   const { data: postCreatedData, error: postCreatedError } =
     useSubscription<PostCreatedData>(POST_CREATED_SUBSCRIPTION, {
+      variables: {
+        discussionId: discussion !== null ? discussion.id : -1,
+      },
+      skip: discussion === null,
+      client: discussionSubscriptionClient,
+    });
+
+  const { data: postUpdatedData, error: postUpdatedError } =
+    useSubscription<PostUpdatedData>(POST_UPDATED_SUBSCRIPTION, {
       variables: {
         discussionId: discussion !== null ? discussion.id : -1,
       },
@@ -68,6 +84,13 @@ export function useGraphQLPost({
     client,
   });
 
+  const [deleteAttachment, { error: deleteAttachmentError }] = useMutation(
+    DELETE_ATTACHMENT,
+    {
+      client,
+    }
+  );
+
   // Sync 'discussion' with 'postCreated' subscription
   useEffect(() => {
     if (postCreatedData === undefined || postCreatedError) {
@@ -82,9 +105,17 @@ export function useGraphQLPost({
   }, [postCreatedData, postCreatedError, setDiscussion]);
 
   // Sync 'discussion' with 'postUpdated' subscription
-  // useEffect(() => {
+  useEffect(() => {
+    if (postUpdatedData === undefined || postUpdatedError) {
+      return;
+    }
 
-  // }, [postU]);
+    setDiscussion(
+      (discussion) =>
+        discussion &&
+        recalcDiscusionWithUpdatedPost(discussion, postUpdatedData.postUpdated)
+    );
+  }, [postUpdatedData, postUpdatedError, setDiscussion]);
 
   // Sync 'discussion' with 'postDeleted' subscription
   useEffect(() => {
@@ -108,7 +139,8 @@ export function useGraphQLPost({
       !!postDeletedError ||
       !!createPostError ||
       !!deletePostError ||
-      !!updatePostError,
+      !!updatePostError ||
+      !!deleteAttachmentError,
     createPostError: !!createPostError,
     updatePostError: !!updatePostError,
     createPostLoading: !!createPostLoading,
@@ -117,6 +149,7 @@ export function useGraphQLPost({
       createPost,
       updatePost,
       deletePost,
+      deleteAttachment,
     },
   };
 }

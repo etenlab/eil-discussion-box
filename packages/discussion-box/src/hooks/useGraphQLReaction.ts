@@ -35,37 +35,33 @@ export function useGraphQLReaction({
   discussion,
   setDiscussion,
 }: UseGraphQLReactionProps) {
-  const {
-    data: reactionCreatedData,
-    error: reactionCreatedError,
-  } = useSubscription<ReactionCreatedData>(REACTION_CREATED_SUBSCRIPTION, {
-    variables: {
-      discussionId: discussion !== null ? discussion.id : -1,
-    },
-    skip: discussion === null,
-    client: discussionSubscriptionClient,
-  });
+  const { data: reactionCreatedData, error: reactionCreatedError } =
+    useSubscription<ReactionCreatedData>(REACTION_CREATED_SUBSCRIPTION, {
+      variables: {
+        discussionId: discussion !== null ? discussion.id : -1,
+      },
+      skip: discussion === null,
+      client: discussionSubscriptionClient,
+    });
 
-  const {
-    data: reactionDeletedData,
-    error: reactionDeletedError,
-  } = useSubscription<ReactionDeletedData>(REACTION_DELETED_SUBSCRIPTION, {
-    variables: {
-      discussionId: discussion !== null ? discussion.id : -1,
-    },
-    skip: discussion === null,
-    client: discussionSubscriptionClient,
-  });
+  const { data: reactionDeletedData, error: reactionDeletedError } =
+    useSubscription<ReactionDeletedData>(REACTION_DELETED_SUBSCRIPTION, {
+      variables: {
+        discussionId: discussion !== null ? discussion.id : -1,
+      },
+      skip: discussion === null,
+      client: discussionSubscriptionClient,
+    });
 
-  const [
-    createReaction,
-    { error: createReactionError },
-  ] = useMutation(CREATE_REACTION, { client });
+  const [createReaction, { error: createReactionError }] = useMutation(
+    CREATE_REACTION,
+    { client }
+  );
 
-  const [
-    deleteReaction,
-    { error: deleteReactionError },
-  ] = useMutation(DELETE_REACTION, { client });
+  const [deleteReaction, { error: deleteReactionError }] = useMutation(
+    DELETE_REACTION,
+    { client }
+  );
 
   // Sync 'discussion' with 'reactionCreated' subscription
   useEffect(() => {
@@ -92,7 +88,7 @@ export function useGraphQLReaction({
         discussion &&
         recalcDiscusionWithDeletedReactionId(discussion, reactionId)
     );
-  }, [reactionDeletedData, reactionDeletedError]);
+  }, [reactionDeletedData, reactionDeletedError, setDiscussion]);
 
   return {
     error:

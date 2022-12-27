@@ -193,6 +193,12 @@ export const UPDATE_POST = gql`
   }
 `;
 
+export const DELETE_ATTACHMENT = gql`
+  mutation DeleteAttachment($attachmentId: Int!, $post_id: Int!) {
+    deleteAttachment(attachmentId: $attachmentId, post_id: $post_id)
+  }
+`;
+
 export const DELETE_POST = gql`
   mutation DeletePost($id: Int!, $userId: Int!) {
     deletePost(id: $id, userId: $userId)

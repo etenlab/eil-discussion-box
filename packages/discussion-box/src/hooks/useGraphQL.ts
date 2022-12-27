@@ -5,14 +5,15 @@ import { IDiscussion, IFile } from "../utils/types";
 import { useGraphQLDiscussion } from "./useGraphQLDiscussion";
 import { useGraphQLPost } from "./useGraphQLPost";
 import { useGraphQLReaction } from "./useGraphQLReaction";
+import { IPost } from "../utils/types";
 
 interface UseGraphQL {
   error: boolean;
   loading: boolean;
   discussion: IDiscussion | null;
   reactQuill: {
-    editor: number | null;
-    setEditor: Dispatch<SetStateAction<number | null>>;
+    editor: IPost | null;
+    setEditor: Dispatch<SetStateAction<IPost | null>>;
     quillText: string | undefined;
     setQuillText: Dispatch<SetStateAction<string | undefined>>;
     quillAttachments: IFile[];
@@ -26,6 +27,7 @@ interface UseGraphQL {
     createPost: any;
     updatePost: any;
     deletePost: any;
+    deleteAttachment: any;
     createReaction: any;
     deleteReaction: any;
   };
@@ -39,7 +41,7 @@ type UseGraphQLProps = {
 // This hook take care every chagnes of discussion's state via connecting graphql servers
 export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
   const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
-  const [editor, setEditor] = useState<number | null>(null);
+  const [editor, setEditor] = useState<IPost | null>(null);
   const [quillText, setQuillText] = useState<string | undefined>();
   const [quillPlain, setQuillPlain] = useState<string>("");
   const [quillAttachments, setQuillAttachments] = useState<IFile[]>([]);
@@ -53,7 +55,7 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
     createPostLoading,
     createPostError,
     error: postError,
-    graphQLAPIs: { createPost, updatePost, deletePost },
+    graphQLAPIs: { createPost, updatePost, deletePost, deleteAttachment },
   } = useGraphQLPost({ discussion, setDiscussion });
 
   const {
@@ -77,13 +79,13 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
       return;
     }
 
-    const post = discussion.posts.find((post) => post.id === editor);
+    const post = discussion.posts.find((post) => post.id === editor.id);
 
     if (!post) {
       return;
     }
 
-    setQuillText(post?.quill_text);
+    setQuillText(post.quill_text === "" ? undefined : post.quill_text);
     setPrevQuillText(undefined);
   }, [editor, discussion]);
 
@@ -107,6 +109,7 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
       createPost,
       updatePost,
       deletePost,
+      deleteAttachment,
       createReaction,
       deleteReaction,
     },

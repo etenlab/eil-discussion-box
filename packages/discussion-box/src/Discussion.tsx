@@ -61,6 +61,7 @@ export function Discussion({
       createPost,
       updatePost,
       deletePost,
+      deleteAttachment,
       createReaction,
       deleteReaction,
     },
@@ -79,6 +80,7 @@ export function Discussion({
   });
 
   const discussionRef = useRef<HTMLElement>(null);
+  const quillRef = useRef<{ focus(): void }>(null);
 
   useEffect(() => {
     if (error) {
@@ -114,37 +116,62 @@ export function Discussion({
     [setQuillAttachments]
   );
 
-  const sendToServer = () => {
-    if (
-      (quillText === undefined ||
-        quillText?.length === 0 ||
-        quillText === "<p><br></p>") &&
-      quillAttachments.length === 0
-    ) {
-      return;
-    }
+  const handleRemoveAttachmentById = useCallback(
+    (id: number, post: IPost) => {
+      if (
+        post.quill_text === "" &&
+        post.plain_text === "" &&
+        post.files.length === 1
+      ) {
+        const result = window.confirm("Are you sure to delete this post?");
+        if (!result) {
+          return;
+        }
+      }
 
+      deleteAttachment({
+        variables: {
+          attachmentId: id,
+          post_id: post.id,
+        },
+      });
+    },
+    [deleteAttachment]
+  );
+
+  const sendToServer = () => {
     if (editor) {
+      if (quillPlain.trim() === "" && editor.files.length === 0) {
+        alert("Cannot save without any data");
+        setEditor(null);
+        setQuillText(undefined);
+        return;
+      }
       updatePost({
         variables: {
           post: {
             discussion_id: discussion!.id,
             plain_text: quillPlain,
             postgres_language: "simple",
-            quill_text: quillText,
+            quill_text: quillText || "",
             user_id: userId,
           },
-          id: editor,
+          id: editor.id,
         },
       });
     } else {
+      if (quillPlain.trim() === "" && quillAttachments.length === 0) {
+        alert("Cannot save without any data!");
+        setQuillText(undefined);
+        return;
+      }
       createPost({
         variables: {
           post: {
             discussion_id: discussion!.id,
             plain_text: quillPlain,
             postgres_language: "simple",
-            quill_text: quillText,
+            quill_text: quillText || "",
             user_id: userId,
           },
           files: quillAttachments.map((file) => file.id),
@@ -161,6 +188,11 @@ export function Discussion({
 
   const handleDeletePost = useCallback(
     (post_id: number) => {
+      const result = window.confirm("Are you sure to delete this post?");
+      if (!result) {
+        return;
+      }
+
       deletePost({
         variables: {
           id: post_id,
@@ -172,8 +204,9 @@ export function Discussion({
   );
 
   const handleEditPost = useCallback(
-    (post_id: number) => {
-      setEditor(post_id);
+    (post: IPost) => {
+      setEditor(post);
+      quillRef.current?.focus();
     },
     [setEditor]
   );
@@ -316,10 +349,12 @@ export function Discussion({
             editPost={handleEditPost}
             deletePost={handleDeletePost}
             replyPost={handleReplyPost}
+            removeAttachmentById={handleRemoveAttachmentById}
           />
         ) : null}
 
         <ReactQuill
+          ref={quillRef}
           attachments={quillAttachments}
           onAddAttachment={handleAddAttachment}
           onCancelAttachment={handleCancelAttachment}

@@ -17,9 +17,10 @@ interface PostProps {
   post: IPost;
   openEmojiPicker(anchorEl: HTMLButtonElement, post: IPost): void;
   onClickReaction(post: IPost, content: string): void;
-  editPost(post_id: number): void;
+  editPost(post: IPost): void;
   replyPost(post_id: number): void;
   deletePost(post_id: number): void;
+  removeAttachmentById(id: number, post: IPost): void;
 }
 
 /**
@@ -32,6 +33,7 @@ export function Post({
   editPost,
   replyPost,
   deletePost,
+  removeAttachmentById
 }: PostProps) {
   const { id, user_id, quill_text, created_at, reactions, files } = post;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -51,31 +53,36 @@ export function Post({
     onClickReaction(post, content);
   };
 
-  const attachementListFiles = files.map((file) => file.file);
-
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  const handleEditPost = () => {
-    editPost(id);
-  };
-  const handleDeletePost = () => {
-    deletePost(id);
-  };
-  const handleReplyPost = () => {
-    replyPost(id);
   };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
 
+  const handleEditPost = () => {
+    editPost(post);
+    handlePopoverClose()
+  };
+
+  const handleDeletePost = () => {
+    deletePost(id);
+    handlePopoverClose();
+  };
+
+  const handleDeleteAttachment = (attachmentId: number) => {
+    removeAttachmentById(attachmentId, post);
+  }
+
+  const handleReplyPost = () => {
+    replyPost(id);
+  };
+
   const created_at_date =
     typeof created_at === "string" ? new Date(created_at) : created_at;
 
   const open = Boolean(anchorEl);
-
 
   const actions = [
     {
@@ -107,7 +114,7 @@ export function Post({
       <Stack gap="10px">
         <PostText ref={postElement} />
 
-        <AttachmentList files={attachementListFiles} />
+        <AttachmentList files={files} onRemove={handleDeleteAttachment} />
 
         <ReactionList
           reactions={reactions}

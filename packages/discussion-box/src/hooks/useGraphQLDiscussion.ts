@@ -30,16 +30,14 @@ export function useGraphQLDiscussion({
   discussion,
   setDiscussion,
 }: UseGraphQLDiscussionProps) {
-  const {
-    data: discussionCreatedData,
-    error: discussionCreatedError,
-  } = useSubscription<DiscussionCreatedData>(DISCUSSION_CREAETD_SUBSCRIPTION, {
-    variables: {
-      table_name,
-      row,
-    },
-    client: discussionSubscriptionClient,
-  });
+  const { data: discussionCreatedData, error: discussionCreatedError } =
+    useSubscription<DiscussionCreatedData>(DISCUSSION_CREAETD_SUBSCRIPTION, {
+      variables: {
+        table_name,
+        row,
+      },
+      client: discussionSubscriptionClient,
+    });
 
   const [
     createDiscussion,
@@ -68,7 +66,7 @@ export function useGraphQLDiscussion({
         row,
       },
     });
-  }, [table_name, row, getDiscussionsByTableNameAndRow]);
+  }, [table_name, row, getDiscussionsByTableNameAndRow, setDiscussion]);
 
   // Substitute 'discussionData' came from server to 'discussion'
   useEffect(() => {
@@ -104,6 +102,7 @@ export function useGraphQLDiscussion({
     discussionCalled,
     discussionData,
     createDiscussion,
+    setDiscussion,
     table_name,
     row,
   ]);
@@ -126,13 +125,20 @@ export function useGraphQLDiscussion({
     if (newDiscussion.table_name === table_name && newDiscussion.row === +row) {
       setDiscussion(newDiscussion);
     }
-  }, [discussionCreatedData, discussionCreatedError, table_name, row]);
+  }, [
+    discussionCreatedData,
+    discussionCreatedError,
+    table_name,
+    row,
+    setDiscussion,
+    discussion,
+  ]);
 
   useEffect(() => {
     if (newDiscussionData) {
       setDiscussion(newDiscussionData.createDiscussion);
     }
-  }, [newDiscussionData]);
+  }, [newDiscussionData, setDiscussion]);
 
   return {
     error:

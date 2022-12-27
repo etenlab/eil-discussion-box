@@ -14,6 +14,29 @@ export function recalcDiscusionWithNewPost(
   }
 }
 
+export function recalcDiscusionWithUpdatedPost(
+  discussion: IDiscussion,
+  updatedPost: IPost
+): IDiscussion {
+  const index = discussion.posts.findIndex(
+    (post) => post.id === updatedPost.id
+  );
+
+  if (index === -1) {
+    return {
+      ...discussion,
+      posts: [...discussion.posts, updatedPost],
+    };
+  } else {
+    const newPosts = [...discussion.posts];
+    newPosts[index] = updatedPost;
+    return {
+      ...discussion,
+      posts: [...newPosts],
+    };
+  }
+}
+
 export function recalcDiscussionWithDeletedPostId(
   discussion: IDiscussion,
   postId: number

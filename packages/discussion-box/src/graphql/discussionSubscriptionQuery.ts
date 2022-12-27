@@ -67,6 +67,36 @@ export const POST_CREATED_SUBSCRIPTION = gql`
   }
 `;
 
+export const POST_UPDATED_SUBSCRIPTION = gql`
+  subscription OnPostUpdate($discussionId: Int!) {
+    postUpdated(discussionId: $discussionId) {
+      id
+      discussion_id
+      user_id
+      quill_text
+      plain_text
+      postgres_language
+      reactions {
+        id
+        post_id
+        user_id
+        content
+      }
+      files {
+        id
+        file {
+          id
+          file_name
+          file_type
+          file_size
+          file_url
+        }
+      }
+      created_at
+    }
+  }
+`;
+
 export const POST_DELETED_SUBSCRIPTION = gql`
   subscription OnPostDeleted($discussionId: Int!) {
     postDeleted(discussionId: $discussionId)

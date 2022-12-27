@@ -13,6 +13,7 @@ export function FileAudio({
     <audio controls>
       <source src={src} type={file_type} />
       Your browser does not support the audio element.
+      {mode}
     </audio>
   );
 }
