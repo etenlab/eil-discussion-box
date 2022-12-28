@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 
-import CloseIcon from "@mui/icons-material/Close";
+import { IconButton } from '@mui/material';
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 
 import { QuillAttachmentContainer } from "./styled";
 import { FileGeneral } from "./FileGeneral";
@@ -19,22 +20,20 @@ type WrapperProps = {
 export function Wrapper({ onCancel, children }: WrapperProps) {
   return (
     <QuillAttachmentContainer>
-      <button
+      <IconButton
         onClick={onCancel}
         style={{
           position: "absolute",
           top: "-15px",
-          borderRadius: "50%",
-          padding: "2px 3px",
           right: "-15px",
-          width: "25px",
-          height: "25px",
+          padding: 0,
+          border: "none",
           background: "#000",
           color: "#fff",
         }}
       >
-        <CloseIcon sx={{ fontSize: "17px", fontWeight: "bold" }} />
-      </button>
+        <HighlightOffOutlinedIcon sx={{ fontSize: "25px", fontWeight: "bold" }} />
+      </IconButton>
       {children}
     </QuillAttachmentContainer>
   );

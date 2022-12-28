@@ -17,7 +17,6 @@ export function MockLoginForm({ setMockUserId }: MockLoginFormProps) {
 
   useEffect(() => {
     if (loading === false && error === undefined && data) {
-      console.log(data);
       setMockUserId(data.createUser.user_id);
     }
   }, [data, loading, error, setMockUserId]);
