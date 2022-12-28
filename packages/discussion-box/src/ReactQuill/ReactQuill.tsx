@@ -10,7 +10,9 @@ import React, {
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 
-import { Skeleton } from "@mui/material";
+import { Skeleton, Stack, IconButton } from "@mui/material";
+
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 
 import { QuillAttachmentList } from "../Attachment";
 import {
@@ -18,7 +20,7 @@ import {
   QuillContainer,
   AttachmentButtonContainer,
   ReactionButtonContainer,
-  ReplyButtonContainer
+  ReplyButtonContainer,
 } from "./styled";
 
 import { AddAttachmentButton } from "../common/AddAttachmentButton";
@@ -51,6 +53,10 @@ type ReactQuillProps = {
   onCancelAttachment(file: IFile): void;
   openEmojiPicker(anchorEl: Element): void;
   value: string | undefined;
+  special?: {
+    title: string;
+    action(): void;
+  };
   sendToServer(): void;
   onChange(quill: string, plain: string): void;
 };
@@ -62,6 +68,7 @@ export const CustomReactQuill = forwardRef<{ focus(): void }, ReactQuillProps>(
       onAddAttachment,
       onCancelAttachment,
       openEmojiPicker,
+      special,
       value,
       sendToServer,
       onChange,
@@ -160,6 +167,26 @@ export const CustomReactQuill = forwardRef<{ focus(): void }, ReactQuillProps>(
           </AttachmentListContainer>
         ) : null}
 
+        {special ? (
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{
+              border: "1px solid #000",
+              borderBottom: "none",
+              borderRadius: "8px 8px 0 0",
+              padding: "0 8px 0 16px",
+              marginBottom: "-4px",
+            }}
+          >
+            <span style={{ fontSize: "14px" }}>{special.title}</span>
+            <IconButton onClick={special.action}>
+              <HighlightOffOutlinedIcon />
+            </IconButton>
+          </Stack>
+        ) : null}
+
         <div style={{ position: "relative" }}>
           <ReactQuill
             ref={quillRef}
@@ -170,12 +197,14 @@ export const CustomReactQuill = forwardRef<{ focus(): void }, ReactQuillProps>(
             modules={modules}
             formats={formats}
           />
-          <AttachmentButtonContainer>
-            <AddAttachmentButton
-              onChange={handleFileChange}
-              disabled={disabled}
-            />
-          </AttachmentButtonContainer>
+          {special?.title === "Editing" ? null : (
+            <AttachmentButtonContainer>
+              <AddAttachmentButton
+                onChange={handleFileChange}
+                disabled={disabled}
+              />
+            </AttachmentButtonContainer>
+          )}
           <ReactionButtonContainer>
             <AddReactionButton onClick={handleReactionClick} />
           </ReactionButtonContainer>

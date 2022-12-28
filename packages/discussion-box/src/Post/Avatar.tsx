@@ -15,29 +15,42 @@ function stringToColor(string: string) {
 
   for (i = 0; i < 3; i += 1) {
     const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
+    color += `${value.toString(16)}`.slice(-2);
   }
   /* eslint-enable no-bitwise */
 
   return color;
 }
 
-function stringAvatar(name: string) {
+function stringAvatar(name: string, mini: boolean) {
   const nameFactors = name.split(" ");
   const shrinkName =
     nameFactors.length > 1
-      ? `${nameFactors[0][0]}${nameFactors[1][0]}`
-      : `${nameFactors[0][0]}`;
+      ? `${nameFactors[0][0]}${nameFactors[1][0]}`.toUpperCase()
+      : nameFactors[0].length > 0
+        ? `${nameFactors[0][0]}${nameFactors[0][1]}`.toUpperCase()
+        : `${nameFactors[0][0]}`.toUpperCase();
+
+  const size = mini
+    ? {
+      width: 25,
+      height: 25,
+      fontSize: 9,
+      fontWeight: 700,
+    }
+    : {
+      width: 34,
+      height: 34,
+      fontSize: 12,
+      fontWeight: 700,
+    };
 
   return {
     sx: {
-      bgcolor: stringToColor(shrinkName),
-      height: 34,
-      width: 34,
-      fontSize: 12,
-      fontWeight: 700
+      bgcolor: stringToColor(name),
+      ...size,
     },
-    children: shrinkName
+    children: <p style={{ textShadow: "1px 1px 2px #000" }}>{shrinkName}</p>,
   };
 }
 
@@ -50,12 +63,17 @@ type CustomAvatarProps = {
    * This is avatar url
    */
   url: string;
+  mini: boolean;
 };
 
 /**
  * Primary UI for Avatar, if you don't have avatar, then output Text Avatar
  */
-export function CustomAvatar({ username, url }: CustomAvatarProps) {
+export function CustomAvatar({
+  username,
+  url,
+  mini = false,
+}: CustomAvatarProps) {
   const [existImage, setExistImage] = useState<boolean>(false);
 
   useEffect(() => {
@@ -69,9 +87,11 @@ export function CustomAvatar({ username, url }: CustomAvatarProps) {
     img.src = url;
   }, [url]);
 
+  const sxObj = mini ? { width: 25, height: 25 } : { width: 34, height: 34 };
+
   return existImage ? (
-    <Avatar alt={username} src={url} sx={{ width: 34, height: 34 }} />
+    <Avatar alt={username} src={url} sx={sxObj} />
   ) : (
-    <Avatar {...stringAvatar(username)} />
+    <Avatar {...stringAvatar(username, mini)} />
   );
 }

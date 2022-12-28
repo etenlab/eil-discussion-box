@@ -1,6 +1,8 @@
-import React, { ForwardedRef, forwardRef, Fragment } from "react";
+import React, { Fragment, useEffect, useRef, useCallback } from "react";
 
-import { Divider, Stack } from "@mui/material";
+import { Divider, Stack, IconButton } from "@mui/material";
+
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
 import { IPost } from "../utils/types";
 
@@ -11,28 +13,37 @@ type PostListProps = {
   openEmojiPicker(anchorEl: HTMLButtonElement, post: IPost): void;
   onClickReaction(post: IPost, content: string): void;
   editPost(post: IPost): void;
-  replyPost(post_id: number): void;
+  replyPost(post: IPost): void;
   deletePost(post_id: number): void;
   removeAttachmentById(id: number, post: IPost): void;
 };
 
-function PostListPure(
-  {
-    posts,
-    onClickReaction,
-    openEmojiPicker,
-    editPost,
-    replyPost,
-    deletePost,
-    removeAttachmentById
-  }: PostListProps,
-  ref: ForwardedRef<HTMLElement>
-) {
+export function PostList({
+  posts,
+  onClickReaction,
+  openEmojiPicker,
+  editPost,
+  replyPost,
+  deletePost,
+  removeAttachmentById,
+}: PostListProps) {
+  const ref = useRef<HTMLElement>();
+
+  const moveScrollDown = useCallback(() => {
+    const element = ref.current;
+    element?.scrollTo(0, element.scrollHeight);
+  }, []);
+
+  useEffect(() => {
+    moveScrollDown();
+  }, [moveScrollDown]);
+
   return (
     <Stack
       gap="10px"
       ref={ref}
       sx={{
+        position: "relative",
         flexGrow: 1,
         fontFamily: "Inter",
         fontStyle: "normal",
@@ -56,8 +67,20 @@ function PostListPure(
           )}
         </Fragment>
       ))}
+      <IconButton
+        onClick={moveScrollDown}
+        sx={{
+          position: "sticky",
+          left: "93%",
+          bottom: 30,
+          width: "30px",
+          height: "30px",
+          border: "1px solid #000",
+          background: "#fff",
+        }}
+      >
+        <KeyboardDoubleArrowDownIcon />
+      </IconButton>
     </Stack>
   );
 }
-
-export const PostList = forwardRef(PostListPure);

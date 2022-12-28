@@ -11,6 +11,8 @@ import { ReactionList } from "../Reaction";
 import { IPost } from "../utils/types";
 import { AttachmentList } from "../Attachment";
 import { PostHeader } from "./PostHeader";
+import { PostReply } from "./PostReply";
+import { PostDeletedReply } from "./PostDeletedReply";
 import { ActionList } from "./ActionList";
 
 interface PostProps {
@@ -18,7 +20,7 @@ interface PostProps {
   openEmojiPicker(anchorEl: HTMLButtonElement, post: IPost): void;
   onClickReaction(post: IPost, content: string): void;
   editPost(post: IPost): void;
-  replyPost(post_id: number): void;
+  replyPost(post: IPost): void;
   deletePost(post_id: number): void;
   removeAttachmentById(id: number, post: IPost): void;
 }
@@ -33,17 +35,28 @@ export function Post({
   editPost,
   replyPost,
   deletePost,
-  removeAttachmentById
+  removeAttachmentById,
 }: PostProps) {
-  const { id, user, quill_text, created_at, reactions, files } = post;
+  const {
+    id,
+    user,
+    quill_text,
+    created_at,
+    reactions,
+    files,
+    reply_id,
+    reply,
+    is_edited,
+  } = post;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const postElement = useRef<HTMLParagraphElement>(null);
 
   useLayoutEffect(() => {
     if (postElement.current) {
-      postElement.current.innerHTML = quill_text;
+      postElement.current.innerHTML =
+        quill_text + (is_edited ? "<span style='font-size: 12px'>(edited)</span>" : "");
     }
-  }, [quill_text]);
+  }, [quill_text, is_edited]);
 
   const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
     openEmojiPicker(event.currentTarget, post);
@@ -63,7 +76,12 @@ export function Post({
 
   const handleEditPost = () => {
     editPost(post);
-    handlePopoverClose()
+    handlePopoverClose();
+  };
+
+  const handleReplyPost = () => {
+    replyPost(post);
+    handlePopoverClose();
   };
 
   const handleDeletePost = () => {
@@ -73,10 +91,6 @@ export function Post({
 
   const handleDeleteAttachment = (attachmentId: number) => {
     removeAttachmentById(attachmentId, post);
-  }
-
-  const handleReplyPost = () => {
-    replyPost(id);
   };
 
   const created_at_date =
@@ -104,6 +118,22 @@ export function Post({
 
   return (
     <>
+      {(reply_id && reply) ? (
+        <PostReply
+          username={reply.user.username}
+          url=""
+          plainText={reply.plain_text}
+          files={reply.files}
+          edited={reply.is_edited}
+        />
+      ) : null}
+
+      {
+        (reply_id && !reply) ? (
+          <PostDeletedReply />
+        ) : null
+      }
+
       <PostHeader
         username={user.username}
         avatar=""

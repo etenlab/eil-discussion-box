@@ -24,7 +24,7 @@ export function PostHeader({
   return (
     <Stack direction="row" justifyContent="space-between">
       <Stack direction="row" gap="10px" alignItems="center">
-        <Avatar username={username} url={avatar} />
+        <Avatar username={username} url={avatar} mini={false} />
         <Username username={username} />
         <FiberManualRecordIcon sx={{ fontSize: "4px" }} />
         <DateViewer date={date} />
