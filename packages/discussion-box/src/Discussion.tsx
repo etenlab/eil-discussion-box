@@ -48,6 +48,8 @@ export function Discussion({
     reactQuill: {
       editor,
       setEditor,
+      reply,
+      setReply,
       quillText,
       setQuillText,
       quillAttachments,
@@ -56,6 +58,7 @@ export function Discussion({
       quillPlain,
       setQuillPlain,
       setPrevQuillText,
+      initQuill,
     },
     graphQLAPIs: {
       createPost,
@@ -147,14 +150,12 @@ export function Discussion({
     if (editor) {
       if (quillPlain.trim() === "" && editor.files.length === 0) {
         alert("Cannot save without any data");
-        setEditor(null);
-        setQuillText(undefined);
+        initQuill();
         return;
       }
       if (userId !== editor.user_id) {
         alert("You are not owner of this post!");
-        setEditor(null);
-        setQuillText(undefined);
+        initQuill();
         return;
       }
       updatePost({
@@ -183,6 +184,7 @@ export function Discussion({
             postgres_language: "simple",
             quill_text: quillText || "",
             user_id: userId,
+            reply_id: reply ? reply.id : null,
           },
           files: quillAttachments.map((file) => file.id),
         },
@@ -221,9 +223,13 @@ export function Discussion({
     [setEditor]
   );
 
-  const handleReplyPost = useCallback((post_id: number) => {
-    console.log(post_id);
-  }, []);
+  const handleReplyPost = useCallback(
+    (post: IPost) => {
+      setReply(post);
+      quillRef.current?.focus();
+    },
+    [setReply]
+  );
 
   const handleAddReaction = useCallback(
     (post_id: number, content: string) => {
@@ -347,12 +353,30 @@ export function Discussion({
 
   const openEmojiPicker = Boolean(popoverState?.anchorEl);
 
+  let quillTitle = "";
+
+  if (editor || reply) {
+    if (editor) {
+      quillTitle = "Editing";
+    }
+    if (reply) {
+      quillTitle = `Replying to @${reply.user.username}`;
+    }
+  }
+
+  const special =
+    quillTitle === ""
+      ? undefined
+      : {
+        title: quillTitle,
+        action: initQuill,
+      };
+
   return (
     <>
-      <Stack justifyContent="space-between" gap="20px" style={style}>
+      <Stack justifyContent="space-between" gap="20px" style={style} ref={discussionRef}>
         {discussion ? (
           <PostList
-            ref={discussionRef}
             posts={discussion.posts}
             onClickReaction={handleClickReaction}
             openEmojiPicker={handleOpenEmojiPickerByReact}
@@ -365,6 +389,7 @@ export function Discussion({
 
         <ReactQuill
           ref={quillRef}
+          special={special}
           attachments={quillAttachments}
           onAddAttachment={handleAddAttachment}
           onCancelAttachment={handleCancelAttachment}

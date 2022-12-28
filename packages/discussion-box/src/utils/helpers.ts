@@ -5,8 +5,10 @@ export function recalcDiscusionWithNewPost(
   newPost: IPost
 ): IDiscussion {
   if (discussion.posts.find((post: IPost) => post.id === newPost.id)) {
+    // Already exists, then return without adding
     return discussion;
   } else {
+    // Add new Post
     return {
       ...discussion,
       posts: [...discussion.posts, newPost],
@@ -18,40 +20,65 @@ export function recalcDiscusionWithUpdatedPost(
   discussion: IDiscussion,
   updatedPost: IPost
 ): IDiscussion {
-  const index = discussion.posts.findIndex(
-    (post) => post.id === updatedPost.id
-  );
+  const posts = discussion.posts.map((post) => {
+    // found updated post and return updated result
+    if (post.id === updatedPost.id) {
+      return updatedPost;
+    }
 
-  if (index === -1) {
-    return {
-      ...discussion,
-      posts: [...discussion.posts, updatedPost],
-    };
-  } else {
-    const newPosts = [...discussion.posts];
-    newPosts[index] = updatedPost;
-    return {
-      ...discussion,
-      posts: [...newPosts],
-    };
-  }
+    // found related post and return with changing
+    if (post.reply_id === updatedPost.id) {
+      return {
+        ...post,
+        reply: {
+          is_edited: updatedPost.is_edited,
+          user: {
+            username: updatedPost.user.username,
+          },
+          plain_text: updatedPost.plain_text,
+          files: updatedPost.files.map((file) => file.id),
+        },
+      };
+    }
+
+    return post;
+  });
+
+  return {
+    ...discussion,
+    posts: posts,
+  } as IDiscussion;
 }
 
 export function recalcDiscussionWithDeletedPostId(
   discussion: IDiscussion,
   postId: number
 ): IDiscussion {
+  const posts = discussion.posts
+    // Remove deleted post from list
+    .filter((post) => post.id !== postId)
+    // Resolve related posts
+    .map((post) => {
+      if (post.reply_id === postId) {
+        return {
+          ...post,
+          reply: undefined,
+        } as IPost;
+      }
+
+      return post;
+    });
+
   return {
     ...discussion,
-    posts: discussion.posts.filter((post: IPost) => post.id !== postId),
-  };
+    posts: posts,
+  } as IDiscussion;
 }
 
 export function recalcDiscussionWithNewReation(
   discussion: IDiscussion,
   newReaction: IReaction
 ): IDiscussion {
-  // const discussion_id = newReaction.post.discussion.id;
   const post_id = newReaction.post_id;
   const reaction_id = newReaction.id;
 

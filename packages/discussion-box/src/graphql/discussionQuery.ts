@@ -14,6 +14,7 @@ export const typeDefs = gql`
     postgres_language: String = "simple"
     quill_text: String!
     user_id: String!
+    reply_id: Int!
   }
 
   input NewReactionInput {
@@ -46,6 +47,18 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
         plain_text
         quill_text
         postgres_language
+        is_edited
+        reply_id
+        reply {
+          is_edited
+          user {
+            username
+          }
+          plain_text
+          files {
+            id
+          }
+        }
         created_at
         reactions {
           id
@@ -99,6 +112,18 @@ export const CREATE_DISCUSSION = gql`
         plain_text
         quill_text
         postgres_language
+        is_edited
+        reply_id
+        reply {
+          is_edited
+          user {
+            username
+          }
+          plain_text
+          files {
+            id
+          }
+        }
         created_at
         reactions {
           id
@@ -173,6 +198,18 @@ export const GET_POSTS_BY_DISCUSSION_ID = gql`
           file_url
         }
       }
+      is_edited
+      reply_id
+      reply {
+        is_edited
+        user {
+          username
+        }
+        plain_text
+        files {
+          id
+        }
+      }
       quill_text
       plain_text
       postgres_language
@@ -198,6 +235,18 @@ export const CREATE_POST = gql`
       quill_text
       plain_text
       postgres_language
+      is_edited
+      reply_id
+      reply {
+        is_edited
+        user {
+          username
+        }
+        plain_text
+        files {
+          id
+        }
+      }
       reactions {
         id
         user_id
@@ -244,6 +293,18 @@ export const UPDATE_POST = gql`
       quill_text
       plain_text
       postgres_language
+      is_edited
+      reply_id
+      reply {
+        is_edited
+        user {
+          username
+        }
+        plain_text
+        files {
+          id
+        }
+      }
       reactions {
         id
         user_id

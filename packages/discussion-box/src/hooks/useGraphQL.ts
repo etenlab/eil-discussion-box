@@ -1,4 +1,10 @@
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import {
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from "react";
 
 import { IDiscussion, IFile } from "../utils/types";
 
@@ -14,6 +20,8 @@ interface UseGraphQL {
   reactQuill: {
     editor: IPost | null;
     setEditor: Dispatch<SetStateAction<IPost | null>>;
+    reply: IPost | null;
+    setReply: Dispatch<SetStateAction<IPost | null>>;
     quillText: string | undefined;
     setQuillText: Dispatch<SetStateAction<string | undefined>>;
     quillAttachments: IFile[];
@@ -22,6 +30,7 @@ interface UseGraphQL {
     quillPlain: string;
     setQuillPlain: Dispatch<SetStateAction<string>>;
     setPrevQuillText: Dispatch<SetStateAction<string | undefined>>;
+    initQuill(): void;
   };
   graphQLAPIs: {
     createPost: any;
@@ -42,6 +51,7 @@ type UseGraphQLProps = {
 export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
   const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
   const [editor, setEditor] = useState<IPost | null>(null);
+  const [reply, setReply] = useState<IPost | null>(null);
   const [quillText, setQuillText] = useState<string | undefined>();
   const [quillPlain, setQuillPlain] = useState<string>("");
   const [quillAttachments, setQuillAttachments] = useState<IFile[]>([]);
@@ -63,6 +73,16 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
     graphQLAPIs: { createReaction, deleteReaction },
   } = useGraphQLReaction({ discussion, setDiscussion });
 
+  const initQuill = useCallback(() => {
+    setEditor(null);
+    setReply(null);
+    setQuillText(undefined);
+    setQuillPlain("");
+    setQuillAttachments([]);
+    setPrevQuillText(undefined);
+    setPrevAttachments([]);
+  }, []);
+
   // Detect failling of creating operation of a new post
   // and restore previous quill text.
   useEffect(() => {
@@ -73,6 +93,12 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
       setPrevAttachments([]);
     }
   }, [createPostError, createPostLoading, prevQuillText, prevAttachments]);
+
+  useEffect(() => {
+    if (!createPostError && createPostLoading === false) {
+      initQuill();
+    }
+  }, [createPostError, createPostLoading, initQuill]);
 
   useEffect(() => {
     if (editor === null || discussion === null) {
@@ -96,6 +122,8 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
     reactQuill: {
       editor,
       setEditor,
+      reply,
+      setReply,
       quillText,
       setQuillText,
       quillPlain,
@@ -104,6 +132,7 @@ export function useGraphQL({ table_name, row }: UseGraphQLProps): UseGraphQL {
       setQuillAttachments,
       setPrevQuillText,
       setPrevAttachments,
+      initQuill,
     },
     graphQLAPIs: {
       createPost,

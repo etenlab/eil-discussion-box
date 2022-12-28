@@ -24,6 +24,18 @@ export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
         plain_text
         quill_text
         postgres_language
+        is_edited
+        reply_id
+        reply {
+          is_edited
+          user {
+            username
+          }
+          plain_text
+          files {
+            id
+          }
+        }
         created_at
         reactions {
           id
@@ -72,6 +84,18 @@ export const POST_CREATED_SUBSCRIPTION = gql`
       quill_text
       plain_text
       postgres_language
+      is_edited
+      reply_id
+      reply {
+        is_edited
+        user {
+          username
+        }
+        plain_text
+        files {
+          id
+        }
+      }
       reactions {
         id
         post_id
@@ -119,6 +143,18 @@ export const POST_UPDATED_SUBSCRIPTION = gql`
       quill_text
       plain_text
       postgres_language
+      is_edited
+      reply_id
+      reply {
+        is_edited
+        user {
+          username
+        }
+        plain_text
+        files {
+          id
+        }
+      }
       reactions {
         id
         post_id

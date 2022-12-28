@@ -44,6 +44,20 @@ export interface IPost {
   postgres_language: string;
   files: IRelationshipPostFile[];
   reactions: IReaction[];
+  is_edited: boolean;
+  reply_id?: number;
+  reply?: {
+    is_edited: boolean;
+    user: {
+      username: string;
+    };
+    plain_text: string;
+    files: [
+      {
+        id: number;
+      }
+    ];
+  };
   created_at: Date;
 }
 
