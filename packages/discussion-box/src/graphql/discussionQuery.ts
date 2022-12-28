@@ -34,6 +34,14 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
       posts {
         id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+          created_at
+        }
         discussion_id
         plain_text
         quill_text
@@ -42,6 +50,14 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
         reactions {
           id
           user_id
+          user {
+            user_id
+            active
+            email
+            username
+            is_email_verified
+            created_at
+          }
           post_id
           content
         }
@@ -71,6 +87,14 @@ export const CREATE_DISCUSSION = gql`
       posts {
         id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+          created_at
+        }
         discussion_id
         plain_text
         quill_text
@@ -79,6 +103,14 @@ export const CREATE_DISCUSSION = gql`
         reactions {
           id
           user_id
+          user {
+            user_id
+            active
+            email
+            username
+            is_email_verified
+            created_at
+          }
           post_id
           content
         }
@@ -109,9 +141,25 @@ export const GET_POSTS_BY_DISCUSSION_ID = gql`
       id
       discussion_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       reactions {
         id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+          created_at
+        }
         post_id
         content
       }
@@ -139,12 +187,28 @@ export const CREATE_POST = gql`
       id
       discussion_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       quill_text
       plain_text
       postgres_language
       reactions {
         id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+          created_at
+        }
         post_id
         content
       }
@@ -169,12 +233,28 @@ export const UPDATE_POST = gql`
       id
       discussion_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       quill_text
       plain_text
       postgres_language
       reactions {
         id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+          created_at
+        }
         post_id
         content
       }
@@ -217,6 +297,14 @@ export const GET_REACTION_BY_POST_ID = gql`
       id
       post_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       content
     }
   }
@@ -228,6 +316,14 @@ export const CREATE_REACTION = gql`
       id
       post_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       content
     }
   }
@@ -240,8 +336,8 @@ export const DELETE_REACTION = gql`
 `;
 
 export const CREATE_USER = gql`
-  mutation CreateUser($email: String!) {
-    createUser(email: $email) {
+  mutation CreateUser($email: String!, $username: String!) {
+    createUser(email: $email, username: $username) {
       user_id
     }
   }

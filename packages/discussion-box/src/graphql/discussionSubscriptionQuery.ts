@@ -11,6 +11,15 @@ export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
       posts {
         id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+
+          created_at
+        }
         discussion_id
         plain_text
         quill_text
@@ -19,6 +28,15 @@ export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
         reactions {
           id
           user_id
+          user {
+            user_id
+            active
+            email
+            username
+            is_email_verified
+
+            created_at
+          }
           post_id
           content
         }
@@ -43,6 +61,14 @@ export const POST_CREATED_SUBSCRIPTION = gql`
       id
       discussion_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       quill_text
       plain_text
       postgres_language
@@ -50,6 +76,15 @@ export const POST_CREATED_SUBSCRIPTION = gql`
         id
         post_id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+
+          created_at
+        }
         content
       }
       files {
@@ -73,6 +108,14 @@ export const POST_UPDATED_SUBSCRIPTION = gql`
       id
       discussion_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       quill_text
       plain_text
       postgres_language
@@ -80,6 +123,15 @@ export const POST_UPDATED_SUBSCRIPTION = gql`
         id
         post_id
         user_id
+        user {
+          user_id
+          active
+          email
+          username
+          is_email_verified
+
+          created_at
+        }
         content
       }
       files {
@@ -109,6 +161,14 @@ export const REACTION_CREATED_SUBSCRIPTION = gql`
       id
       post_id
       user_id
+      user {
+        user_id
+        active
+        email
+        username
+        is_email_verified
+        created_at
+      }
       content
     }
   }

@@ -35,7 +35,7 @@ export function Post({
   deletePost,
   removeAttachmentById
 }: PostProps) {
-  const { id, user_id, quill_text, created_at, reactions, files } = post;
+  const { id, user, quill_text, created_at, reactions, files } = post;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const postElement = useRef<HTMLParagraphElement>(null);
 
@@ -105,7 +105,7 @@ export function Post({
   return (
     <>
       <PostHeader
-        username={`${user_id}`}
+        username={user.username}
         avatar=""
         date={created_at_date}
         openActionList={handlePopoverOpen}

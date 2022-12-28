@@ -118,6 +118,10 @@ export function Discussion({
 
   const handleRemoveAttachmentById = useCallback(
     (id: number, post: IPost) => {
+      if (post.user_id !== userId) {
+        alert("You are not owner of this post");
+        return;
+      }
       if (
         post.quill_text === "" &&
         post.plain_text === "" &&
@@ -136,13 +140,19 @@ export function Discussion({
         },
       });
     },
-    [deleteAttachment]
+    [deleteAttachment, userId]
   );
 
   const sendToServer = () => {
     if (editor) {
       if (quillPlain.trim() === "" && editor.files.length === 0) {
         alert("Cannot save without any data");
+        setEditor(null);
+        setQuillText(undefined);
+        return;
+      }
+      if (userId !== editor.user_id) {
+        alert("You are not owner of this post!");
         setEditor(null);
         setQuillText(undefined);
         return;

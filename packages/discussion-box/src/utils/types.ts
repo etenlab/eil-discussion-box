@@ -4,10 +4,20 @@ export type APIReturnType<T = any> = {
   data?: T;
 };
 
+export interface IUser {
+  user_id: number;
+  active: boolean;
+  email: string;
+  username: string;
+  is_email_verified: boolean;
+  created_at: Date;
+}
+
 export interface IReaction {
   id: number;
   post_id: number;
   user_id: number;
+  user: IUser;
   content: string;
 }
 
@@ -27,6 +37,7 @@ export interface IRelationshipPostFile {
 export interface IPost {
   id: number;
   user_id: number;
+  user: IUser;
   discussion_id: number;
   quill_text: string;
   plain_text: string;

@@ -26,7 +26,7 @@ export const TooltipContent = ({ reactions, emoji }: TooltipContentProps) => {
         <Emoji unified={emoji} emojiStyle={EmojiStyle.APPLE} size={50} />
       </EmojiBigWrapper>
       {reactions.map((reaction) => (
-        <TooltipUserName key={reaction.id}>{reaction.user_id}</TooltipUserName>
+        <TooltipUserName key={reaction.id}>{reaction.user.username}</TooltipUserName>
       ))}
     </div>
   );
