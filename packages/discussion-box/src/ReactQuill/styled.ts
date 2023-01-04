@@ -1,5 +1,7 @@
 import { styled } from "@mui/material/styles";
 
+import { Stack } from "@mui/material";
+
 export const AttachmentListContainer = styled("div")({
   display: "flex",
   gap: "10px",
@@ -34,6 +36,18 @@ export const QuillContainer = styled("div")({
       margin: "auto 50px",
     },
   },
+});
+
+export const QuillTitleContainer = styled(Stack)({
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  border: "1px solid #000",
+  borderBottom: "none",
+  borderRadius: "8px 8px 0 0",
+  padding: "0 8px 0 16px",
+  marginBottom: "-4px",
+  fontSize: "14px",
 });
 
 export const AttachmentButtonContainer = styled("div")({
