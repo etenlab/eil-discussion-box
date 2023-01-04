@@ -42,7 +42,7 @@ export function PostReply({
       <Avatar username={username} url={url} mini={true} />
       <Username username={username} />
       <ReplyText>{plainText}</ReplyText>
-      {edited ? <span style={{ fontSize: '12px' }}>(edited)</span> : null}
+      {edited ? <span style={{ fontSize: "12px" }}>(edited)</span> : null}
       {files.length > 0 ? <CollectionsOutlinedIcon /> : null}
       <svg
         height="30px"

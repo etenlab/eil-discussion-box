@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect, MouseEvent } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 
 import { Stack, Popover } from "@mui/material";
 
@@ -15,28 +15,16 @@ import { PostReply } from "./PostReply";
 import { PostDeletedReply } from "./PostDeletedReply";
 import { ActionList } from "./ActionList";
 
+import { useDiscussionContext } from "../hooks/useDiscussionContext";
+
 interface PostProps {
   post: IPost;
-  openEmojiPicker(anchorEl: HTMLButtonElement, post: IPost): void;
-  onClickReaction(post: IPost, content: string): void;
-  editPost(post: IPost): void;
-  replyPost(post: IPost): void;
-  deletePost(post_id: number): void;
-  removeAttachmentById(id: number, post: IPost): void;
 }
 
 /**
  * This component basically renders Post, ReactionList.
  */
-export function Post({
-  post,
-  onClickReaction,
-  openEmojiPicker,
-  editPost,
-  replyPost,
-  deletePost,
-  removeAttachmentById,
-}: PostProps) {
+export function Post({ post }: PostProps) {
   const {
     id,
     user,
@@ -48,23 +36,22 @@ export function Post({
     reply,
     is_edited,
   } = post;
+
+  const {
+    states: {
+      global: { userId },
+      quillRef,
+    },
+    actions: {
+      deletePost,
+      setPostForEditing,
+      setPostForReplying,
+      alertFeedback,
+    },
+  } = useDiscussionContext();
+
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const postElement = useRef<HTMLParagraphElement>(null);
-
-  useLayoutEffect(() => {
-    if (postElement.current) {
-      postElement.current.innerHTML =
-        quill_text + (is_edited ? "<span style='font-size: 12px'>(edited)</span>" : "");
-    }
-  }, [quill_text, is_edited]);
-
-  const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
-    openEmojiPicker(event.currentTarget, post);
-  };
-
-  const handleClickReaction = (content: string) => {
-    onClickReaction(post, content);
-  };
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -74,23 +61,50 @@ export function Post({
     setAnchorEl(null);
   };
 
+  useLayoutEffect(() => {
+    if (postElement.current) {
+      postElement.current.innerHTML =
+        quill_text +
+        (is_edited ? "<span style='font-size: 12px'>(edited)</span>" : "");
+    }
+  }, [quill_text, is_edited]);
+
   const handleEditPost = () => {
-    editPost(post);
+    if (user.user_id !== userId) {
+      alertFeedback("warning", "You are not owner of this post!");
+      return;
+    }
+
+    setPostForEditing(post);
+    quillRef.current?.focus();
     handlePopoverClose();
   };
 
   const handleReplyPost = () => {
-    replyPost(post);
+    setPostForReplying(post);
+    quillRef.current?.focus();
     handlePopoverClose();
   };
 
   const handleDeletePost = () => {
-    deletePost(id);
-    handlePopoverClose();
-  };
+    if (user.user_id !== userId) {
+      alertFeedback("warning", "You are not owner of this post!");
+      return;
+    }
 
-  const handleDeleteAttachment = (attachmentId: number) => {
-    removeAttachmentById(attachmentId, post);
+    const result = window.confirm("Are you sure to delete this post?");
+    if (!result) {
+      return;
+    }
+
+    deletePost({
+      variables: {
+        id,
+        userId,
+      },
+    });
+
+    handlePopoverClose();
   };
 
   const created_at_date =
@@ -118,7 +132,7 @@ export function Post({
 
   return (
     <>
-      {(reply_id && reply) ? (
+      {reply_id && reply ? (
         <PostReply
           username={reply.user.username}
           url=""
@@ -128,11 +142,7 @@ export function Post({
         />
       ) : null}
 
-      {
-        (reply_id && !reply) ? (
-          <PostDeletedReply />
-        ) : null
-      }
+      {reply_id && !reply ? <PostDeletedReply /> : null}
 
       <PostHeader
         username={user.username}
@@ -144,13 +154,9 @@ export function Post({
       <Stack gap="10px">
         <PostText ref={postElement} />
 
-        <AttachmentList files={files} onRemove={handleDeleteAttachment} />
+        <AttachmentList files={files} post={post} />
 
-        <ReactionList
-          reactions={reactions}
-          openEmojiPicker={handleOpenEmojiPicker}
-          onClickReaction={handleClickReaction}
-        />
+        <ReactionList reactions={reactions} post={post} />
       </Stack>
 
       <Popover

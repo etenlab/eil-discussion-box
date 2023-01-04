@@ -1,32 +1,16 @@
 import React, { Fragment, useEffect, useRef, useCallback } from "react";
 
-import { Divider, Stack, IconButton } from "@mui/material";
-
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-
-import { IPost } from "../utils/types";
+import { Divider, Stack } from "@mui/material";
 
 import { Post } from "./Post";
+import { ScrollDownButton } from "../common/ScrollDownButton";
 
-type PostListProps = {
-  posts: IPost[];
-  openEmojiPicker(anchorEl: HTMLButtonElement, post: IPost): void;
-  onClickReaction(post: IPost, content: string): void;
-  editPost(post: IPost): void;
-  replyPost(post: IPost): void;
-  deletePost(post_id: number): void;
-  removeAttachmentById(id: number, post: IPost): void;
-};
+import { useDiscussionContext } from "../hooks/useDiscussionContext";
 
-export function PostList({
-  posts,
-  onClickReaction,
-  openEmojiPicker,
-  editPost,
-  replyPost,
-  deletePost,
-  removeAttachmentById,
-}: PostListProps) {
+export function PostList() {
+  const {
+    states: { discussion },
+  } = useDiscussionContext();
   const ref = useRef<HTMLElement>();
 
   const moveScrollDown = useCallback(() => {
@@ -37,6 +21,14 @@ export function PostList({
   useEffect(() => {
     moveScrollDown();
   }, [moveScrollDown]);
+
+  const postListDom = ref.current;
+
+  let isShownDownButton = false;
+
+  if (postListDom) {
+    isShownDownButton = postListDom.scrollHeight > postListDom.offsetHeight;
+  }
 
   return (
     <Stack
@@ -50,37 +42,19 @@ export function PostList({
         overflowY: "auto",
       }}
     >
-      {posts.map((post, index) => (
-        <Fragment key={post.id}>
-          <Post
-            key={post.id}
-            post={post}
-            onClickReaction={onClickReaction}
-            openEmojiPicker={openEmojiPicker}
-            editPost={editPost}
-            replyPost={replyPost}
-            deletePost={deletePost}
-            removeAttachmentById={removeAttachmentById}
-          />
-          {index !== posts.length - 1 && (
-            <Divider sx={{ borderColor: "#000", marginTop: "10px" }} />
-          )}
-        </Fragment>
-      ))}
-      <IconButton
-        onClick={moveScrollDown}
-        sx={{
-          position: "sticky",
-          left: "93%",
-          bottom: 30,
-          width: "30px",
-          height: "30px",
-          border: "1px solid #000",
-          background: "#fff",
-        }}
-      >
-        <KeyboardDoubleArrowDownIcon />
-      </IconButton>
+      {discussion
+        ? discussion.posts.map((post, index) => (
+          <Fragment key={post.id}>
+            <Post post={post} />
+
+            {/* Consider last post divider component */}
+            {index !== discussion.posts.length - 1 && (
+              <Divider sx={{ borderColor: "#000", marginTop: "10px" }} />
+            )}
+          </Fragment>
+        ))
+        : null}
+      {isShownDownButton ? <ScrollDownButton onClick={moveScrollDown} /> : null}
     </Stack>
   );
 }

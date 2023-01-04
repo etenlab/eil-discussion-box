@@ -24,7 +24,7 @@ export function DateViewer({ date }: { date: Date }) {
         fontSize: "12px",
         lineHeight: "15px",
         textAlign: "center",
-        opacity: 0.5
+        opacity: 0.5,
       }}
     >
       {transformedDate}
