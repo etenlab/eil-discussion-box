@@ -1,36 +1,62 @@
-import React, { MouseEvent, useMemo } from "react";
+import React, { useMemo, MouseEvent } from "react";
 
 import { Stack } from "@mui/material";
 
-import { IReaction } from "../utils/types";
+import { IReaction, IPost } from "../utils/types";
 import { sortByContent } from "../utils/helpers";
 import { Reaction } from "./Reaction";
 import { AddReactionButton } from "../common/AddReactionButton";
+
+import { useDiscussionContext } from "../hooks/useDiscussionContext";
 
 interface ReactionListProps {
   /**
    * Lists of reactions about specific post
    */
   reactions: IReaction[];
-  /**
-   * Event handler to control emoji picker
-   */
-  openEmojiPicker(event: MouseEvent<HTMLButtonElement>): void;
-  /**
-   * Event handler to control Reaction component's click event.
-   * @param content This is a unified emoji string
-   */
-  onClickReaction(content: string): void;
+  post: IPost;
 }
 
 /**
  * List of Reactions
  */
-export function ReactionList({
-  reactions,
-  openEmojiPicker,
-  onClickReaction,
-}: ReactionListProps) {
+export function ReactionList({ reactions, post }: ReactionListProps) {
+  const {
+    states: {
+      global: { userId },
+    },
+    actions: { openEmojiPicker, deleteReaction, createReaction },
+  } = useDiscussionContext();
+
+  const handleClickReaction = (content: string) => {
+    const reaction = reactions.find(
+      (reaction) => reaction.content === content && reaction.user_id === userId
+    );
+
+    if (reaction) {
+      deleteReaction({
+        variables: {
+          id: reaction.id,
+          userId,
+        },
+      });
+    } else {
+      createReaction({
+        variables: {
+          reaction: {
+            content,
+            post_id: post.id,
+            user_id: userId,
+          },
+        },
+      });
+    }
+  };
+
+  const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
+    openEmojiPicker(event.currentTarget, post, "react");
+  };
+
   const contentReactions = useMemo(() => sortByContent(reactions), [reactions]);
 
   return (
@@ -40,10 +66,10 @@ export function ReactionList({
           key={content}
           content={content}
           reactions={reactions}
-          onClick={onClickReaction}
+          onClick={handleClickReaction}
         />
       ))}
-      <AddReactionButton onClick={openEmojiPicker} />
+      <AddReactionButton onClick={handleOpenEmojiPicker} />
     </Stack>
   );
 }
