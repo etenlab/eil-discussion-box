@@ -1,7 +1,6 @@
-export type APIReturnType<T = any> = {
-  success: boolean;
-  message: string;
-  data?: T;
+export type ActionType<T> = {
+  type: string;
+  payload: T;
 };
 
 export interface IUser {
@@ -120,3 +119,7 @@ export const FileMimeTypes = {
   Audio: "audio",
   Image: "image",
 };
+
+export type FeedbackType = "success" | "error" | "info" | "warning";
+
+export type EmojiModeType = "quill" | "react";

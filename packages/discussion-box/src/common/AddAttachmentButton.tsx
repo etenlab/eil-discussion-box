@@ -20,10 +20,12 @@ export function AddAttachmentButton({
   onChange,
   disabled,
 }: AddAttachmentButtoonProps) {
+  const className = disabled ? "disabled" : "";
+
   return (
-    <AddButtonWrapper sx={{ borderColor: (disabled) ? "#555" : "#000" }}>
+    <AddButtonWrapper className={className}>
       <label htmlFor="file-upload" style={{ height: "16px" }}>
-        <AddIcon sx={{ color: (disabled) ? "#555" : "#000" }} />
+        <AddIcon sx={{ color: disabled ? "#555" : "#000" }} />
       </label>
       <input
         id="file-upload"

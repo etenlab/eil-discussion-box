@@ -7,9 +7,14 @@ export const AddButtonWrapper = styled("span")({
   padding: "4px",
   background: "#fff",
   color: "#000",
-  "&: hover": {
+  "&:hover, & > label:hover": {
     background: "#eee",
     borderColor: "#222",
+    cursor: "pointer",
+  },
+  "&.disabled: hover, &.disabled > label: hover": {
+    borderColor: "#ccc",
+    cursor: "not-allowed",
   },
   "& svg": {
     fontSize: "16px",
@@ -36,4 +41,5 @@ export const SendButtonWrapper = styled("span")({
   fontFamily: "Inter",
   fontStyle: "normal",
   fontWeight: "600",
+  cursor: "pointer",
 });

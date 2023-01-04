@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
+import React, { memo } from "react";
 
-import EmojiPicker, { Theme, EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { Theme, EmojiClickData } from "emoji-picker-react";
 
 type EmojiPickerProps = {
   onEmojiClick(emojiData: EmojiClickData): void;
