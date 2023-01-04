@@ -70,7 +70,13 @@ export function FileImage({
       >
         <Box sx={style}>
           <img src={src} height="100%" loading="lazy" alt="fee" />
-          <DownloadText onClick={() => { handleDownload(file_name, src) }}>Click And Download</DownloadText>
+          <DownloadText
+            onClick={() => {
+              handleDownload(file_name, src);
+            }}
+          >
+            Click And Download
+          </DownloadText>
         </Box>
       </Modal>
     </>

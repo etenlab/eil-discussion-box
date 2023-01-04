@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
-import { Stack } from '@mui/material';
+import { Stack } from "@mui/material";
 
-import { QuillAttachment } from './QuillAttachment';
-import { IFile } from '../utils/types';
+import { QuillAttachment } from "./QuillAttachment";
+import { IFile } from "../utils/types";
 
 type QuillAttachmentListProps = {
   attachments: IFile[];
@@ -15,7 +15,7 @@ export function QuillAttachmentList({
   onCancel,
 }: QuillAttachmentListProps) {
   return (
-    <Stack gap={2} direction="row" sx={{ display: 'inline-flex' }}>
+    <Stack gap={2} direction="row" sx={{ display: "inline-flex" }}>
       {attachments.map((attachment) => (
         <QuillAttachment
           key={attachment.id}

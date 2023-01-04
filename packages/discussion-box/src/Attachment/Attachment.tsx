@@ -5,9 +5,9 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { AttachmentContainer } from "./styled";
 import { FileGeneral } from "./FileGeneral";
-import { FileImage } from './FileImage';
-import { FileVideo } from './FileVideo';
-import { FileAudio } from './FileAudio';
+import { FileImage } from "./FileImage";
+import { FileVideo } from "./FileVideo";
+import { FileAudio } from "./FileAudio";
 
 import { IFile } from "../utils/types";
 import { getMimeType } from "../utils/helpers";
@@ -39,15 +39,29 @@ export function Attachment({ file, onRemove }: AttachmentProps) {
   let content: ReactElement;
   switch (mime) {
     case "video": {
-      content = <FileVideo src={file.file_url} file_type={file.file_type || ""}  mode="view"/>;
+      content = (
+        <FileVideo
+          src={file.file_url}
+          file_type={file.file_type || ""}
+          mode="view"
+        />
+      );
       break;
     }
     case "audio": {
-      content = <FileAudio src={file.file_url} file_type={file.file_type || ""}  mode="view"/>;
+      content = (
+        <FileAudio
+          src={file.file_url}
+          file_type={file.file_type || ""}
+          mode="view"
+        />
+      );
       break;
     }
     case "image": {
-      content = <FileImage src={file.file_url} file_name={file.file_name}  mode="view"/>;
+      content = (
+        <FileImage src={file.file_url} file_name={file.file_name} mode="view" />
+      );
       break;
     }
     default: {
@@ -56,9 +70,5 @@ export function Attachment({ file, onRemove }: AttachmentProps) {
     }
   }
 
-  return (
-    <Wrapper onRemove={onRemove}>
-      {content}
-    </Wrapper>
-  )
+  return <Wrapper onRemove={onRemove}>{content}</Wrapper>;
 }
