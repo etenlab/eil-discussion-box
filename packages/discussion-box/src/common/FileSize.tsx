@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export function FileSize({ fileSize }: { fileSize: number }) {
   let sizeWithUnit = "";
@@ -14,15 +14,7 @@ export function FileSize({ fileSize }: { fileSize: number }) {
   }
 
   return (
-    <span
-      style={{
-        display: "block",
-        fontSize: "14px",
-        fontFamily: "Infer",
-        margin: 0,
-        padding: "4px",
-      }}
-    >
+    <span style={{ display: "block", fontSize: "14px", fontFamily: "Infer", margin: 0, padding: '4px' }}>
       {sizeWithUnit}
     </span>
   );

@@ -5,15 +5,15 @@ import React, {
   KeyboardEvent,
   MouseEvent,
   ChangeEventHandler,
-} from "react";
-import "react-quill/dist/quill.snow.css";
-import ReactQuill from "react-quill";
+} from 'react'
+import 'react-quill/dist/quill.snow.css'
+import ReactQuill from 'react-quill'
 
-import { Skeleton, IconButton } from "@mui/material";
+import { Skeleton, IconButton } from '@mui/material'
 
-import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined'
 
-import { QuillAttachmentList } from "../Attachment";
+import { QuillAttachmentList } from '../Attachment'
 import {
   AttachmentListContainer,
   QuillContainer,
@@ -21,32 +21,32 @@ import {
   ReactionButtonContainer,
   ReplyButtonContainer,
   QuillTitleContainer,
-} from "./styled";
+} from './styled'
 
-import { AddAttachmentButton } from "../common/AddAttachmentButton";
-import { AddReactionButton } from "../common/AddReactionButton";
-import { SendButton } from "../common/SendButton";
+import { AddAttachmentButton } from '../common/AddAttachmentButton'
+import { AddReactionButton } from '../common/AddReactionButton'
+import { SendButton } from '../common/SendButton'
 
-import { modules, formats, Skeletons } from "./utils";
+import { modules, formats, Skeletons } from './utils'
 
-import { getMimeType } from "../utils/helpers";
+import { getMimeType } from '../utils/helpers'
 
-import { useDiscussionContext } from "../hooks/useDiscussionContext";
+import { useDiscussionContext } from '../hooks/useDiscussionContext'
 
 const maxFileSize =
   process.env.REACT_APP_MAX_FILE_SIZE !== undefined
     ? +process.env.REACT_APP_MAX_FILE_SIZE
-    : 1024 * 1024 * 50;
+    : 1024 * 1024 * 50
 
 type SkeletonSize = {
-  width: string;
-  height: string;
-};
+  width: string
+  height: string
+}
 
 export const CustomReactQuill = forwardRef<
   {
-    focus(): void;
-    write(str: string): void;
+    focus(): void
+    write(str: string): void
   } | null,
   unknown
 >((_, ref) => {
@@ -68,37 +68,37 @@ export const CustomReactQuill = forwardRef<
       createPost,
       alertFeedback,
     },
-  } = useDiscussionContext();
+  } = useDiscussionContext()
 
-  const quillRef = useRef<ReactQuill | null>(null);
-  const skeletonRef = useRef<SkeletonSize | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const quillRef = useRef<ReactQuill | null>(null)
+  const skeletonRef = useRef<SkeletonSize | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   useImperativeHandle(
     ref,
     () => ({
       focus: () => {
-        quillRef.current?.focus();
+        quillRef.current?.focus()
       },
       write: (str: string) => {
         changeQuill(quill + str, plain + str);
       },
     }),
-    [quill, plain, changeQuill]
-  );
+    [quill, plain, changeQuill],
+  )
 
   const createOrUpdatePost = () => {
     if (editingPost) {
-      if (plain.trim() === "" && editingPost.files.length === 0) {
-        alertFeedback("warning", "Cannot save without any data");
-        initializeQuill();
-        return;
+      if (plain.trim() === '' && editingPost.files.length === 0) {
+        alertFeedback('warning', 'Cannot save without any data')
+        initializeQuill()
+        return
       }
 
       if (userId !== editingPost.user_id) {
-        alertFeedback("warning", "You are not owner of this post!");
-        initializeQuill();
-        return;
+        alertFeedback('warning', 'You are not owner of this post!')
+        initializeQuill()
+        return
       }
 
       updatePost({
@@ -106,95 +106,95 @@ export const CustomReactQuill = forwardRef<
           post: {
             discussion_id: discussion!.id,
             plain_text: plain,
-            postgres_language: "simple",
-            quill_text: quill || "",
+            postgres_language: 'simple',
+            quill_text: quill || '',
             user_id: userId,
           },
           id: editingPost.id,
         },
-      });
+      })
     } else {
-      if (plain.trim() === "" && attachments.length === 0) {
-        alertFeedback("warning", "Cannot save without any data");
-        initializeQuill();
-        return;
+      if (plain.trim() === '' && attachments.length === 0) {
+        alertFeedback('warning', 'Cannot save without any data')
+        initializeQuill()
+        return
       }
       createPost({
         variables: {
           post: {
             discussion_id: discussion!.id,
             plain_text: plain,
-            postgres_language: "simple",
-            quill_text: quill || "",
+            postgres_language: 'simple',
+            quill_text: quill || '',
             user_id: userId,
             reply_id: replyingPost ? replyingPost.id : null,
           },
           files: attachments.map((file) => file.id),
         },
-      });
+      })
     }
 
-    saveQuillStates(quill, attachments);
-  };
+    saveQuillStates(quill, attachments)
+  }
 
   const handleKeyEvent = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      createOrUpdatePost();
+    if (event.key === 'Enter' && !event.shiftKey) {
+      createOrUpdatePost()
     }
-  };
+  }
 
   const handleChange = (
     value: string,
     _delta: any,
     _source: any,
-    editor: any
+    editor: any,
   ) => {
     changeQuill(value, editor.getText(value));
-  };
+  }
 
   const handleReactionClick = (event: MouseEvent<Element>) => {
-    openEmojiPicker(event.currentTarget, null, "quill");
-  };
+    openEmojiPicker(event.currentTarget, null, 'quill')
+  }
 
   // Get a file then upload
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    inputRef.current = event.target;
-    const files = event.target.files;
+    inputRef.current = event.target
+    const files = event.target.files
 
     if (files && files.length > 0) {
-      const file = files[0];
+      const file = files[0]
 
       if (file.size > maxFileSize) {
         alertFeedback(
-          "warning",
-          `Exceed max file size ( > ${process.env.REACT_APP_MAX_FILE_SIZE})!`
-        );
-        return;
+          'warning',
+          `Exceed max file size ( > ${process.env.REACT_APP_MAX_FILE_SIZE})!`,
+        )
+        return
       }
 
-      const mimeType = getMimeType(file.type) as keyof typeof Skeletons;
-      skeletonRef.current = Skeletons[mimeType];
+      const mimeType = getMimeType(file.type) as keyof typeof Skeletons
+      skeletonRef.current = Skeletons[mimeType]
 
       uploadFile({
         variables: { file, file_size: file.size, file_type: file.type },
-      });
+      })
 
-      inputRef.current.value = "";
-    }
-  };
-
-  let quillTitle = "";
-
-  if (editingPost || replyingPost) {
-    if (editingPost) {
-      quillTitle = "Editing";
-    }
-    if (replyingPost) {
-      quillTitle = `Replying to @${replyingPost.user.username}`;
+      inputRef.current.value = ''
     }
   }
 
-  const disabled = uploading;
+  let quillTitle = ''
+
+  if (editingPost || replyingPost) {
+    if (editingPost) {
+      quillTitle = 'Editing'
+    }
+    if (replyingPost) {
+      quillTitle = `Replying to @${replyingPost.user.username}`
+    }
+  }
+
+  const disabled = uploading
 
   return (
     <QuillContainer>
@@ -210,22 +210,22 @@ export const CustomReactQuill = forwardRef<
               variant="rectangular"
               width={skeletonRef.current?.width}
               height={skeletonRef.current?.height}
-              sx={{ borderRadius: "8px" }}
+              sx={{ borderRadius: '8px' }}
             />
           ) : null}
         </AttachmentListContainer>
       ) : null}
 
-      {quillTitle !== "" ? (
+      {quillTitle !== '' ? (
         <QuillTitleContainer>
-          <span style={{ fontSize: "14px" }}>{quillTitle}</span>
+          <span style={{ fontSize: '14px' }}>{quillTitle}</span>
           <IconButton onClick={initializeQuill}>
             <HighlightOffOutlinedIcon />
           </IconButton>
         </QuillTitleContainer>
       ) : null}
 
-      <div style={{ position: "relative" }}>
+      <div style={{ position: 'relative' }}>
         <ReactQuill
           ref={quillRef}
           theme="snow"
@@ -235,7 +235,7 @@ export const CustomReactQuill = forwardRef<
           modules={modules}
           formats={formats}
         />
-        {quillTitle === "Editing" ? null : (
+        {quillTitle === 'Editing' ? null : (
           <AttachmentButtonContainer>
             <AddAttachmentButton
               onChange={handleFileChange}
@@ -251,5 +251,5 @@ export const CustomReactQuill = forwardRef<
         </ReplyButtonContainer>
       </div>
     </QuillContainer>
-  );
-});
+  )
+})

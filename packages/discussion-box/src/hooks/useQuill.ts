@@ -1,13 +1,13 @@
-import { Dispatch, useCallback, useEffect } from "react";
+import { Dispatch, useCallback, useEffect } from 'react';
 
-import { useMutation } from "@apollo/client";
+import { useMutation } from '@apollo/client';
 
-import { fileClient as client } from "../graphql/fileGraphql";
-import { UPLOAD_FILE } from "../graphql/fileQuery";
+import { fileClient as client } from '../graphql/fileGraphql';
+import { UPLOAD_FILE } from '../graphql/fileQuery';
 
-import { UploadedFile, IFile, ActionType, IPost } from "../utils/types";
+import { UploadedFile, IFile, ActionType, IPost } from '../utils/types';
 
-import { alertFeedback } from "../reducers/global.actions";
+import { alertFeedback } from '../reducers/global.actions';
 import {
   initializeQuill as initializeQuillAction,
   setPostForEditing as setPostForEditingAction,
@@ -17,7 +17,7 @@ import {
   addAttachment,
   cancelAttachment as cancelAttachmentAction,
   changeQuill as changeQuillAction,
-} from "../reducers/quill.actions";
+} from '../reducers/quill.actions';
 
 type UseQuillProps = {
   dispatch: Dispatch<ActionType<unknown>>;
@@ -29,13 +29,13 @@ export function useQuill({ dispatch }: UseQuillProps) {
     UPLOAD_FILE,
     {
       client,
-    }
+    },
   );
 
   // Upload is successful then trigger onAddAttachment
   useEffect(() => {
     if (error) {
-      dispatch(alertFeedback("error", `Cannot upload file to server!`));
+      dispatch(alertFeedback('error', `Cannot upload file to server!`));
       return;
     }
 
@@ -54,14 +54,14 @@ export function useQuill({ dispatch }: UseQuillProps) {
     (post: IPost) => {
       dispatch(setPostForEditingAction(post));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const setPostForReplying = useCallback(
     (post: IPost) => {
       dispatch(setPostForReplyingAction(post));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const saveQuillStates = useCallback(() => {
@@ -76,14 +76,14 @@ export function useQuill({ dispatch }: UseQuillProps) {
     (file: IFile) => {
       dispatch(cancelAttachmentAction(file));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const changeQuill = useCallback(
     (quill: string | undefined, plain: string) => {
       dispatch(changeQuillAction(quill, plain));
     },
-    [dispatch]
+    [dispatch],
   );
 
   return {

@@ -1,11 +1,11 @@
-import React, { Fragment, useEffect, useRef, useCallback } from "react";
+import React, { Fragment, useEffect, useRef, useCallback } from 'react';
 
-import { Divider, Stack } from "@mui/material";
+import { Divider, Stack } from '@mui/material';
 
-import { Post } from "./Post";
-import { ScrollDownButton } from "../common/ScrollDownButton";
+import { Post } from './Post';
+import { ScrollDownButton } from '../common/ScrollDownButton';
 
-import { useDiscussionContext } from "../hooks/useDiscussionContext";
+import { useDiscussionContext } from '../hooks/useDiscussionContext';
 
 export function PostList() {
   const {
@@ -35,11 +35,11 @@ export function PostList() {
       gap="10px"
       ref={ref}
       sx={{
-        position: "relative",
+        position: 'relative',
         flexGrow: 1,
-        fontFamily: "Inter",
-        fontStyle: "normal",
-        overflowY: "auto",
+        fontFamily: 'Inter',
+        fontStyle: 'normal',
+        overflowY: 'auto',
       }}
     >
       {discussion
@@ -49,12 +49,16 @@ export function PostList() {
 
             {/* Consider last post divider component */}
             {index !== discussion.posts.length - 1 && (
-              <Divider sx={{ borderColor: "#000", marginTop: "10px" }} />
+              <Divider sx={{ borderColor: '#000', marginTop: '10px' }} />
             )}
           </Fragment>
         ))
         : null}
-      {isShownDownButton ? <ScrollDownButton onClick={moveScrollDown} /> : null}
+      {
+        isShownDownButton ? (
+          <ScrollDownButton onClick={moveScrollDown} />
+        ) : null
+      }
     </Stack>
   );
 }

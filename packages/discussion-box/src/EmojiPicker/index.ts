@@ -1,1 +1,1 @@
-export { CustomEmojiPicker as EmojiPicker } from "./EmojiPicker";
+export { CustomEmojiPicker as EmojiPicker } from './EmojiPicker';

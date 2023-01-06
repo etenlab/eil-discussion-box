@@ -17,7 +17,7 @@ export function Username({ username }: { username: string }) {
         fontStyle: "normal",
         fontWeight: 700,
         fontSize: "14px",
-        lineHeight: "17px",
+        lineHeight: "17px"
       }}
     >
       {transformUsername}

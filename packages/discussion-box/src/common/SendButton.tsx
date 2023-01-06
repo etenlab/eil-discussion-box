@@ -1,13 +1,13 @@
-import React, { MouseEvent } from "react";
-import SendIcon from "@mui/icons-material/Send";
+import React, { MouseEvent } from 'react';
+import SendIcon from '@mui/icons-material/Send';
 import { SendButtonWrapper } from "./styled";
 
 type SendButtonProps = {
   /**
-   * Click Event handler,
+   * Click Event handler, 
    */
   onClick(event: MouseEvent<HTMLButtonElement>): void;
-};
+}
 
 /**
  * Primary UI component
@@ -17,5 +17,5 @@ export function SendButton({ onClick }: SendButtonProps) {
     <SendButtonWrapper onClick={onClick}>
       <SendIcon />
     </SendButtonWrapper>
-  );
+  )
 }

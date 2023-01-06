@@ -1,1 +1,1 @@
-export { MockLoginForm } from "./MockLoginForm";
+export { MockLoginForm } from './MockLoginForm';

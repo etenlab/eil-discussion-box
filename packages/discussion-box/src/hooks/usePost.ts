@@ -42,35 +42,32 @@ type UsePostProps = {
 };
 
 export function usePost({ discussionId, dispatch }: UsePostProps) {
-  const { data: postCreatedData, error: postCreatedError } = useSubscription<
-    PostCreatedData
-  >(POST_CREATED_SUBSCRIPTION, {
-    variables: {
-      discussionId: discussionId !== null ? discussionId : -1,
-    },
-    skip: discussionId === null,
-    client: discussionSubscriptionClient,
-  });
+  const { data: postCreatedData, error: postCreatedError } =
+    useSubscription<PostCreatedData>(POST_CREATED_SUBSCRIPTION, {
+      variables: {
+        discussionId: discussionId !== null ? discussionId : -1,
+      },
+      skip: discussionId === null,
+      client: discussionSubscriptionClient,
+    });
 
-  const { data: postUpdatedData, error: postUpdatedError } = useSubscription<
-    PostUpdatedData
-  >(POST_UPDATED_SUBSCRIPTION, {
-    variables: {
-      discussionId: discussionId !== null ? discussionId : -1,
-    },
-    skip: discussionId === null,
-    client: discussionSubscriptionClient,
-  });
+  const { data: postUpdatedData, error: postUpdatedError } =
+    useSubscription<PostUpdatedData>(POST_UPDATED_SUBSCRIPTION, {
+      variables: {
+        discussionId: discussionId !== null ? discussionId : -1,
+      },
+      skip: discussionId === null,
+      client: discussionSubscriptionClient,
+    });
 
-  const { data: postDeletedData, error: postDeletedError } = useSubscription<
-    PostDeletedData
-  >(POST_DELETED_SUBSCRIPTION, {
-    variables: {
-      discussionId: discussionId !== null ? discussionId : -1,
-    },
-    skip: discussionId === null,
-    client: discussionSubscriptionClient,
-  });
+  const { data: postDeletedData, error: postDeletedError } =
+    useSubscription<PostDeletedData>(POST_DELETED_SUBSCRIPTION, {
+      variables: {
+        discussionId: discussionId !== null ? discussionId : -1,
+      },
+      skip: discussionId === null,
+      client: discussionSubscriptionClient,
+    });
 
   const [createPost, { error: createPostError }] = useMutation(CREATE_POST, {
     client,

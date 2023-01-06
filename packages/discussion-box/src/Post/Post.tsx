@@ -1,21 +1,21 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect } from 'react'
 
-import { Stack, Popover } from "@mui/material";
+import { Stack, Popover } from '@mui/material'
 
-import EditIcon from "@mui/icons-material/Edit";
-import ReplyIcon from "@mui/icons-material/Reply";
-import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit'
+import ReplyIcon from '@mui/icons-material/Reply'
+import DeleteIcon from '@mui/icons-material/Delete'
 
-import { PostText } from "./styled";
-import { ReactionList } from "../Reaction";
-import { IPost } from "../utils/types";
-import { AttachmentList } from "../Attachment";
-import { PostHeader } from "./PostHeader";
-import { PostReply } from "./PostReply";
-import { PostDeletedReply } from "./PostDeletedReply";
-import { ActionList } from "./ActionList";
+import { PostText } from './styled'
+import { ReactionList } from '../Reaction'
+import { IPost } from '../utils/types'
+import { AttachmentList } from '../Attachment'
+import { PostHeader } from './PostHeader'
+import { PostReply } from './PostReply'
+import { PostDeletedReply } from './PostDeletedReply'
+import { ActionList } from './ActionList'
 
-import { useDiscussionContext } from "../hooks/useDiscussionContext";
+import { useDiscussionContext } from '../hooks/useDiscussionContext'
 
 interface PostProps {
   post: IPost;
@@ -35,66 +35,58 @@ export function Post({ post }: PostProps) {
     reply_id,
     reply,
     is_edited,
-  } = post;
+  } = post
 
   const {
-    states: {
-      global: { userId },
-      quillRef,
-    },
-    actions: {
-      deletePost,
-      setPostForEditing,
-      setPostForReplying,
-      alertFeedback,
-    },
-  } = useDiscussionContext();
+    states: { global: { userId }, quillRef },
+    actions: { deletePost, setPostForEditing, setPostForReplying, alertFeedback },
+  } = useDiscussionContext()
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const postElement = useRef<HTMLParagraphElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const postElement = useRef<HTMLParagraphElement>(null)
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   useLayoutEffect(() => {
     if (postElement.current) {
       postElement.current.innerHTML =
         quill_text +
-        (is_edited ? "<span style='font-size: 12px'>(edited)</span>" : "");
+        (is_edited ? "<span style='font-size: 12px'>(edited)</span>" : '')
     }
-  }, [quill_text, is_edited]);
+  }, [quill_text, is_edited])
 
   const handleEditPost = () => {
     if (user.user_id !== userId) {
-      alertFeedback("warning", "You are not owner of this post!");
+      alertFeedback('warning', 'You are not owner of this post!');
       return;
     }
 
-    setPostForEditing(post);
-    quillRef.current?.focus();
-    handlePopoverClose();
-  };
+    setPostForEditing(post)
+    quillRef.current?.focus()
+    handlePopoverClose()
+  }
 
   const handleReplyPost = () => {
-    setPostForReplying(post);
-    quillRef.current?.focus();
-    handlePopoverClose();
-  };
+    setPostForReplying(post)
+    quillRef.current?.focus()
+    handlePopoverClose()
+  }
 
   const handleDeletePost = () => {
     if (user.user_id !== userId) {
-      alertFeedback("warning", "You are not owner of this post!");
+      alertFeedback('warning', 'You are not owner of this post!');
       return;
     }
 
-    const result = window.confirm("Are you sure to delete this post?");
+    const result = window.confirm('Are you sure to delete this post?')
     if (!result) {
-      return;
+      return
     }
 
     deletePost({
@@ -102,33 +94,33 @@ export function Post({ post }: PostProps) {
         id,
         userId,
       },
-    });
+    })
 
-    handlePopoverClose();
-  };
+    handlePopoverClose()
+  }
 
   const created_at_date =
-    typeof created_at === "string" ? new Date(created_at) : created_at;
+    typeof created_at === 'string' ? new Date(created_at) : created_at
 
-  const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl)
 
   const actions = [
     {
-      name: "Edit Post",
+      name: 'Edit Post',
       action: handleEditPost,
       icon: <EditIcon sx={{ fontSize: 16 }} />,
     },
     {
-      name: "Reply",
+      name: 'Reply',
       action: handleReplyPost,
       icon: <ReplyIcon sx={{ fontSize: 16 }} />,
     },
     {
-      name: "Delete Post",
+      name: 'Delete Post',
       action: handleDeletePost,
-      icon: <DeleteIcon sx={{ fontSize: 16, color: "red" }} />,
+      icon: <DeleteIcon sx={{ fontSize: 16, color: 'red' }} />,
     },
-  ];
+  ]
 
   return (
     <>
@@ -164,16 +156,16 @@ export function Post({ post }: PostProps) {
         anchorEl={anchorEl}
         onClose={handlePopoverClose}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
+          vertical: 'bottom',
+          horizontal: 'right',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
+          vertical: 'top',
+          horizontal: 'right',
         }}
       >
         <ActionList actions={actions} />
       </Popover>
     </>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import { actions } from "./quill.actions";
+import { actions } from './quill.actions';
 
-import { IPost, IFile, ActionType } from "../utils/types";
+import { IPost, IFile, ActionType } from '../utils/types';
 
 export type StateType = {
   editingPost: IPost | null;
@@ -17,16 +17,16 @@ export const initialState = {
   editingPost: null,
   replyingPost: null,
   quill: undefined,
-  plain: "",
+  plain: '',
   attachments: [],
   prevQuill: undefined,
-  prevPlain: "",
+  prevPlain: '',
   prevAttachments: [],
 };
 
 export function reducer(
   state: StateType = initialState,
-  action: ActionType<unknown>
+  action: ActionType<unknown>,
 ): StateType {
   const prevState: StateType = JSON.parse(JSON.stringify(state));
   const { type } = action;
@@ -51,7 +51,7 @@ export function reducer(
         ...prevState,
         replyingPost,
         quill: undefined,
-        plain: "",
+        plain: '',
         attachments: [],
       };
     }
@@ -61,7 +61,7 @@ export function reducer(
         editingPost: null,
         replyingPost: null,
         quill: undefined,
-        plain: "",
+        plain: '',
         attachments: [],
         prevQuill: prevState.quill,
         prevPlain: prevState.plain,
@@ -75,7 +75,7 @@ export function reducer(
         plain: prevState.prevPlain,
         attachments: prevState.prevAttachments,
         prevQuill: undefined,
-        prevPlain: "",
+        prevPlain: '',
         prevAttachments: [],
       };
     }
@@ -91,7 +91,7 @@ export function reducer(
       return {
         ...prevState,
         attachments: prevState.attachments.filter(
-          (file) => file.id !== canceledFile.id
+          (file) => file.id !== canceledFile.id,
         ),
       };
     }

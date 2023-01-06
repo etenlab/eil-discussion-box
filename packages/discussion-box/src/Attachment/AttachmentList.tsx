@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import { Stack } from "@mui/material";
+import { Stack } from '@mui/material';
 
-import { Attachment } from "./Attachment";
-import { IFile, IPost } from "../utils/types";
-import { useDiscussionContext } from "../hooks/useDiscussionContext";
+import { Attachment } from './Attachment';
+import { IFile, IPost } from '../utils/types';
+import { useDiscussionContext } from '../hooks/useDiscussionContext';
 
 type RelationshipFile = {
   id: number;
@@ -13,16 +13,11 @@ type RelationshipFile = {
 
 type AttachmentListProps = {
   files: RelationshipFile[];
-  post: IPost;
+  post: IPost,
 };
 
 export function AttachmentList({ files, post }: AttachmentListProps) {
-  const {
-    states: {
-      global: { userId },
-    },
-    actions: { deleteAttachment, alertFeedback },
-  } = useDiscussionContext();
+  const { states: { global: { userId } }, actions: { deleteAttachment, alertFeedback } } = useDiscussionContext();
 
   const removeAttachmentById = (id: number) => {
     if (post.user_id !== userId) {
@@ -46,18 +41,12 @@ export function AttachmentList({ files, post }: AttachmentListProps) {
         post_id: post.id,
       },
     });
-  };
+  }
 
   return (
     <Stack gap={2}>
       {files.map((file) => (
-        <Attachment
-          key={file.id}
-          file={file.file}
-          onRemove={() => {
-            removeAttachmentById(file.id);
-          }}
-        />
+        <Attachment key={file.id} file={file.file} onRemove={() => { removeAttachmentById(file.id) }} />
       ))}
     </Stack>
   );

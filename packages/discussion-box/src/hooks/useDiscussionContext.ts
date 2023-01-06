@@ -1,8 +1,8 @@
 import { useContext } from "react";
 
-import { DiscussionContext, ContextType } from "../context";
+import { DiscussionContext } from "../context";
 
-export function useDiscussionContext(): ContextType {
+export function useDiscussionContext() {
   const context = useContext(DiscussionContext);
 
   if (context === undefined) {

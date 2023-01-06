@@ -1,6 +1,6 @@
-import React, { ChangeEventHandler } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import { AddButtonWrapper } from "./styled";
+import React, { ChangeEventHandler } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import { AddButtonWrapper } from './styled';
 
 type AddAttachmentButtoonProps = {
   /**
@@ -20,12 +20,12 @@ export function AddAttachmentButton({
   onChange,
   disabled,
 }: AddAttachmentButtoonProps) {
-  const className = disabled ? "disabled" : "";
+  const className = (disabled) ? "disabled" : "";
 
   return (
     <AddButtonWrapper className={className}>
-      <label htmlFor="file-upload" style={{ height: "16px" }}>
-        <AddIcon sx={{ color: disabled ? "#555" : "#000" }} />
+      <label htmlFor="file-upload" style={{ height: '16px', }}>
+        <AddIcon sx={{ color: disabled ? '#555' : '#000' }} />
       </label>
       <input
         id="file-upload"

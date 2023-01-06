@@ -1,6 +1,6 @@
-import { actions } from "./global.actions";
+import { actions } from './global.actions';
 
-import { ActionType, FeedbackType, EmojiModeType, IPost } from "../utils/types";
+import { ActionType, FeedbackType, EmojiModeType, IPost } from '../utils/types';
 
 export type StateType = {
   userId: number | null;
@@ -19,19 +19,19 @@ export const initialState: StateType = {
   userId: null,
   snack: {
     open: false,
-    message: "",
-    severity: "success",
+    message: '',
+    severity: 'success',
   },
   emoji: {
     anchorEl: null,
     post: null,
-    mode: "react",
+    mode: 'react',
   },
 };
 
 export function reducer(
   state: StateType = initialState,
-  action: ActionType<unknown>
+  action: ActionType<unknown>,
 ): StateType {
   const prevState = { ...state };
   const { type } = action;
@@ -84,7 +84,7 @@ export function reducer(
         emoji: {
           anchorEl: null,
           post: null,
-          mode: "react",
+          mode: 'react',
         },
       };
     }

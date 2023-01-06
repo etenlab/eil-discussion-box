@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const typeDefs = gql`
   extend input NewDiscussionInput {
@@ -399,6 +399,22 @@ export const DELETE_REACTION = gql`
 export const CREATE_USER = gql`
   mutation CreateUser($email: String!, $username: String!) {
     createUser(email: $email, username: $username) {
+      user_id
+    }
+  }
+`;
+
+export const GET_USER_ID_FROM_EMAIL = gql`
+  query GetUserIdFromEmail($email: String!) {
+    getUserIdFromEmail(email: $email) {
+      user_id
+    }
+  }
+`;
+
+export const GET_USER_ID_FROM_NAME = gql`
+  query GetUserIdFromName($name: String!) {
+    getUserIdFromName(name: $name) {
       user_id
     }
   }

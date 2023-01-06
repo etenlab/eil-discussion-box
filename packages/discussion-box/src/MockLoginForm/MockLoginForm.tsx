@@ -1,25 +1,28 @@
-import React, { useState, useEffect, ChangeEventHandler } from "react";
-import { useMutation } from "@apollo/client";
-import { discussionClient } from "../graphql/discussionGraphql";
-import { CREATE_USER } from "../graphql/discussionQuery";
+import React, { useState, useEffect, ChangeEventHandler } from 'react';
+import { useMutation } from '@apollo/client';
+import { discussionClient } from '../graphql/discussionGraphql';
+import { CREATE_USER } from '../graphql/discussionQuery';
 
 type MockLoginFormProps = {
-  setMockUserId(id: number): void;
+  setMockUserInfo(info: { userInfo: unknown; userInfoType: string }): void;
 };
 
-export function MockLoginForm({ setMockUserId }: MockLoginFormProps) {
+export function MockLoginForm({ setMockUserInfo }: MockLoginFormProps) {
   const [userId, setUserId] = useState<number | null>(null);
-  const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
   const [createUser, { loading, error, data }] = useMutation(CREATE_USER, {
     client: discussionClient,
   });
 
   useEffect(() => {
     if (loading === false && error === undefined && data) {
-      setMockUserId(data.createUser.user_id);
+      setMockUserInfo({
+        userInfo: data.createUser.user_id,
+        userInfoType: 'user_id',
+      });
     }
-  }, [data, loading, error, setMockUserId]);
+  }, [data, loading, error, setMockUserInfo]);
 
   const handleChangeUserId: ChangeEventHandler<HTMLInputElement> = (e) => {
     setUserId(+e.target.value);
@@ -34,8 +37,8 @@ export function MockLoginForm({ setMockUserId }: MockLoginFormProps) {
   };
 
   const handleRegister = () => {
-    if (username.trim() === "" || email.trim() === "") {
-      alert("Please input both Username and Email");
+    if (username.trim() === '' || email.trim() === '') {
+      alert('Please input both Username and Email');
       return;
     }
 
@@ -48,25 +51,43 @@ export function MockLoginForm({ setMockUserId }: MockLoginFormProps) {
   };
 
   const handleLogin = () => {
-    if (!userId) {
-      alert("Please input userId");
+    if (userId) {
+      setMockUserInfo({
+        userInfo: userId,
+        userInfoType: 'user_id',
+      });
       return;
     }
 
-    setMockUserId(userId);
+    if (username.trim() !== '') {
+      setMockUserInfo({
+        userInfo: username.trim(),
+        userInfoType: 'name',
+      });
+      return;
+    }
+
+    if (email.trim() !== '') {
+      setMockUserInfo({
+        userInfo: email.trim(),
+        userInfoType: 'email',
+      });
+    }
+
+    alert('Please input user info!!');
   };
 
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "300px",
+        display: 'flex',
+        flexDirection: 'column',
+        width: '300px',
       }}
     >
       <input
         type="number"
-        value={userId ? userId : ""}
+        value={userId ? userId : ''}
         onChange={handleChangeUserId}
         placeholder="User Id"
       />

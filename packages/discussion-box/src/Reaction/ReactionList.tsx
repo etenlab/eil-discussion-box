@@ -1,20 +1,20 @@
-import React, { useMemo, MouseEvent } from "react";
+import React, { useMemo, MouseEvent } from 'react'
 
-import { Stack } from "@mui/material";
+import { Stack } from '@mui/material'
 
-import { IReaction, IPost } from "../utils/types";
-import { sortByContent } from "../utils/helpers";
-import { Reaction } from "./Reaction";
-import { AddReactionButton } from "../common/AddReactionButton";
+import { IReaction, IPost } from '../utils/types'
+import { sortByContent } from '../utils/helpers'
+import { Reaction } from './Reaction'
+import { AddReactionButton } from '../common/AddReactionButton'
 
-import { useDiscussionContext } from "../hooks/useDiscussionContext";
+import { useDiscussionContext } from '../hooks/useDiscussionContext'
 
 interface ReactionListProps {
   /**
    * Lists of reactions about specific post
    */
-  reactions: IReaction[];
-  post: IPost;
+  reactions: IReaction[]
+  post: IPost
 }
 
 /**
@@ -26,12 +26,12 @@ export function ReactionList({ reactions, post }: ReactionListProps) {
       global: { userId },
     },
     actions: { openEmojiPicker, deleteReaction, createReaction },
-  } = useDiscussionContext();
+  } = useDiscussionContext()
 
   const handleClickReaction = (content: string) => {
     const reaction = reactions.find(
-      (reaction) => reaction.content === content && reaction.user_id === userId
-    );
+      (reaction) => reaction.content === content && reaction.user_id === userId,
+    )
 
     if (reaction) {
       deleteReaction({
@@ -39,7 +39,7 @@ export function ReactionList({ reactions, post }: ReactionListProps) {
           id: reaction.id,
           userId,
         },
-      });
+      })
     } else {
       createReaction({
         variables: {
@@ -49,18 +49,18 @@ export function ReactionList({ reactions, post }: ReactionListProps) {
             user_id: userId,
           },
         },
-      });
+      })
     }
-  };
+  }
 
   const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
-    openEmojiPicker(event.currentTarget, post, "react");
-  };
+    openEmojiPicker(event.currentTarget, post, 'react')
+  }
 
-  const contentReactions = useMemo(() => sortByContent(reactions), [reactions]);
+  const contentReactions = useMemo(() => sortByContent(reactions), [reactions])
 
   return (
-    <Stack direction="row" sx={{ flexWrap: "wrap", gap: "10px" }}>
+    <Stack direction="row" sx={{ flexWrap: 'wrap', gap: '10px' }}>
       {contentReactions.map(({ content, reactions }) => (
         <Reaction
           key={content}
@@ -71,5 +71,5 @@ export function ReactionList({ reactions, post }: ReactionListProps) {
       ))}
       <AddReactionButton onClick={handleOpenEmojiPicker} />
     </Stack>
-  );
+  )
 }
