@@ -64,8 +64,6 @@ function DiscussionPure({
 
   const { snack, emoji } = global;
 
-  console.log(userId);
-
   useEffect(() => {
     if (global.userId !== userId) {
       setNewUser(userId);
@@ -80,7 +78,6 @@ function DiscussionPure({
 
   const handleEmojiClickByReact = useCallback(
     (post: IPost | null, emojiData: EmojiClickData) => {
-      console.log(emojiData);
       if (post) {
         const reaction = post.reactions.find(
           (reaction) =>
@@ -229,7 +226,6 @@ export function Discussion(props: DiscussionProps) {
     if (userIdFromEmail === undefined) {
       return;
     }
-    console.log(userIdFromEmail)
 
     setUserId(userIdFromEmail.getUserIdFromEmail.user_id);
   }, [errorFromEmail, userIdFromEmail]);
@@ -243,7 +239,7 @@ export function Discussion(props: DiscussionProps) {
     if (userIdFromName === undefined) {
       return;
     }
-    console.log(userIdFromName);
+
     setUserId(userIdFromName.getUserIdFromName.user_id);
   }, [errorFromName, userIdFromName]);
 
