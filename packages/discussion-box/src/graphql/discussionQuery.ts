@@ -419,3 +419,14 @@ export const GET_USER_ID_FROM_NAME = gql`
     }
   }
 `;
+
+export const GET_DISCUSSIONS_SUMMARY_BY_USER_ID = gql`
+  query GetDiscussionsSummaryByUserId($userId: Int!) {
+    getDiscussionsSummaryByUserId(userId: $userId) {
+      id
+      table_name
+      row
+      total_posts
+    }
+  }
+`;

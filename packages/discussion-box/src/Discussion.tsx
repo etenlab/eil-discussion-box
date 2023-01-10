@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  CSSProperties,
-} from 'react';
+import React, { useEffect, useRef, useCallback, CSSProperties } from 'react';
 
 import {
   Stack,
@@ -26,12 +20,7 @@ import { useDiscussionContext } from './hooks/useDiscussionContext';
 
 import { PostList } from './Post';
 
-import { useLazyQuery } from '@apollo/client';
-import { discussionClient } from './graphql/discussionGraphql';
-import {
-  GET_USER_ID_FROM_EMAIL,
-  GET_USER_ID_FROM_NAME,
-} from './graphql/discussionQuery';
+import { withUserId } from './withUserId';
 
 type DiscussionPureProps = {
   userId: number;
@@ -202,78 +191,12 @@ type DiscussionProps = {
   style: CSSProperties | undefined;
 };
 
+const DiscussionWithLogin = withUserId(DiscussionPure);
+
 export function Discussion(props: DiscussionProps) {
-  const [userId, setUserId] = useState<number | null>(null);
-
-  const [getUserIdFromEmail, { error: errorFromEmail, data: userIdFromEmail }] =
-    useLazyQuery(GET_USER_ID_FROM_EMAIL, {
-      fetchPolicy: 'no-cache',
-      client: discussionClient,
-    });
-
-  const [getUserIdFromName, { error: errorFromName, data: userIdFromName }] =
-    useLazyQuery(GET_USER_ID_FROM_NAME, {
-      fetchPolicy: 'no-cache',
-      client: discussionClient,
-    });
-
-  useEffect(() => {
-    if (errorFromEmail) {
-      alert('Failed in getting user id operation!');
-      return;
-    }
-
-    if (userIdFromEmail === undefined) {
-      return;
-    }
-
-    setUserId(userIdFromEmail.getUserIdFromEmail.user_id);
-  }, [errorFromEmail, userIdFromEmail]);
-
-  useEffect(() => {
-    if (errorFromName) {
-      alert('Failed in getting user id operation!');
-      return;
-    }
-
-    if (userIdFromName === undefined) {
-      return;
-    }
-
-    setUserId(userIdFromName.getUserIdFromName.user_id);
-  }, [errorFromName, userIdFromName]);
-
-  useEffect(() => {
-    switch (props.userInfoType) {
-      case 'email': {
-        getUserIdFromEmail({
-          variables: {
-            email: props.userInfo as string,
-          },
-        });
-        break;
-      }
-      case 'name': {
-        getUserIdFromName({
-          variables: {
-            name: props.userInfo as string,
-          },
-        });
-        break;
-      }
-      case 'user_id': {
-        setUserId(props.userInfo as number);
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-  }, [props, getUserIdFromEmail, getUserIdFromName]);
-
   return (
     <DiscussionProvider>
-      {userId ? <DiscussionPure userId={userId} {...props} /> : null}
+      <DiscussionWithLogin {...props} />
     </DiscussionProvider>
   );
 }

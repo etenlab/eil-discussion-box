@@ -1,6 +1,6 @@
 {
   "name": "@eten-lab/discussion-box",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "UNLICENSED",
   "private": false,
   "main": "dist/index.js",
@@ -37,8 +37,12 @@
     "@types/apollo-upload-client": "^17.0.2",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "@types/react-router": "^5.1.11",
+    "@types/react-router-dom": "^5.1.7",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0"
   },
   "eslintConfig": {
     "extends": [
