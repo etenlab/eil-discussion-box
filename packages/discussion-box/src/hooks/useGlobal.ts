@@ -1,6 +1,12 @@
-import { Dispatch, useCallback } from "react";
+import { Dispatch, useCallback } from 'react';
 
-import { ActionType, FeedbackType, EmojiModeType, IPost } from "../utils/types";
+import {
+  ActionType,
+  FeedbackType,
+  EmojiModeType,
+  IPost,
+  EditorKinds,
+} from '../utils/types';
 
 import {
   setNewUser as setNewUserAction,
@@ -8,7 +14,8 @@ import {
   closeFeedback as closeFeedbackAction,
   openEmojiPicker as openEmojiPickerAction,
   closeEmojiPicker as closeEmojiPickerAction,
-} from "../reducers/global.actions";
+  changeEditorKind as changeEditorKindAction,
+} from '../reducers/global.actions';
 
 type UseGlobalProps = {
   dispatch: Dispatch<ActionType<unknown>>;
@@ -20,14 +27,14 @@ export function useGlobal({ dispatch }: UseGlobalProps) {
     (userId: number) => {
       dispatch(setNewUserAction(userId));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const alertFeedback = useCallback(
     (feedbackType: FeedbackType, message: string) => {
       dispatch(alertFeedbackAction(feedbackType, message));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const closeFeedback = useCallback(() => {
@@ -38,16 +45,23 @@ export function useGlobal({ dispatch }: UseGlobalProps) {
     (
       anchorEl: Element | null,
       post: IPost | null = null,
-      mode: EmojiModeType = "react"
+      mode: EmojiModeType = 'react',
     ) => {
       dispatch(openEmojiPickerAction(anchorEl, post, mode));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const closeEmojiPicker = useCallback(() => {
     dispatch(closeEmojiPickerAction());
   }, [dispatch]);
+
+  const changeEditorKind = useCallback(
+    (kind: EditorKinds | null) => {
+      dispatch(changeEditorKindAction(kind));
+    },
+    [dispatch],
+  );
 
   return {
     setNewUser,
@@ -55,5 +69,6 @@ export function useGlobal({ dispatch }: UseGlobalProps) {
     closeFeedback,
     openEmojiPicker,
     closeEmojiPicker,
+    changeEditorKind,
   };
 }

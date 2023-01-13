@@ -1,6 +1,12 @@
 import { actions } from './global.actions';
 
-import { ActionType, FeedbackType, EmojiModeType, IPost } from '../utils/types';
+import {
+  ActionType,
+  FeedbackType,
+  EmojiModeType,
+  IPost,
+  EditorKinds,
+} from '../utils/types';
 
 export type StateType = {
   userId: number | null;
@@ -14,6 +20,7 @@ export type StateType = {
     post: IPost | null;
     mode: EmojiModeType;
   };
+  editorKind: EditorKinds | null;
 };
 export const initialState: StateType = {
   userId: null,
@@ -27,6 +34,7 @@ export const initialState: StateType = {
     post: null,
     mode: 'react',
   },
+  editorKind: null,
 };
 
 export function reducer(
@@ -86,6 +94,13 @@ export function reducer(
           post: null,
           mode: 'react',
         },
+      };
+    }
+    case actions.CHANGE_EDITOR_KIND: {
+      const editorKind = action.payload as EditorKinds | null;
+      return {
+        ...prevState,
+        editorKind,
       };
     }
     default: {

@@ -1,145 +1,40 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-import { Stack, Button, IconButton } from '@mui/material';
+import { Stack, Button } from '@mui/material';
 
 import MicNoneOutlinedIcon from '@mui/icons-material/MicNoneOutlined';
 import PauseOutlinedIcon from '@mui/icons-material/PauseOutlined';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CircleIcon from '@mui/icons-material/Circle';
 
+import { RecorderTimer } from '../common/RecorderTimer';
+import { RecorderControls } from '../common/RecorderControlsProps';
+
 import { AudioElement, Wave } from '@foobar404/wave';
+import { useDiscussionContext } from '../hooks/useDiscussionContext';
+import { RecorderStatus } from '../utils/types';
 
-const HOUR_TO_SECONDS = 60 * 60;
-const MIN_TO_SECONDS = 60;
+const maxFileSize =
+  process.env.REACT_APP_MAX_FILE_SIZE !== undefined
+    ? +process.env.REACT_APP_MAX_FILE_SIZE
+    : 1024 * 1024 * 50;
 
-function fillZero(num: number): string {
-  return num > 9 ? num + '' : '0' + num;
-}
+export function AudioRecorder() {
+  const {
+    states: {
+      quill: { attachments, replyingPost },
+      discussion,
+      global: { userId },
+    },
+    actions: {
+      uploadFile,
+      createPost,
+      alertFeedback,
+      initializeQuill,
+      changeEditorKind,
+    },
+  } = useDiscussionContext();
 
-function TimeShower({ totalSeconds }: { totalSeconds: number }) {
-  const hours = Math.floor(totalSeconds / HOUR_TO_SECONDS);
-  const mins = Math.floor((totalSeconds - hours * HOUR_TO_SECONDS) / MIN_TO_SECONDS);
-  const seconds =
-    totalSeconds - hours * HOUR_TO_SECONDS - mins * MIN_TO_SECONDS;
-
-  return (
-    <span
-      style={{
-        fontFamily: 'Inter',
-        fontStyle: 'normal',
-        fontWeight: 700,
-        fontSize: '28px',
-        lineHeight: '34px',
-      }}
-    >
-      {`${fillZero(hours)} : ${fillZero(mins)} : ${fillZero(seconds)}`}
-    </span>
-  );
-}
-
-function RecorderTimer({
-  recorderState,
-}: {
-  recorderState: 'new' | 'paused' | 'recording';
-}) {
-  const [time, setTime] = useState<number>(0);
-  const timerRef = useRef<NodeJS.Timer | null>(null);
-
-  useEffect(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-
-    switch (recorderState) {
-      case 'new': {
-        setTime(0);
-        break;
-      }
-      case 'recording': {
-        timerRef.current = setInterval(() => {
-          setTime((time) => time + 1);
-        }, 1000);
-        break;
-      }
-      case 'paused': {
-        break;
-      }
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [recorderState]);
-
-  return <TimeShower totalSeconds={time} />;
-}
-
-type RecorderControlsProps = {
-  onCancel(): void;
-  onSave(): void;
-  recorderState: 'new' | 'paused' | 'recording';
-  startButton: JSX.Element;
-  pauseButton: JSX.Element;
-  resumeButton: JSX.Element;
-};
-
-function RecorderControls({
-  onCancel,
-  onSave,
-  recorderState,
-  startButton,
-  pauseButton,
-  resumeButton,
-}: RecorderControlsProps) {
-  let mainButton;
-
-  switch (recorderState) {
-    case 'new': {
-      mainButton = startButton;
-      break;
-    }
-    case 'paused': {
-      mainButton = resumeButton;
-      break;
-    }
-    case 'recording': {
-      mainButton = pauseButton;
-      break;
-    }
-  }
-
-  const disabled = recorderState === 'new';
-
-  return (
-    <Stack direction="row" alignItems="center" gap="30px">
-      <IconButton onClick={onCancel} disabled={disabled}>
-        <CloseOutlinedIcon
-          sx={{ fontSize: 24, color: '#000', fontWeight: 700 }}
-        />
-      </IconButton>
-      {mainButton}
-      <IconButton onClick={onSave} disabled={disabled}>
-        <CheckOutlinedIcon
-          sx={{ fontSize: 24, color: '#000', fontWeight: 700 }}
-        />
-      </IconButton>
-    </Stack>
-  );
-}
-
-type AudioRecorderProps = {
-  onSavedFile(file: File): void;
-};
-
-export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
-  const [recorderState, setRecorderState] = useState<
-    'new' | 'paused' | 'recording'
-  >('new');
+  const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>('new');
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioElementRef = useRef<AudioElement | null>(null);
@@ -150,7 +45,7 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
     mediaRecorderRef.current?.stop();
     mediaRecorderRef.current = null;
     recordedChunksRef.current = [];
-    setRecorderState('new');
+    setRecorderStatus('new');
   };
 
   const initWave = () => {
@@ -169,6 +64,39 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
       }),
     );
   };
+
+  useEffect(() => {
+    if (recorderStatus !== 'ended') {
+      return;
+    }
+
+    if (attachments.length > 0) {
+      createPost({
+        variables: {
+          post: {
+            discussion_id: discussion!.id,
+            plain_text: '',
+            postgres_language: 'simple',
+            quill_text: '',
+            user_id: userId,
+            reply_id: replyingPost ? replyingPost.id : null,
+          },
+          files: attachments.map((file) => file.id),
+        },
+      });
+      initializeQuill();
+      refreshRecorder();
+    }
+  }, [
+    attachments,
+    recorderStatus,
+    discussion,
+    replyingPost,
+    userId,
+    createPost,
+    changeEditorKind,
+    initializeQuill
+  ]);
 
   const handleStart = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -198,7 +126,7 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
 
     mediaRecorder.start();
     mediaRecorderRef.current = mediaRecorder;
-    setRecorderState('recording');
+    setRecorderStatus('recording');
   };
 
   const handlePause = () => {
@@ -210,7 +138,7 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
     }
 
     mediaRecorder.pause();
-    setRecorderState('paused');
+    setRecorderStatus('paused');
   };
 
   const handleResume = () => {
@@ -222,24 +150,39 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
     }
 
     mediaRecorder.resume();
-    setRecorderState('recording');
+    setRecorderStatus('recording');
   };
 
   const handleCancel = () => {
     refreshRecorder();
+    changeEditorKind(null);
   };
 
   const handleSave = () => {
     if (recordedChunksRef.current.length > 0) {
-      onSavedFile(new File(recordedChunksRef.current, 'record.wav'));
-    }
+      const file = new File(recordedChunksRef.current, `record_${userId}.wav`);
 
-    refreshRecorder();
+      if (file.size > maxFileSize) {
+        alertFeedback(
+          'warning',
+          `Exceed max file size ( > ${process.env.REACT_APP_MAX_FILE_SIZE})!`,
+        );
+        return;
+      }
+
+      uploadFile({
+        variables: { file, file_size: file.size, file_type: 'audio/x-wav' },
+      });
+
+      setRecorderStatus('ended');
+    } else {
+      refreshRecorder();
+    }
   };
 
   return (
     <Stack justifyContent="space-between" alignItems="center" gap="20px">
-      <RecorderTimer recorderState={recorderState} />
+      <RecorderTimer recorderStatus={recorderStatus} />
       <canvas
         ref={canvasRef}
         width={1200}
@@ -249,11 +192,12 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
       <RecorderControls
         onCancel={handleCancel}
         onSave={handleSave}
-        recorderState={recorderState}
+        recorderStatus={recorderStatus}
         startButton={
           <Button
             variant="contained"
             sx={{ width: 80, height: 80, boxShadow: 'none' }}
+            color="gray"
             onClick={handleStart}
           >
             <MicNoneOutlinedIcon sx={{ fontSize: 44 }} />
@@ -263,6 +207,7 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
           <Button
             onClick={handlePause}
             variant="contained"
+            color="gray"
             sx={{ width: 80, height: 80, boxShadow: 'none' }}
           >
             <PauseOutlinedIcon sx={{ fontSize: 44 }} />
@@ -272,6 +217,7 @@ export function AudioRecorder({ onSavedFile }: AudioRecorderProps) {
           <Button
             onClick={handleResume}
             variant="contained"
+            color="gray"
             sx={{ width: 80, height: 80, boxShadow: 'none' }}
           >
             <CircleIcon sx={{ color: '#ff0000', fontSize: 44 }} />
