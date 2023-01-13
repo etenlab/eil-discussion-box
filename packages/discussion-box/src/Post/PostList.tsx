@@ -37,6 +37,7 @@ export function PostList() {
       sx={{
         position: 'relative',
         flexGrow: 1,
+        borderBottom: '3px solid #000',
         fontFamily: 'Inter',
         fontStyle: 'normal',
         overflowY: 'auto',

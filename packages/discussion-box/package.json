@@ -1,6 +1,6 @@
 {
   "name": "@eten-lab/discussion-box",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "license": "UNLICENSED",
   "private": false,
   "main": "dist/index.js",
@@ -27,6 +27,7 @@
     "@mui/material": "^5.10.5",
     "apollo-upload-client": "^17.0.0",
     "emoji-picker-react": "^4.4.3",
+    "@foobar404/wave": "^2.0.4",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.11.2",
     "react-quill": "^2.0.0",
