@@ -15,14 +15,23 @@ import { theme } from './theme';
 import { DiscussionProvider } from './context';
 import { EmojiClickData } from 'emoji-picker-react';
 import { EmojiPicker } from './EmojiPicker';
-import { ReactQuill } from './ReactQuill';
 import { PostList } from './Post';
-import { IPost } from './utils/types';
+import { InputModeSelector } from './InputModeSelector';
+import { ReactQuill } from './ReactQuill';
+import { AudioRecorder } from './AudioRecorder';
 
+import { IPost } from './utils/types';
 import { useDiscussionContext } from './hooks/useDiscussionContext';
 
-
 import { withUserId } from './withUserId';
+
+const InputComponents = {
+  selector: InputModeSelector,
+  quill: ReactQuill,
+  audio: AudioRecorder,
+}
+
+type InputComponentsKey = keyof typeof InputComponents;
 
 type DiscussionPureProps = {
   userId: number;
@@ -42,7 +51,7 @@ function DiscussionPure({
   style,
 }: DiscussionPureProps) {
   const {
-    states: { loading, discussion, global, quillRef },
+    states: { loading: discussionLoading, global, quillRef, uploading },
     actions: {
       changeDiscussionByTableNameAndRow,
       setNewUser,
@@ -53,7 +62,7 @@ function DiscussionPure({
     },
   } = useDiscussionContext();
 
-  const { snack, emoji } = global;
+  const { snack, emoji, editorKind } = global;
 
   useEffect(() => {
     if (global.userId !== userId) {
@@ -123,6 +132,12 @@ function DiscussionPure({
 
   const openedEmojiPicker = Boolean(emoji.anchorEl);
 
+  const editorKindString = editorKind || 'selector';
+
+  const InputComponent = InputComponents[editorKindString as InputComponentsKey];
+
+  const loading = (discussionLoading || (uploading && editorKind !== null));
+
   return (
     <>
       <Stack
@@ -131,8 +146,8 @@ function DiscussionPure({
         style={style}
         ref={discussionRef}
       >
-        {discussion ? <PostList /> : null}
-        <ReactQuill ref={quillRef} />
+        <PostList />
+        <InputComponent />
       </Stack>
 
       <Popover

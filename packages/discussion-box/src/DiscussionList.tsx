@@ -85,7 +85,7 @@ export function DiscussionListPure({ userId }: { userId: number }) {
           row: number;
           total_posts: number;
         }) => (
-          <Fragment key={id}>
+          <Fragment>
             <ListItem disablePadding onClick={() => {
               history.push({
                 pathname: `/translation-app/discussion/${table_name}/${row}`,

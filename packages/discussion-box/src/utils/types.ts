@@ -54,7 +54,7 @@ export interface IPost {
     files: [
       {
         id: number;
-      }
+      },
     ];
   };
   created_at: Date;
@@ -77,13 +77,13 @@ export type DiscussionRouteQuizParams = {
 export interface SnackbarState {
   open: boolean;
   message: string;
-  severity: "success" | "error" | "warning" | "info";
+  severity: 'success' | 'error' | 'warning' | 'info';
 }
 
 export interface EmojiPopoverState {
   anchorEl: Element | null;
   post: IPost | null;
-  mode: "quill" | "react" | null;
+  mode: 'quill' | 'react' | null;
 }
 
 export interface DiscussionCreatedData {
@@ -115,11 +115,15 @@ export interface UploadedFile {
 }
 
 export const FileMimeTypes = {
-  Video: "video",
-  Audio: "audio",
-  Image: "image",
+  Video: 'video',
+  Audio: 'audio',
+  Image: 'image',
 };
 
-export type FeedbackType = "success" | "error" | "info" | "warning";
+export type FeedbackType = 'success' | 'error' | 'info' | 'warning';
 
-export type EmojiModeType = "quill" | "react";
+export type EmojiModeType = 'quill' | 'react';
+
+export type EditorKinds = 'quill' | 'audio' | 'video';
+
+export type RecorderStatus = 'new' | 'paused' | 'recording' | 'ended';

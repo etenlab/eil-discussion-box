@@ -1,10 +1,10 @@
 export const modules = {
   toolbar: [
-    ["bold", "italic", "strike"],
-    ["link"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["blockquote"],
-    ["code", "code-block"],
+    ['bold', 'italic', 'strike'],
+    ['link'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    // ["blockquote"],
+    // ["code", "code-block"],
   ],
   keyboard: {
     bindings: {
@@ -19,32 +19,32 @@ export const modules = {
 };
 
 export const formats = [
-  "bold",
-  "italic",
-  "strike",
-  "link",
-  "list",
-  "bullet",
-  "blockquote",
-  "code",
-  "code-block",
+  'bold',
+  'italic',
+  'strike',
+  'link',
+  'list',
+  'bullet',
+  // 'blockquote',
+  // 'code',
+  // 'code-block',
 ];
 
 export const Skeletons = {
   normal: {
-    width: "200px",
-    height: "70px",
+    width: '200px',
+    height: '70px',
   },
   image: {
-    width: "70px",
-    height: "70px",
+    width: '70px',
+    height: '70px',
   },
   video: {
-    width: "70px",
-    height: "70px",
+    width: '70px',
+    height: '70px',
   },
   audio: {
-    width: "300px",
-    height: "70px",
+    width: '300px',
+    height: '70px',
   },
 };

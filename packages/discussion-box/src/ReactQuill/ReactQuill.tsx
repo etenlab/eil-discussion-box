@@ -12,6 +12,7 @@ import ReactQuill from 'react-quill'
 import { Skeleton, IconButton } from '@mui/material'
 
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined'
+import CloseIcon from "@mui/icons-material/Close";
 
 import { QuillAttachmentList } from '../Attachment'
 import {
@@ -26,11 +27,10 @@ import {
 import { AddAttachmentButton } from '../common/AddAttachmentButton'
 import { AddReactionButton } from '../common/AddReactionButton'
 import { SendButton } from '../common/SendButton'
+import { CircleCloseButton } from './styled';
 
 import { modules, formats, Skeletons } from './utils'
-
 import { getMimeType } from '../utils/helpers'
-
 import { useDiscussionContext } from '../hooks/useDiscussionContext'
 
 const maxFileSize =
@@ -67,6 +67,7 @@ export const CustomReactQuill = forwardRef<
       updatePost,
       createPost,
       alertFeedback,
+      changeEditorKind,
     },
   } = useDiscussionContext()
 
@@ -183,6 +184,18 @@ export const CustomReactQuill = forwardRef<
     }
   }
 
+  const handleCloseQuill = () => {
+    if (plain.trim() !== '' || attachments.length > 0) {
+      const result = window.confirm("Are you sure to cancel this post? You have unsaved inputs");
+      if (!result) {
+        return;
+      }
+    }
+
+    initializeQuill();
+    changeEditorKind(null);
+  }
+
   let quillTitle = ''
 
   if (editingPost || replyingPost) {
@@ -249,6 +262,9 @@ export const CustomReactQuill = forwardRef<
         <ReplyButtonContainer>
           <SendButton onClick={createOrUpdatePost} />
         </ReplyButtonContainer>
+        <CircleCloseButton onClick={handleCloseQuill} variant="contained" color="primary" sx={{ color: '#fff' }}>
+          <CloseIcon />
+        </CircleCloseButton>
       </div>
     </QuillContainer>
   )
