@@ -7,18 +7,20 @@ import {
   Popover,
   CircularProgress,
   Backdrop,
+  ThemeProvider,
 } from '@mui/material';
 
-import { DiscussionProvider } from './context';
-import { ReactQuill } from './ReactQuill';
-import { EmojiPicker } from './EmojiPicker';
-import { EmojiClickData } from 'emoji-picker-react';
+import { theme } from './theme';
 
+import { DiscussionProvider } from './context';
+import { EmojiClickData } from 'emoji-picker-react';
+import { EmojiPicker } from './EmojiPicker';
+import { ReactQuill } from './ReactQuill';
+import { PostList } from './Post';
 import { IPost } from './utils/types';
 
 import { useDiscussionContext } from './hooks/useDiscussionContext';
 
-import { PostList } from './Post';
 
 import { withUserId } from './withUserId';
 
@@ -130,7 +132,6 @@ function DiscussionPure({
         ref={discussionRef}
       >
         {discussion ? <PostList /> : null}
-
         <ReactQuill ref={quillRef} />
       </Stack>
 
@@ -195,8 +196,10 @@ const DiscussionWithLogin = withUserId(DiscussionPure);
 
 export function Discussion(props: DiscussionProps) {
   return (
-    <DiscussionProvider>
-      <DiscussionWithLogin {...props} />
-    </DiscussionProvider>
+    <ThemeProvider theme={theme}>
+      <DiscussionProvider>
+        <DiscussionWithLogin {...props} />
+      </DiscussionProvider>
+    </ThemeProvider>
   );
 }
