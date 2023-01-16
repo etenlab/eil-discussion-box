@@ -7,7 +7,7 @@ import PauseOutlinedIcon from '@mui/icons-material/PauseOutlined';
 import CircleIcon from '@mui/icons-material/Circle';
 
 import { RecorderTimer } from '../common/RecorderTimer';
-import { RecorderControls } from '../common/RecorderControlsProps';
+import { RecorderControls } from '../common/RecorderControls';
 
 import { AudioElement, Wave } from '@foobar404/wave';
 import { useDiscussionContext } from '../hooks/useDiscussionContext';
@@ -192,6 +192,7 @@ export function AudioRecorder() {
       <RecorderControls
         onCancel={handleCancel}
         onSave={handleSave}
+        color="#000"
         recorderStatus={recorderStatus}
         startButton={
           <Button

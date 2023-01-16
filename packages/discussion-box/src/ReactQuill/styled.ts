@@ -75,5 +75,8 @@ export const CircleCloseButton = styled(Button)({
   padding: '0px',
   minWidth: '35px',
   minHeight: '35px',
+  border: '1px solid #000',
   borderRadius: '50%',
+  color: '#000',
+  background: '#fff',
 });

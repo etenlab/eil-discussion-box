@@ -262,7 +262,7 @@ export const CustomReactQuill = forwardRef<
         <ReplyButtonContainer>
           <SendButton onClick={createOrUpdatePost} />
         </ReplyButtonContainer>
-        <CircleCloseButton onClick={handleCloseQuill} variant="contained" color="primary" sx={{ color: '#fff' }}>
+        <CircleCloseButton onClick={handleCloseQuill}>
           <CloseIcon />
         </CircleCloseButton>
       </div>

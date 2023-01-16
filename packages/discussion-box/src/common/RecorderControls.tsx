@@ -10,6 +10,7 @@ import { RecorderStatus } from '../utils/types';
 type RecorderControlsProps = {
   onCancel(): void;
   onSave(): void;
+  color: string;
   recorderStatus: RecorderStatus;
   startButton: JSX.Element;
   pauseButton: JSX.Element;
@@ -19,6 +20,7 @@ type RecorderControlsProps = {
 export function RecorderControls({
   onCancel,
   onSave,
+  color,
   recorderStatus,
   startButton,
   pauseButton,
@@ -47,13 +49,13 @@ export function RecorderControls({
     <Stack direction="row" alignItems="center" gap="30px">
       <IconButton onClick={onCancel}>
         <CloseOutlinedIcon
-          sx={{ fontSize: 24, color: '#000', fontWeight: 700 }}
+          sx={{ fontSize: 28, color, fontWeight: 700 }}
         />
       </IconButton>
       {mainButton}
       <IconButton onClick={onSave} disabled={disabled}>
         <CheckOutlinedIcon
-          sx={{ fontSize: 24, color: '#000', fontWeight: 700 }}
+          sx={{ fontSize: 28, color, fontWeight: 700 }}
         />
       </IconButton>
     </Stack>
