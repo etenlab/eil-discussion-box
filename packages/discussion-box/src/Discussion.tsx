@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, CSSProperties } from 'react';
+import React, { useEffect, useRef, useCallback, CSSProperties } from "react";
 
 import {
   Stack,
@@ -8,28 +8,30 @@ import {
   CircularProgress,
   Backdrop,
   ThemeProvider,
-} from '@mui/material';
+} from "@mui/material";
 
-import { theme } from './theme';
+import { theme } from "./theme";
 
-import { DiscussionProvider } from './context';
-import { EmojiClickData } from 'emoji-picker-react';
-import { EmojiPicker } from './EmojiPicker';
-import { PostList } from './Post';
-import { InputModeSelector } from './InputModeSelector';
-import { ReactQuill } from './ReactQuill';
-import { AudioRecorder } from './AudioRecorder';
+import { DiscussionProvider } from "./context";
+import { EmojiClickData } from "emoji-picker-react";
+import { EmojiPicker } from "./EmojiPicker";
+import { PostList } from "./Post";
+import { InputModeSelector } from "./InputModeSelector";
+import { ReactQuill } from "./ReactQuill";
+import { AudioRecorder } from "./AudioRecorder";
+import { VideoRecorder } from "./VideoRecorder";
 
-import { IPost } from './utils/types';
-import { useDiscussionContext } from './hooks/useDiscussionContext';
+import { IPost } from "./utils/types";
+import { useDiscussionContext } from "./hooks/useDiscussionContext";
 
-import { withUserId } from './withUserId';
+import { withUserId } from "./withUserId";
 
 const InputComponents = {
   selector: InputModeSelector,
   quill: ReactQuill,
   audio: AudioRecorder,
-}
+  video: VideoRecorder,
+};
 
 type InputComponentsKey = keyof typeof InputComponents;
 
@@ -82,7 +84,7 @@ function DiscussionPure({
         const reaction = post.reactions.find(
           (reaction) =>
             reaction.content === emojiData.unified &&
-            reaction.user_id === userId,
+            reaction.user_id === userId
         );
 
         if (reaction) {
@@ -105,38 +107,39 @@ function DiscussionPure({
         }
       }
     },
-    [deleteReaction, createReaction, userId],
+    [deleteReaction, createReaction, userId]
   );
 
   const handleEmojiClickByQuill = useCallback(
     (emojiData: EmojiClickData) => {
       quillRef.current?.write(emojiData.emoji);
     },
-    [quillRef],
+    [quillRef]
   );
 
   const handleEmojiClick = useCallback(
     (emojiData: EmojiClickData) => {
-      if (emoji.mode === 'quill') {
+      if (emoji.mode === "quill") {
         handleEmojiClickByQuill(emojiData);
       }
 
-      if (emoji.mode === 'react') {
+      if (emoji.mode === "react") {
         handleEmojiClickByReact(emoji.post, emojiData);
       }
 
       closeEmojiPicker();
     },
-    [emoji, handleEmojiClickByQuill, handleEmojiClickByReact, closeEmojiPicker],
+    [emoji, handleEmojiClickByQuill, handleEmojiClickByReact, closeEmojiPicker]
   );
 
   const openedEmojiPicker = Boolean(emoji.anchorEl);
 
-  const editorKindString = editorKind || 'selector';
+  const editorKindString = editorKind || "selector";
 
-  const InputComponent = InputComponents[editorKindString as InputComponentsKey];
+  const InputComponent =
+    InputComponents[editorKindString as InputComponentsKey];
 
-  const loading = (discussionLoading || (uploading && editorKind !== null));
+  const loading = discussionLoading || (uploading && editorKind !== null);
 
   return (
     <>
@@ -157,11 +160,11 @@ function DiscussionPure({
         }
         onClose={closeEmojiPicker}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         sx={{
-          display: openedEmojiPicker ? 'inherit' : 'none',
+          display: openedEmojiPicker ? "inherit" : "none",
         }}
       >
         <EmojiPicker onEmojiClick={handleEmojiClick} />
@@ -172,8 +175,8 @@ function DiscussionPure({
         autoHideDuration={2000}
         onClose={closeFeedback}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
+          vertical: "bottom",
+          horizontal: "right",
         }}
         key="bottom-right"
       >
@@ -181,15 +184,15 @@ function DiscussionPure({
           variant="filled"
           onClose={closeFeedback}
           severity={snack.severity}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snack.message}
         </Alert>
       </Snackbar>
 
-      <Backdrop sx={{ color: '#fff', zIndex: 1000 }} open={loading}>
+      <Backdrop sx={{ color: "#fff", zIndex: 1000 }} open={loading}>
         <Stack justifyContent="center">
-          <div style={{ margin: 'auto' }}>
+          <div style={{ margin: "auto" }}>
             <CircularProgress color="inherit" />
           </div>
           <div>LOADING</div>
@@ -201,7 +204,7 @@ function DiscussionPure({
 
 type DiscussionProps = {
   userInfo: unknown;
-  userInfoType: 'email' | 'name' | 'user_id';
+  userInfoType: "email" | "name" | "user_id";
   tableName: string;
   rowId: number;
   style: CSSProperties | undefined;
