@@ -17,6 +17,7 @@ import {
   IFile,
   EmojiModeType,
   EditorKinds,
+  ChangeDiscussionParams,
 } from './utils/types';
 
 export interface ContextType {
@@ -32,7 +33,7 @@ export interface ContextType {
     } | null>;
   };
   actions: {
-    changeDiscussionByTableNameAndRow(table_name: string, row: number): void;
+    changeDiscussion(params: ChangeDiscussionParams): void;
     createPost: any;
     updatePost: any;
     deletePost: any;
@@ -74,11 +75,10 @@ export function DiscussionProvider({ children }: DiscussionProviderProps) {
     null,
   );
 
-  const { loading: discussionLoading, changeDiscussionByTableNameAndRow } =
-    useDiscussion({
-      discussion: state.discussion,
-      dispatch,
-    });
+  const { loading: discussionLoading, changeDiscussion } = useDiscussion({
+    discussion: state.discussion,
+    dispatch,
+  });
 
   const { createPost, updatePost, deletePost, deleteAttachment } = usePost({
     discussionId: state.discussion ? state.discussion.id : null,
@@ -121,7 +121,7 @@ export function DiscussionProvider({ children }: DiscussionProviderProps) {
       quillRef,
     },
     actions: {
-      changeDiscussionByTableNameAndRow,
+      changeDiscussion,
       createPost,
       updatePost,
       deletePost,
@@ -141,7 +141,7 @@ export function DiscussionProvider({ children }: DiscussionProviderProps) {
       closeFeedback,
       openEmojiPicker,
       closeEmojiPicker,
-      changeEditorKind
+      changeEditorKind,
     },
   };
 

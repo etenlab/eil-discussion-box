@@ -10,8 +10,7 @@
     "test": "lerna run test --",
     "build": "lerna run build",
     "prepublish": "lerna run prepublish",
-    "start:example": "npm run build && yarn --cwd packages/discussion-box link && yarn --cwd node_modules/react link && yarn --cwd ./example link react @eten-lab/discussion-box && yarn --cwd ./example && yarn --cwd ./example run start",
-    "start:storybook": "npm run build && yarn --cwd packages/discussion-box link && yarn --cwd node_modules/react link && yarn --cwd ./example link react @eten-lab/discussion-box && yarn --cwd ./example && yarn --cwd ./example run storybook"
+    "start:example": "npm run build && yarn --cwd packages/discussion-box link && yarn --cwd node_modules/react link && yarn --cwd ./example link react @eten-lab/discussion-box && yarn --cwd ./example && yarn --cwd ./example run start"
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",

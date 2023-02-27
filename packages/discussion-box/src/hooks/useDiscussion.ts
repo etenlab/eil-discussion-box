@@ -1,21 +1,22 @@
-import { useEffect, useCallback, Dispatch, useRef } from "react";
+import { useEffect, useCallback, Dispatch, useRef } from 'react';
 
-import { useMutation, useLazyQuery } from "@apollo/client";
+import { useMutation, useLazyQuery } from '@apollo/client';
 
-import { discussionClient } from "../graphql/discussionGraphql";
-import { aggregationClient } from "../graphql/aggregationGraphql";
+import { discussionClient } from '../graphql/discussionGraphql';
+import { aggregationClient } from '../graphql/aggregationGraphql';
+import { GET_DISCUSSIONS, CREATE_DISCUSSION } from '../graphql/discussionQuery';
+
 import {
-  GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW,
-  CREATE_DISCUSSION,
-} from "../graphql/discussionQuery";
+  IDiscussion,
+  ActionType,
+  ChangeDiscussionParams,
+} from '../utils/types';
 
-import { IDiscussion, ActionType } from "../utils/types";
-
-import { loadDiscussion } from "../reducers/discussion.actions";
-import { alertFeedback } from "../reducers/global.actions";
+import { loadDiscussion } from '../reducers/discussion.actions';
+import { alertFeedback } from '../reducers/global.actions';
 
 const client =
-  process.env.REACT_APP_GRAPHQL_MODDE === "aggregation"
+  process.env.REACT_APP_GRAPHQL_MODDE === 'aggregation'
     ? aggregationClient
     : discussionClient;
 
@@ -25,9 +26,7 @@ type UseDiscussionProps = {
 };
 
 export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
-  const tableNameAndRow = useRef<{ table_name: string; row: number } | null>(
-    null
-  );
+  const discussionRef = useRef<ChangeDiscussionParams | null>(null);
 
   const [
     createDiscussion,
@@ -39,42 +38,52 @@ export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
   ] = useMutation(CREATE_DISCUSSION, { client });
 
   const [
-    getDiscussionsByTableNameAndRow,
+    getDiscussions,
     {
       called: discussionCalled,
       loading: discussionLoading,
       error: discussionError,
       data: discussionData,
     },
-  ] = useLazyQuery(GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW, {
-    fetchPolicy: "no-cache",
+  ] = useLazyQuery(GET_DISCUSSIONS, {
+    fetchPolicy: 'no-cache',
     client,
   });
 
-  const changeDiscussionByTableNameAndRow = useCallback(
-    (table_name: string, row: number) => {
+  const changeDiscussion = useCallback(
+    ({ table_name, row, orgId, appId }: ChangeDiscussionParams) => {
       if (table_name.length === 0 || row < 0) {
-        alert("Error at table_name or row");
+        alert('Error at table_name or row');
         return;
       }
 
-      if (table_name === discussion?.table_name || row === discussion?.row) {
+      if (
+        table_name === discussion?.table_name ||
+        row === discussion?.row ||
+        orgId === discussion?.appList.id ||
+        orgId === discussion?.organization.id
+      ) {
         return;
       }
 
-      tableNameAndRow.current = {
+      // Save params
+      discussionRef.current = {
         table_name,
         row,
+        orgId,
+        appId,
       };
 
-      getDiscussionsByTableNameAndRow({
+      getDiscussions({
         variables: {
           table_name,
           row,
+          org_id: orgId,
+          app_id: appId,
         },
       });
     },
-    [getDiscussionsByTableNameAndRow, discussion]
+    [getDiscussions, discussion],
   );
 
   // Substitute 'discussionData' came from server to 'discussion'
@@ -83,9 +92,9 @@ export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
     if (discussionCalled && !!discussionError) {
       dispatch(
         alertFeedback(
-          "error",
-          `Failed in loading discussion! Check your network connectivity`
-        )
+          'error',
+          `Failed in loading discussion! Check your network connectivity`,
+        ),
       );
       return;
     }
@@ -100,14 +109,14 @@ export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
     }
 
     // create a new Discussion with new table_name and row
-    if (tableNameAndRow.current) {
+    if (discussionRef.current) {
       createDiscussion({
         variables: {
           discussion: {
-            app: 0,
-            org: 0,
-            row: tableNameAndRow.current.row,
-            table_name: tableNameAndRow.current.table_name,
+            app_id: discussionRef.current.appId,
+            org_id: discussionRef.current.orgId,
+            row: discussionRef.current.row,
+            table_name: discussionRef.current.table_name,
           },
         },
       });
@@ -126,9 +135,9 @@ export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
     if (!!createDiscussionError) {
       dispatch(
         alertFeedback(
-          "error",
-          `Failed in creating new discussion with #table_name: ${tableNameAndRow.current?.table_name}, #row: ${tableNameAndRow.current?.row}!`
-        )
+          'error',
+          `Failed in creating new discussion with #table_name: ${discussionRef.current?.table_name}, #row: ${discussionRef.current?.row}!`,
+        ),
       );
       return;
     }
@@ -140,10 +149,12 @@ export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
     const newDiscussion = newDiscussionData.createDiscussion;
 
     if (
-      newDiscussion.table_name !== tableNameAndRow.current?.table_name ||
-      newDiscussion.row !== tableNameAndRow.current?.row
+      newDiscussion.table_name !== discussionRef.current?.table_name ||
+      newDiscussion.row !== discussionRef.current?.row ||
+      newDiscussion.appList.id !== discussionRef.current?.appId ||
+      newDiscussion.organization.id !== discussionRef.current?.orgId
     ) {
-      dispatch(alertFeedback("warning", `Received not required discussion!`));
+      dispatch(alertFeedback('warning', `Received not required discussion!`));
       return;
     }
 
@@ -157,6 +168,6 @@ export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
 
   return {
     loading: discussionLoading,
-    changeDiscussionByTableNameAndRow,
+    changeDiscussion,
   };
 }

@@ -1,6 +1,6 @@
 {
   "name": "@eten-lab/discussion-box",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "license": "UNLICENSED",
   "private": false,
   "main": "dist/index.js",

@@ -17,9 +17,8 @@ import { useLazyQuery } from "@apollo/client";
 
 import { discussionClient } from "./graphql/discussionGraphql";
 import { GET_DISCUSSIONS_SUMMARY_BY_USER_ID } from "./graphql/discussionQuery";
-import { withUserId } from "./withUserId";
 
-export function DiscussionListPure({ userId }: { userId: number }) {
+export function DiscussionList({ userId }: { userId: number }) {
   const history = useHistory();
 
   const [
@@ -108,5 +107,3 @@ export function DiscussionListPure({ userId }: { userId: number }) {
     </List>
   );
 }
-
-export const DiscussionList = withUserId(DiscussionListPure);

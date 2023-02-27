@@ -1,9 +1,9 @@
 import { gql } from '@apollo/client';
 
 export const typeDefs = gql`
-  extend input NewDiscussionInput {
-    app: Int
-    org: Int
+  extend input DiscussionInput {
+    app_id: Int!
+    org_id: Int!
     row: Int!
     table_name: String!
   }
@@ -24,12 +24,28 @@ export const typeDefs = gql`
   }
 `;
 
-export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
-  query GetDiscussionByTableNameAndRow($table_name: String!, $row: Int!) {
-    discussions(table_name: $table_name, row: $row) {
+export const GET_DISCUSSIONS = gql`
+  query GetDiscussions(
+    $app_id: Int!
+    $org_id: Int!
+    $row: Int!
+    $table_name: String!
+  ) {
+    discussions(
+      app_id: $app_id
+      org_id: $org_id
+      row: $row
+      table_name: $table_name
+    ) {
       id
-      app
-      org
+      appList {
+        id
+        app_name
+      }
+      organization {
+        id
+        name
+      }
       table_name
       row
       posts {
@@ -90,11 +106,17 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
 `;
 
 export const CREATE_DISCUSSION = gql`
-  mutation CreateDiscussion($discussion: NewDiscussionInput!) {
+  mutation CreateDiscussion($discussion: DiscussionInput!) {
     createDiscussion(newDiscussionData: $discussion) {
       id
-      app
-      org
+      appList {
+        id
+        app_name
+      }
+      organization {
+        id
+        name
+      }
       table_name
       row
       posts {
@@ -400,6 +422,24 @@ export const CREATE_USER = gql`
   mutation CreateUser($email: String!, $username: String!) {
     createUser(email: $email, username: $username) {
       user_id
+    }
+  }
+`;
+
+export const GET_APP_ID = gql`
+  query GetApp($app_name: String!) {
+    getApp(app_name: $app_name) {
+      id
+      app_name
+    }
+  }
+`;
+
+export const GET_ORG_ID = gql`
+  query GetOrg($name: String!) {
+    getOrg(name: $name) {
+      id
+      name
     }
   }
 `;

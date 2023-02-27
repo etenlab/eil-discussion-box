@@ -1,14 +1,16 @@
-import React from "react";
-import { Emoji, EmojiStyle } from "emoji-picker-react";
+import React from 'react';
+import { Emoji, EmojiStyle } from 'emoji-picker-react';
+
+import { IconButton } from '@mui/material';
 
 import {
   EmojiWrapper,
   CustomTooltip,
   EmojiCount,
   EmojiContainer,
-} from "./styled";
-import { IReaction } from "../utils/types";
-import { TooltipContent } from "./TooltipContent";
+} from './styled';
+import { IReaction } from '../utils/types';
+import { TooltipContent } from './TooltipContent';
 
 interface ReactionProps {
   /**
@@ -34,16 +36,18 @@ export function Reaction({ content, reactions, onClick }: ReactionProps) {
       title={<TooltipContent reactions={reactions} emoji={content} />}
       arrow
     >
-      <EmojiWrapper
-        onClick={() => {
-          onClick(content);
-        }}
-      >
-        <EmojiContainer>
-          <Emoji unified={content} emojiStyle={EmojiStyle.APPLE} size={17} />
-        </EmojiContainer>
-        <EmojiCount>{reactions.length}</EmojiCount>
-      </EmojiWrapper>
+      <IconButton>
+        <EmojiWrapper
+          onClick={() => {
+            onClick(content);
+          }}
+        >
+          <EmojiContainer>
+            <Emoji unified={content} emojiStyle={EmojiStyle.APPLE} size={17} />
+          </EmojiContainer>
+          <EmojiCount>{reactions.length}</EmojiCount>
+        </EmojiWrapper>
+      </IconButton>
     </CustomTooltip>
   );
 }

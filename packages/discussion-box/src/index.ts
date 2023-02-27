@@ -1,7 +1,8 @@
+export { DiscussionPure } from './DiscussionPure';
 export { Discussion } from './Discussion';
+export { DiscussionForDev } from './DiscussionForDev';
 
 export { DiscussionHeader } from './styled';
-export { MockLoginForm } from './MockLoginForm';
 export { DiscussionList } from './DiscussionList';
 
 export * from './utils/types';

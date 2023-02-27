@@ -60,10 +60,20 @@ export interface IPost {
   created_at: Date;
 }
 
+export interface Organization {
+  id: number;
+  name: string;
+}
+
+export interface AppList {
+  id: number;
+  app_name: string;
+}
+
 export interface IDiscussion {
   id: number;
-  app?: number;
-  org?: number;
+  appList: AppList;
+  organization: Organization;
   table_name: string;
   row: number;
   posts: IPost[];
@@ -127,3 +137,10 @@ export type EmojiModeType = 'quill' | 'react';
 export type EditorKinds = 'quill' | 'audio' | 'video';
 
 export type RecorderStatus = 'new' | 'paused' | 'recording' | 'ended';
+
+export type ChangeDiscussionParams = {
+  table_name: string;
+  row: number;
+  orgId: number;
+  appId: number;
+};
