@@ -1,30 +1,29 @@
-import React, { useEffect, useRef, useCallback, CSSProperties } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 import {
-  Stack,
-  Snackbar,
-  Alert,
-  Popover,
-  CircularProgress,
-  Backdrop,
-} from '@mui/material';
+  MuiMaterial,
+  DiscussionBoxUI,
+  colors,
+  EmojiPicker,
+  EmojiClickData,
+} from '@eten-lab/ui-kit';
 
-import { EmojiClickData } from 'emoji-picker-react';
-import { EmojiPicker } from './EmojiPicker';
-import { PostList } from './Post';
-import { InputModeSelector } from './InputModeSelector';
+import { PostList } from './PostList';
 import { ReactQuill } from './ReactQuill';
 import { AudioRecorder } from './AudioRecorder';
 import { VideoRecorder } from './VideoRecorder';
 
-import { IPost } from './utils/types';
+import { IPost, EditorKinds } from './utils/types';
 import { useDiscussionContext } from './hooks/useDiscussionContext';
 
+const { Stack, Snackbar, Alert, Popover, CircularProgress, Backdrop, Box } =
+  MuiMaterial;
+const { InputButtonGroup } = DiscussionBoxUI;
+
 const InputComponents = {
-  selector: InputModeSelector,
-  quill: ReactQuill,
-  audio: AudioRecorder,
-  video: VideoRecorder,
+  quill: <ReactQuill />,
+  audio: <AudioRecorder />,
+  video: <VideoRecorder />,
 };
 
 type InputComponentsKey = keyof typeof InputComponents;
@@ -35,7 +34,7 @@ export type DiscussionPureProps = {
   rowId: number;
   appId: number;
   orgId: number;
-  style?: CSSProperties | undefined;
+  height: string;
 };
 
 /**
@@ -48,12 +47,13 @@ export function DiscussionPure({
   rowId,
   appId,
   orgId,
-  style,
+  height,
 }: DiscussionPureProps) {
   const {
     states: { loading: discussionLoading, global, quillRef, uploading },
     actions: {
       changeDiscussion,
+      changeEditorKind,
       setNewUser,
       closeFeedback,
       closeEmojiPicker,
@@ -130,12 +130,29 @@ export function DiscussionPure({
     [emoji, handleEmojiClickByQuill, handleEmojiClickByReact, closeEmojiPicker],
   );
 
+  const handleChangeInput = (mode: EditorKinds) => {
+    changeEditorKind(mode);
+  };
+
   const openedEmojiPicker = Boolean(emoji.anchorEl);
 
-  const editorKindString = editorKind || 'selector';
+  const InputComponent = editorKind
+    ? InputComponents[editorKind as InputComponentsKey]
+    : null;
 
-  const InputComponent =
-    InputComponents[editorKindString as InputComponentsKey];
+  const InputPanel = editorKind ? (
+    InputComponent
+  ) : (
+    <Box
+      sx={{
+        padding: '20px',
+        borderRadius: '20px 20px 0 0',
+        borderTop: `1px solid ${colors['middle-gray']}`,
+      }}
+    >
+      <InputButtonGroup onClick={handleChangeInput} />
+    </Box>
+  );
 
   const loading = discussionLoading || (uploading && editorKind !== null);
 
@@ -143,12 +160,13 @@ export function DiscussionPure({
     <>
       <Stack
         justifyContent="space-between"
-        gap="20px"
-        style={style}
+        style={{
+          height,
+        }}
         ref={discussionRef}
       >
         <PostList />
-        <InputComponent />
+        {InputPanel}
       </Stack>
 
       <Popover

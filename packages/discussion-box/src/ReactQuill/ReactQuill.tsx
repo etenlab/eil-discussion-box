@@ -5,16 +5,16 @@ import React, {
   KeyboardEvent,
   MouseEvent,
   ChangeEventHandler,
-} from 'react'
-import 'react-quill/dist/quill.snow.css'
-import ReactQuill from 'react-quill'
+} from 'react';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 
-import { Skeleton, IconButton } from '@mui/material'
+import { Skeleton, IconButton } from '@mui/material';
 
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined'
-import CloseIcon from "@mui/icons-material/Close";
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
-import { QuillAttachmentList } from '../Attachment'
+import { QuillAttachmentList } from '../AttachmentList';
 import {
   AttachmentListContainer,
   QuillContainer,
@@ -22,31 +22,31 @@ import {
   ReactionButtonContainer,
   ReplyButtonContainer,
   QuillTitleContainer,
-} from './styled'
+} from './styled';
 
-import { AddAttachmentButton } from '../common/AddAttachmentButton'
-import { AddReactionButton } from '../common/AddReactionButton'
-import { SendButton } from '../common/SendButton'
+import { AddAttachmentButton } from '../common/AddAttachmentButton';
+import { AddReactionButton } from '../common/AddReactionButton';
+import { SendButton } from '../common/SendButton';
 import { CircleCloseButton } from './styled';
 
-import { modules, formats, Skeletons } from './utils'
-import { getMimeType } from '../utils/helpers'
-import { useDiscussionContext } from '../hooks/useDiscussionContext'
+import { modules, formats, Skeletons } from './utils';
+import { getMimeType } from '../utils/helpers';
+import { useDiscussionContext } from '../hooks/useDiscussionContext';
 
 const maxFileSize =
   process.env.REACT_APP_MAX_FILE_SIZE !== undefined
     ? +process.env.REACT_APP_MAX_FILE_SIZE
-    : 1024 * 1024 * 50
+    : 1024 * 1024 * 50;
 
 type SkeletonSize = {
-  width: string
-  height: string
-}
+  width: string;
+  height: string;
+};
 
 export const CustomReactQuill = forwardRef<
   {
-    focus(): void
-    write(str: string): void
+    focus(): void;
+    write(str: string): void;
   } | null,
   unknown
 >((_, ref) => {
@@ -69,37 +69,37 @@ export const CustomReactQuill = forwardRef<
       alertFeedback,
       changeEditorKind,
     },
-  } = useDiscussionContext()
+  } = useDiscussionContext();
 
-  const quillRef = useRef<ReactQuill | null>(null)
-  const skeletonRef = useRef<SkeletonSize | null>(null)
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const quillRef = useRef<ReactQuill | null>(null);
+  const skeletonRef = useRef<SkeletonSize | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useImperativeHandle(
     ref,
     () => ({
       focus: () => {
-        quillRef.current?.focus()
+        quillRef.current?.focus();
       },
       write: (str: string) => {
         changeQuill(quill + str, plain + str);
       },
     }),
     [quill, plain, changeQuill],
-  )
+  );
 
   const createOrUpdatePost = () => {
     if (editingPost) {
       if (plain.trim() === '' && editingPost.files.length === 0) {
-        alertFeedback('warning', 'Cannot save without any data')
-        initializeQuill()
-        return
+        alertFeedback('warning', 'Cannot save without any data');
+        initializeQuill();
+        return;
       }
 
       if (userId !== editingPost.user_id) {
-        alertFeedback('warning', 'You are not owner of this post!')
-        initializeQuill()
-        return
+        alertFeedback('warning', 'You are not owner of this post!');
+        initializeQuill();
+        return;
       }
 
       updatePost({
@@ -113,12 +113,12 @@ export const CustomReactQuill = forwardRef<
           },
           id: editingPost.id,
         },
-      })
+      });
     } else {
       if (plain.trim() === '' && attachments.length === 0) {
-        alertFeedback('warning', 'Cannot save without any data')
-        initializeQuill()
-        return
+        alertFeedback('warning', 'Cannot save without any data');
+        initializeQuill();
+        return;
       }
       createPost({
         variables: {
@@ -132,17 +132,17 @@ export const CustomReactQuill = forwardRef<
           },
           files: attachments.map((file) => file.id),
         },
-      })
+      });
     }
 
-    saveQuillStates(quill, attachments)
-  }
+    saveQuillStates(quill, attachments);
+  };
 
   const handleKeyEvent = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
-      createOrUpdatePost()
+      createOrUpdatePost();
     }
-  }
+  };
 
   const handleChange = (
     value: string,
@@ -151,42 +151,44 @@ export const CustomReactQuill = forwardRef<
     editor: any,
   ) => {
     changeQuill(value, editor.getText(value));
-  }
+  };
 
   const handleReactionClick = (event: MouseEvent<Element>) => {
-    openEmojiPicker(event.currentTarget, null, 'quill')
-  }
+    openEmojiPicker(event.currentTarget, null, 'quill');
+  };
 
   // Get a file then upload
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    inputRef.current = event.target
-    const files = event.target.files
+    inputRef.current = event.target;
+    const files = event.target.files;
 
     if (files && files.length > 0) {
-      const file = files[0]
+      const file = files[0];
 
       if (file.size > maxFileSize) {
         alertFeedback(
           'warning',
           `Exceed max file size ( > ${process.env.REACT_APP_MAX_FILE_SIZE})!`,
-        )
-        return
+        );
+        return;
       }
 
-      const mimeType = getMimeType(file.type) as keyof typeof Skeletons
-      skeletonRef.current = Skeletons[mimeType]
+      const mimeType = getMimeType(file.type) as keyof typeof Skeletons;
+      skeletonRef.current = Skeletons[mimeType];
 
       uploadFile({
         variables: { file, file_size: file.size, file_type: file.type },
-      })
+      });
 
-      inputRef.current.value = ''
+      inputRef.current.value = '';
     }
-  }
+  };
 
   const handleCloseQuill = () => {
     if (plain.trim() !== '' || attachments.length > 0) {
-      const result = window.confirm("Are you sure to cancel this post? You have unsaved inputs");
+      const result = window.confirm(
+        'Are you sure to cancel this post? You have unsaved inputs',
+      );
       if (!result) {
         return;
       }
@@ -194,20 +196,20 @@ export const CustomReactQuill = forwardRef<
 
     initializeQuill();
     changeEditorKind(null);
-  }
+  };
 
-  let quillTitle = ''
+  let quillTitle = '';
 
   if (editingPost || replyingPost) {
     if (editingPost) {
-      quillTitle = 'Editing'
+      quillTitle = 'Editing';
     }
     if (replyingPost) {
-      quillTitle = `Replying to @${replyingPost.user.username}`
+      quillTitle = `Replying to @${replyingPost.user.username}`;
     }
   }
 
-  const disabled = uploading
+  const disabled = uploading;
 
   return (
     <QuillContainer>
@@ -267,5 +269,5 @@ export const CustomReactQuill = forwardRef<
         </CircleCloseButton>
       </div>
     </QuillContainer>
-  )
-})
+  );
+});

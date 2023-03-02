@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { ThemeProvider } from '@mui/material';
-
-import { theme } from './theme';
+import { ThemeProvider } from '@eten-lab/ui-kit';
 
 import { DiscussionProvider } from './context';
 
@@ -10,7 +8,7 @@ import { DiscussionPure, DiscussionPureProps } from './DiscussionPure';
 
 export function Discussion(props: DiscussionPureProps) {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <DiscussionProvider>
         <DiscussionPure {...props} />
       </DiscussionProvider>

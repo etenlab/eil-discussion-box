@@ -1,7 +1,6 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 
-import { ThemeProvider } from '@mui/material';
-import { theme } from './theme';
+import { ThemeProvider } from '@eten-lab/ui-kit';
 import { DiscussionProvider } from './context';
 import { DiscussionPure } from './DiscussionPure';
 
@@ -15,7 +14,7 @@ type DiscussionForDevProps = {
   userEmail: string;
   orgName?: string;
   appName?: string;
-  style?: CSSProperties;
+  height: string;
 };
 
 export function DiscussionForDev({
@@ -24,7 +23,7 @@ export function DiscussionForDev({
   userEmail,
   orgName = 'dev org',
   appName = 'dev app',
-  style,
+  height,
 }: DiscussionForDevProps) {
   const { userId } = useGettingUserId({ userEmail });
   const { appId } = useGettingAppId({ appName });
@@ -35,7 +34,7 @@ export function DiscussionForDev({
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <DiscussionProvider>
         <DiscussionPure
           userId={userId}
@@ -43,7 +42,7 @@ export function DiscussionForDev({
           orgId={orgId}
           tableName={tableName}
           rowId={rowId}
-          style={style}
+          height={height}
         />
       </DiscussionProvider>
     </ThemeProvider>

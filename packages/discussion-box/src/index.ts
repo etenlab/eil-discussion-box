@@ -9,10 +9,10 @@ export * from './utils/types';
 
 export * from './ReactQuill';
 
-export * from './Reaction';
+export * from './ReactionList';
 
-export * from './Post';
+export * from './PostList';
 
-export * from './Attachment';
+export * from './AttachmentList';
 
 export * from './EmojiPicker';
