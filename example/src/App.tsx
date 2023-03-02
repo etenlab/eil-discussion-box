@@ -31,11 +31,7 @@ function App() {
           tableName="example"
           rowId={1}
           userEmail={email}
-          style={{
-            height: "calc(100vh - 42px)",
-            padding: "20px",
-            border: "1px solid #000",
-          }}
+          height="calc(100vh)"
         />
       )}
     </>

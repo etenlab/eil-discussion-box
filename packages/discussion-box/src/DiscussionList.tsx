@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { Fragment, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 import {
   Backdrop,
@@ -11,21 +11,23 @@ import {
   Divider,
   Snackbar,
   Alert,
-} from '@mui/material';
+} from "@mui/material";
 
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from "@apollo/client";
 
-import { discussionClient } from './graphql/discussionGraphql';
-import { GET_DISCUSSIONS_SUMMARY_BY_USER_ID } from './graphql/discussionQuery';
+import { discussionClient } from "./graphql/discussionGraphql";
+import { GET_DISCUSSIONS_SUMMARY_BY_USER_ID } from "./graphql/discussionQuery";
 
 export function DiscussionList({ userId }: { userId: number }) {
   const history = useHistory();
 
-  const [getDiscussionsSummaryByUserId, { called, loading, error, data }] =
-    useLazyQuery(GET_DISCUSSIONS_SUMMARY_BY_USER_ID, {
-      fetchPolicy: 'no-cache',
-      client: discussionClient,
-    });
+  const [
+    getDiscussionsSummaryByUserId,
+    { called, loading, error, data },
+  ] = useLazyQuery(GET_DISCUSSIONS_SUMMARY_BY_USER_ID, {
+    fetchPolicy: "no-cache",
+    client: discussionClient,
+  });
 
   useEffect(() => {
     if (userId) {
@@ -42,12 +44,12 @@ export function DiscussionList({ userId }: { userId: number }) {
       open
       autoHideDuration={2000}
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
+        vertical: "bottom",
+        horizontal: "right",
       }}
       key="bottom-right"
     >
-      <Alert variant="filled" severity="error" sx={{ width: '100%' }}>
+      <Alert variant="filled" severity="error" sx={{ width: "100%" }}>
         Network Issue
       </Alert>
     </Snackbar>;
@@ -55,9 +57,9 @@ export function DiscussionList({ userId }: { userId: number }) {
 
   if (called && loading) {
     return (
-      <Backdrop sx={{ color: '#fff', zIndex: 1000 }} open={loading}>
+      <Backdrop sx={{ color: "#fff", zIndex: 1000 }} open={loading}>
         <Stack justifyContent="center">
-          <div style={{ margin: 'auto' }}>
+          <div style={{ margin: "auto" }}>
             <CircularProgress color="inherit" />
           </div>
           <div>LOADING</div>
@@ -74,7 +76,6 @@ export function DiscussionList({ userId }: { userId: number }) {
     <List>
       {data.getDiscussionsSummaryByUserId.map(
         ({
-          id,
           table_name,
           row,
           total_posts,
@@ -100,7 +101,7 @@ export function DiscussionList({ userId }: { userId: number }) {
             </ListItem>
             <Divider />
           </Fragment>
-        ),
+        )
       )}
     </List>
   );
