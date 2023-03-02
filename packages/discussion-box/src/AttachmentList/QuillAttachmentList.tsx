@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { Stack } from '@mui/material';
-
-import { QuillAttachment } from './QuillAttachment';
+import { DiscussionBoxUI, MuiMaterial } from '@eten-lab/ui-kit';
 import { IFile } from '../utils/types';
+
+const { Attachment } = DiscussionBoxUI;
+const { Stack } = MuiMaterial;
 
 type QuillAttachmentListProps = {
   attachments: IFile[];
@@ -17,10 +18,11 @@ export function QuillAttachmentList({
   return (
     <Stack gap={2} direction="row" sx={{ display: 'inline-flex' }}>
       {attachments.map((attachment) => (
-        <QuillAttachment
+        <Attachment
           key={attachment.id}
           file={attachment}
-          onCancel={() => {
+          mode="quill"
+          onRemove={() => {
             onCancel(attachment);
           }}
         />
