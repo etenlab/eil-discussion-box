@@ -110,7 +110,7 @@ export function DiscussionPure({
 
   const handleEmojiClickByQuill = useCallback(
     (emojiData: EmojiClickData) => {
-      quillRef.current?.write(emojiData.emoji);
+      quillRef.current?.addEmoji(emojiData.emoji);
     },
     [quillRef],
   );

@@ -64,9 +64,20 @@ export function useQuill({ dispatch }: UseQuillProps) {
     [dispatch],
   );
 
-  const saveQuillStates = useCallback(() => {
-    dispatch(saveQuillStatesAction());
-  }, [dispatch]);
+  const saveQuillStates = useCallback(
+    ({
+      quill,
+      plain,
+      attachments,
+    }: {
+      quill?: string;
+      plain: string;
+      attachments: IFile[];
+    }) => {
+      dispatch(saveQuillStatesAction({ quill, plain, attachments }));
+    },
+    [dispatch],
+  );
 
   const recoverQuillStates = useCallback(() => {
     dispatch(recoverQuillStatesAction());

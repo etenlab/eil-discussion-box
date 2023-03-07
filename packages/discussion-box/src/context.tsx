@@ -29,7 +29,7 @@ export interface ContextType {
     global: GlobalStateType;
     quillRef: RefObject<{
       focus(): void;
-      write(str: string): void;
+      addEmoji(emoji: string): void;
     } | null>;
   };
   actions: {
@@ -43,7 +43,15 @@ export interface ContextType {
     initializeQuill: any;
     setPostForEditing: any;
     setPostForReplying: any;
-    saveQuillStates: any;
+    saveQuillStates({
+      quill,
+      plain,
+      attachments,
+    }: {
+      quill?: string;
+      plain: string;
+      attachments: IFile[];
+    }): void;
     recoverQuillStates: any;
     cancelAttachment(file: IFile): void;
     changeQuill(quill: string | undefined, plain: string): void;
@@ -71,7 +79,7 @@ type DiscussionProviderProps = {
 
 export function DiscussionProvider({ children }: DiscussionProviderProps) {
   const [state, dispatch] = useReducer(reducer, reducerInitialState);
-  const quillRef = useRef<{ focus(): void; write(str: string): void } | null>(
+  const quillRef = useRef<{ focus(): void; addEmoji(emoji: string): void } | null>(
     null,
   );
 

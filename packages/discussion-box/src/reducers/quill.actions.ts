@@ -32,10 +32,22 @@ export function setPostForReplying(post: IPost) {
   };
 }
 
-export function saveQuillStates() {
+export function saveQuillStates({
+  quill,
+  plain,
+  attachments,
+}: {
+  quill?: string;
+  plain: string;
+  attachments: IFile[];
+}) {
   return {
     type: actions.SAVE_QUILL_STATES,
-    payload: null,
+    payload: {
+      quill,
+      plain,
+      attachments,
+    },
   };
 }
 

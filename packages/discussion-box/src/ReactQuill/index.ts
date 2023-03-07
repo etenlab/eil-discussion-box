@@ -1,1 +1,1 @@
-export { CustomReactQuill as ReactQuill } from "./ReactQuill";
+export { ReactQuill } from './ReactQuill';

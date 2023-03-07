@@ -1,6 +1,6 @@
 {
   "name": "@eten-lab/discussion-box",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "license": "UNLICENSED",
   "private": false,
   "main": "dist/index.js",
@@ -25,7 +25,7 @@
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.5",
-    "@eten-lab/ui-kit": "^0.3.22",
+    "@eten-lab/ui-kit": "^0.3.28",
     "apollo-upload-client": "^17.0.0",
     "emoji-picker-react": "^4.4.3",
     "@foobar404/wave": "^2.0.4",

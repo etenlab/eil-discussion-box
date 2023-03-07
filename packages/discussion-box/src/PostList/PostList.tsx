@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from 'react';
 
-import { Post } from "./Post";
-import { ScrollDownButton, MuiMaterial } from "@eten-lab/ui-kit";
+import { Post } from './Post';
+import { ScrollDownButton, MuiMaterial } from '@eten-lab/ui-kit';
 
-import { useDiscussionContext } from "../hooks/useDiscussionContext";
+import { useDiscussionContext } from '../hooks/useDiscussionContext';
 
 const { Stack } = MuiMaterial;
 
@@ -35,10 +35,10 @@ export function PostList() {
       gap="10px"
       ref={ref}
       sx={{
-        position: "relative",
+        position: 'relative',
         flexGrow: 1,
-        overflowY: "auto",
-        padding: "20px",
+        overflowY: 'auto',
+        padding: '20px',
       }}
     >
       {discussion

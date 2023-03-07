@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { MuiMaterial, DiscussionBoxUI } from "@eten-lab/ui-kit";
+import { MuiMaterial, DiscussionBoxUI } from '@eten-lab/ui-kit';
 
-import { useDiscussionContext } from "../hooks/useDiscussionContext";
+import { useDiscussionContext } from '../hooks/useDiscussionContext';
 
 const { Box } = MuiMaterial;
 const { VideoRecorder: VideoRecorderUI } = DiscussionBoxUI;
@@ -29,34 +29,34 @@ export function VideoRecorder() {
     },
   } = useDiscussionContext();
   const [status, setStatus] = useState<
-    "init" | "save" | "uploading" | "uploaded"
-  >("init");
+    'init' | 'save' | 'uploading' | 'uploaded'
+  >('init');
 
   useEffect(() => {
-    if (!uploading && status === "save") {
+    if (!uploading && status === 'save') {
       return;
     }
-    if (uploading && status === "save") {
-      setStatus("uploading");
+    if (uploading && status === 'save') {
+      setStatus('uploading');
     }
-    if (uploading && status === "uploading") {
+    if (uploading && status === 'uploading') {
       return;
     }
-    if (!uploading && status === "uploading") {
-      setStatus("uploaded");
+    if (!uploading && status === 'uploading') {
+      setStatus('uploaded');
     }
   }, [uploading, status]);
 
   useEffect(() => {
-    if (status === "uploaded") {
+    if (status === 'uploaded') {
       if (attachments.length > 0) {
         createPost({
           variables: {
             post: {
               discussion_id: discussion!.id,
-              plain_text: "",
-              postgres_language: "simple",
-              quill_text: "",
+              plain_text: '',
+              postgres_language: 'simple',
+              quill_text: '',
               user_id: userId,
               reply_id: replyingPost ? replyingPost.id : null,
             },
@@ -65,7 +65,7 @@ export function VideoRecorder() {
         });
       }
       initializeQuill();
-      setStatus("init");
+      setStatus('init');
     }
   }, [
     status,
@@ -82,17 +82,17 @@ export function VideoRecorder() {
 
     if (file.size > maxFileSize) {
       alertFeedback(
-        "warning",
-        `Exceed max file size ( > ${process.env.REACT_APP_MAX_FILE_SIZE})!`
+        'warning',
+        `Exceed max file size ( > ${process.env.REACT_APP_MAX_FILE_SIZE})!`,
       );
       return;
     }
 
     uploadFile({
-      variables: { file, file_size: file.size, file_type: "video/webm" },
+      variables: { file, file_size: file.size, file_type: 'video/webm' },
     });
 
-    setStatus("save");
+    setStatus('save');
   };
 
   const handleCancel = () => {
@@ -102,9 +102,9 @@ export function VideoRecorder() {
   return (
     <Box
       sx={{
-        position: "fixed",
-        width: "100vw",
-        height: "100vh",
+        position: 'fixed',
+        width: '100vw',
+        height: '100vh',
       }}
     >
       <VideoRecorderUI onSave={handleSave} onCancel={handleCancel} />

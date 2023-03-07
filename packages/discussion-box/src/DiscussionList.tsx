@@ -76,6 +76,7 @@ export function DiscussionList({ userId }: { userId: number }) {
     <List>
       {data.getDiscussionsSummaryByUserId.map(
         ({
+          id,
           table_name,
           row,
           total_posts,
@@ -85,7 +86,7 @@ export function DiscussionList({ userId }: { userId: number }) {
           row: number;
           total_posts: number;
         }) => (
-          <Fragment>
+          <Fragment key={id}>
             <ListItem
               disablePadding
               onClick={() => {
