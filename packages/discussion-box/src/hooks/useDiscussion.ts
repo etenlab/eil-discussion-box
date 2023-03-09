@@ -53,7 +53,7 @@ export function useDiscussion({ discussion, dispatch }: UseDiscussionProps) {
   const changeDiscussion = useCallback(
     ({ table_name, row, orgId, appId }: ChangeDiscussionParams) => {
       if (table_name.length === 0 || row < 0) {
-        alert('Error at table_name or row');
+        alertFeedback('error', 'Error at table_name or row');
         return;
       }
 

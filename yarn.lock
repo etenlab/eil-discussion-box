@@ -1085,11 +1085,12 @@
 
 "@eten-lab/discussion-box@file:/home/work/Documents/etenlab/eil-discussion-box/packages/discussion-box":
   "resolved" "file:packages/discussion-box"
-  "version" "0.2.6"
+  "version" "0.2.9"
   dependencies:
     "@apollo/client" "^3.6.9"
     "@emotion/react" "^11.10.4"
     "@emotion/styled" "^11.10.4"
+    "@eten-lab/ui-kit" "^0.3.28"
     "@foobar404/wave" "^2.0.4"
     "@mui/icons-material" "^5.10.3"
     "@mui/material" "^5.10.5"
@@ -1100,10 +1101,10 @@
     "react-quill" "^2.0.0"
     "tslib" "^2.4.1"
 
-"@eten-lab/ui-kit@^0.3.22":
-  "integrity" "sha512-SHEfOBaPJydccvdv5wjZNSP8WhTxvl2AUFXJ8ulCLf1yRXfEyzJu0TEBhkGc/ynIrvtv62S/RTgESDJ4YmMTZQ=="
-  "resolved" "https://registry.npmjs.org/@eten-lab/ui-kit/-/ui-kit-0.3.22.tgz"
-  "version" "0.3.22"
+"@eten-lab/ui-kit@^0.3.28", "@eten-lab/ui-kit@^0.3.29":
+  "integrity" "sha512-U9G7ldYw+l6AQ/FARqlX4LgWuPENQWRcfKZ4wceQ8yNOPHvSoHoo49l9uRa92s3/fiL4SbwpMsjN8arWrol+xw=="
+  "resolved" "https://registry.npmjs.org/@eten-lab/ui-kit/-/ui-kit-0.3.29.tgz"
+  "version" "0.3.29"
   dependencies:
     "@emotion/react" "^11.10.4"
     "@emotion/styled" "^11.10.4"

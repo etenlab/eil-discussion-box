@@ -40,6 +40,7 @@ export function reducer(
       return {
         ...prevState,
         editingPost,
+        replyingPost: null,
         quill: editingPost.quill_text,
         plain: editingPost.plain_text,
         attachments: [],
@@ -50,6 +51,7 @@ export function reducer(
       return {
         ...prevState,
         replyingPost,
+        editingPost: null,
         quill: undefined,
         plain: '',
         attachments: [],

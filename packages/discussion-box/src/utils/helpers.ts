@@ -1,8 +1,8 @@
-import { IDiscussion, IPost, IReaction } from "./types";
+import { IDiscussion, IPost, IReaction } from './types';
 
 export function recalcDiscusionWithNewPost(
   discussion: IDiscussion,
-  newPost: IPost
+  newPost: IPost,
 ): IDiscussion {
   if (discussion.posts.find((post: IPost) => post.id === newPost.id)) {
     // Already exists, then return without adding
@@ -18,7 +18,7 @@ export function recalcDiscusionWithNewPost(
 
 export function recalcDiscusionWithUpdatedPost(
   discussion: IDiscussion,
-  updatedPost: IPost
+  updatedPost: IPost,
 ): IDiscussion {
   const posts = discussion.posts.map((post) => {
     // found updated post and return updated result
@@ -52,7 +52,7 @@ export function recalcDiscusionWithUpdatedPost(
 
 export function recalcDiscussionWithDeletedPostId(
   discussion: IDiscussion,
-  postId: number
+  postId: number,
 ): IDiscussion {
   const posts = discussion.posts
     // Remove deleted post from list
@@ -77,7 +77,7 @@ export function recalcDiscussionWithDeletedPostId(
 
 export function recalcDiscussionWithNewReation(
   discussion: IDiscussion,
-  newReaction: IReaction
+  newReaction: IReaction,
 ): IDiscussion {
   const post_id = newReaction.post_id;
   const reaction_id = newReaction.id;
@@ -103,14 +103,14 @@ export function recalcDiscussionWithNewReation(
 
 export function recalcDiscusionWithDeletedReactionId(
   discussion: IDiscussion,
-  reactionId: number
+  reactionId: number,
 ): IDiscussion {
   return {
     ...discussion,
     posts: discussion.posts.map((post) => ({
       ...post,
       reactions: post.reactions.filter(
-        (reaction) => reaction.id !== reactionId
+        (reaction) => reaction.id !== reactionId,
       ),
     })),
   };
@@ -146,25 +146,25 @@ export function sortByContent(reactions: IReaction[]) {
 
 export const getMimeType = (fileType: string | null): string => {
   if (fileType === null || fileType.trim().length === 0) {
-    return "normal";
+    return 'normal';
   }
 
-  const classic = fileType.trim().split("/");
+  const classic = fileType.trim().split('/');
 
-  if (classic.length < 2) return "normal";
+  if (classic.length < 2) return 'normal';
 
   switch (classic[0]) {
-    case "video": {
-      return "video";
+    case 'video': {
+      return 'video';
     }
-    case "audio": {
-      return "audio";
+    case 'audio': {
+      return 'audio';
     }
-    case "image": {
-      return "image";
+    case 'image': {
+      return 'image';
     }
     default: {
-      return "normal";
+      return 'normal';
     }
   }
 };
